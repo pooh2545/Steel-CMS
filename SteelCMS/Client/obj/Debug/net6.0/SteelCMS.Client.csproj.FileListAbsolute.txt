@@ -616,10 +616,7 @@ D:\Project\Steel\SteelCMS\Client\obj\Debug\net6.0\staticwebassets\msbuild.build.
 D:\Project\Steel\SteelCMS\Client\obj\Debug\net6.0\staticwebassets\msbuild.buildMultiTargeting.SteelCMS.Client.props
 D:\Project\Steel\SteelCMS\Client\obj\Debug\net6.0\staticwebassets\msbuild.buildTransitive.SteelCMS.Client.props
 D:\Project\Steel\SteelCMS\Client\obj\Debug\net6.0\staticwebassets.pack.json
-D:\Project\Steel\SteelCMS\Client\obj\Debug\net6.0\scopedcss\Shared\MainLayout.razor.rz.scp.css
-D:\Project\Steel\SteelCMS\Client\obj\Debug\net6.0\scopedcss\Shared\NavMenu.razor.rz.scp.css
 D:\Project\Steel\SteelCMS\Client\obj\Debug\net6.0\scopedcss\bundle\SteelCMS.Client.styles.css
-D:\Project\Steel\SteelCMS\Client\obj\Debug\net6.0\scopedcss\projectbundle\SteelCMS.Client.bundle.scp.css
 D:\Project\Steel\SteelCMS\Client\obj\Debug\net6.0\compressed\72dwa1uo24.gz
 D:\Project\Steel\SteelCMS\Client\obj\Debug\net6.0\compressed\ol8dz1oy3y.gz
 D:\Project\Steel\SteelCMS\Client\obj\Debug\net6.0\compressed\pkwttte7b3.gz

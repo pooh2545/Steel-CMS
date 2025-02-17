@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "QIHiJTwdhR+OE/xYCj9uqKPhIjHje7/ykVhuQEBySNA=",
+  "Hash": "u0TUpv5U7COeBnfu2YBlTQQjw5Sx9hXWax6lXet6ws0=",
   "Source": "SteelCMS.Server",
   "BasePath": "_content/SteelCMS.Server",
   "Mode": "Default",
@@ -7665,25 +7665,6 @@
       "CopyToOutputDirectory": "PreserveNewest",
       "CopyToPublishDirectory": "Never",
       "OriginalItemSpec": "D:\\Project\\Steel\\SteelCMS\\Client\\bin\\Debug\\net6.0\\wwwroot\\_framework\\Microsoft.AspNetCore.Metadata.dll"
-    },
-    {
-      "Identity": "D:\\Project\\Steel\\SteelCMS\\Client\\obj\\Debug\\net6.0\\scopedcss\\bundle\\SteelCMS.Client.styles.css",
-      "SourceId": "SteelCMS.Client",
-      "SourceType": "Project",
-      "ContentRoot": "D:\\Project\\Steel\\SteelCMS\\Client\\obj\\Debug\\net6.0\\scopedcss\\bundle\\",
-      "BasePath": "/",
-      "RelativePath": "SteelCMS.Client.styles.css",
-      "AssetKind": "All",
-      "AssetMode": "CurrentProject",
-      "AssetRole": "Primary",
-      "AssetMergeBehavior": "",
-      "AssetMergeSource": "",
-      "RelatedAsset": "",
-      "AssetTraitName": "ScopedCss",
-      "AssetTraitValue": "ApplicationBundle",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "D:\\Project\\Steel\\SteelCMS\\Client\\obj\\Debug\\net6.0\\scopedcss\\bundle\\SteelCMS.Client.styles.css"
     },
     {
       "Identity": "D:\\Project\\Steel\\SteelCMS\\Client\\wwwroot\\css\\app.css",

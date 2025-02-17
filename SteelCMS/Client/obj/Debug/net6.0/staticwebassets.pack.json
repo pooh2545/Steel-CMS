@@ -9,10 +9,6 @@
       "PackagePath": "staticwebassets\\_framework\\blazor.webassembly.js.gz"
     },
     {
-      "Id": "D:\\Project\\Steel\\SteelCMS\\Client\\obj\\Debug\\net6.0\\scopedcss\\bundle\\SteelCMS.Client.styles.css",
-      "PackagePath": "staticwebassets\\SteelCMS.Client.styles.css"
-    },
-    {
       "Id": "D:\\Project\\Steel\\SteelCMS\\Client\\wwwroot\\css\\app.css",
       "PackagePath": "staticwebassets\\css\\app.css"
     },
