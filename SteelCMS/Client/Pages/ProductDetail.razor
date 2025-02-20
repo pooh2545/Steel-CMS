@@ -1,0 +1,218 @@
+﻿@using SteelCMS.Client.Shared
+@using Microsoft.AspNetCore.Components.Web
+@inject HttpClient Http
+
+@page "/products/{0}"
+
+<div class="container py-4">
+    <!-- Breadcrumb -->
+    <nav class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/products">สินค้า</a></li>
+            <li class="breadcrumb-item active">เหล็กเส้นกลม SR24 12 มม.</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <!-- Product Image -->
+        <div class="col-md-6">
+            <div class="product-image-container">
+                <img src="@productImage" alt="เหล็กเส้นกลม SR24 12 มม." class="product-image" />
+            </div>
+        </div>
+
+        <!-- Product Details -->
+        <div class="col-md-6">
+            <h1 class="product-title">เหล็กเส้นกลม SR24 12 มม.</h1>
+
+            <div class="product-price mb-4">
+                <span class="currency">฿</span>
+                <span class="amount">450.00</span>
+            </div>
+
+            <div class="product-specs mb-4">
+                <ul class="specs-list">
+                    <li>เส้นผ่านศูนย์กลาง 12 มม.</li>
+                    <li>มวล 0.88 กก./ม.</li>
+                    <li>พื้นที่หน้าตัด 113.1 มม.2</li>
+                </ul>
+            </div>
+
+            <p class="product-description mb-4">
+                เหล็กเส้นกลม (สำหรับใช้งานทั่วไป งานก่อสร้างเล็กน้อยหรือใช้) มีลักษณะเป็นเหล็กกลม
+                ผิวเรียบ เหมาะสำหรับใช้งานทั่วไป งานก่อสร้างเล็กน้อยหรือใช้ เช่น งานทาสี เชื่อม
+                สำนักงาน พื้นที่เล็ก หรือ บ้านโครงสร้าง จากเหล็กที่มีแรงดึงสูง มาตรฐาน มี ทรง ผลิต ฯลฯ
+            </p>
+
+            <div class="quantity-selector mb-4">
+                <div class="d-flex align-items-center">
+                    <button class="btn btn-quantity @(quantity <= 1 ? "disabled" : "")"
+                            @onclick="DecreaseQuantity" disabled="@(quantity <= 1)">
+                        <i class="bi bi-dash"></i>
+                    </button>
+                    <input type="number" class="form-control quantity-input"
+                           @bind="quantity" min="1" />
+                    <button class="btn btn-quantity" @onclick="IncreaseQuantity">
+                        <i class="bi bi-plus"></i>
+                    </button>
+                </div>
+            </div>
+
+            <button class="btn btn-primary btn-add-to-cart" @onclick="AddToCart">
+                เพิ่มลงตะกร้าสินค้า
+            </button>
+        </div>
+    </div>
+
+    <!-- Product Video -->
+    <div class="product-video mt-5">
+        <div class="video-placeholder">
+            <i class="bi bi-play-circle-fill"></i>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string ProductId { get; set; }
+
+    private string productImage = "images/steel-rod-12mm-large.jpg";
+    private int quantity = 1;
+
+    private void DecreaseQuantity()
+    {
+        if (quantity > 1)
+            quantity--;
+    }
+
+    private void IncreaseQuantity()
+    {
+        quantity++;
+    }
+
+    private void AddToCart()
+    {
+        // Implement add to cart functionality
+    }
+}
+
+<style>
+    .product-image-container {
+        background-color: #f8f9fa;
+        border-radius: 0.5rem;
+        overflow: hidden;
+        margin-bottom: 2rem;
+    }
+
+    .product-image {
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+    }
+
+    .product-title {
+        font-size: 1.75rem;
+        margin-bottom: 1.5rem;
+        color: #1a1a1a;
+    }
+
+    .product-price {
+        font-size: 2rem;
+        color: #6366F1;
+        font-weight: 600;
+    }
+
+    .currency {
+        font-size: 1.5rem;
+        margin-right: 0.25rem;
+    }
+
+    .specs-list {
+        list-style: none;
+        padding-left: 0;
+    }
+
+        .specs-list li {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #4a5568;
+        }
+
+            .specs-list li::before {
+                content: "•";
+                position: absolute;
+                left: 0;
+                color: #6366F1;
+            }
+
+    .product-description {
+        color: #4a5568;
+        line-height: 1.6;
+    }
+
+    .quantity-selector {
+        width: 200px;
+    }
+
+    .btn-quantity {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f1f5f9;
+        border: none;
+        color: #6366F1;
+    }
+
+        .btn-quantity:hover:not(.disabled) {
+            background-color: #e2e8f0;
+        }
+
+        .btn-quantity.disabled {
+            color: #cbd5e1;
+            cursor: not-allowed;
+        }
+
+    .quantity-input {
+        width: 60px;
+        text-align: center;
+        border: 1px solid #e2e8f0;
+        margin: 0 0.5rem;
+    }
+
+    .btn-add-to-cart {
+        width: 200px;
+        height: 48px;
+        background-color: #6366F1;
+        border: none;
+        font-weight: 500;
+    }
+
+        .btn-add-to-cart:hover {
+            background-color: #4F46E5;
+        }
+
+    .video-placeholder {
+        width: 100%;
+        height: 400px;
+        background-color: #f1f5f9;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 0.5rem;
+        cursor: pointer;
+    }
+
+        .video-placeholder i {
+            font-size: 4rem;
+            color: #6366F1;
+            opacity: 0.7;
+            transition: opacity 0.2s ease-in-out;
+        }
+
+        .video-placeholder:hover i {
+            opacity: 1;
+        }
+</style>

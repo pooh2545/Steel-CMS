@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35027.167
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteelCMS.Server", "Server\SteelCMS.Server.csproj", "{9CBE202B-8F27-4B0F-BB58-94EF4459FA8E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SteelCMS.Server", "Server\SteelCMS.Server.csproj", "{9CBE202B-8F27-4B0F-BB58-94EF4459FA8E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteelCMS.Client", "Client\SteelCMS.Client.csproj", "{73C041A9-1BEC-4950-8CAA-71B697C9F47E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SteelCMS.Client", "Client\SteelCMS.Client.csproj", "{73C041A9-1BEC-4950-8CAA-71B697C9F47E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteelCMS.Shared", "Shared\SteelCMS.Shared.csproj", "{A6AF5136-9842-4AE9-A70C-63B0B5452223}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SteelCMS.Shared", "Shared\SteelCMS.Shared.csproj", "{A6AF5136-9842-4AE9-A70C-63B0B5452223}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,0 +1,206 @@
+﻿@using SteelCMS.Client.Shared
+@using Microsoft.AspNetCore.Components.Web
+@inject HttpClient Http
+
+@page "/cart"
+
+<PageTitle>ตะกร้าสินค้า</PageTitle>
+
+<div class="container py-4">
+    <nav class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">ตะกร้าสินค้า</li>
+            <li class="breadcrumb-item active">ชำระเงิน</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <div class="col-12">
+            <!-- Order Items -->
+            <div class="card mb-4">
+                <div class="card-header bg-white">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-cart me-2"></i>
+                        <span>คำสั่งซื้อ</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-borderless">
+                            <thead>
+                                <tr>
+                                    <th class="text-muted">ชื่อ</th>
+                                    <th class="text-muted text-end">ราคา</th>
+                                    <th class="text-muted text-center">จำนวน</th>
+                                    <th class="text-muted text-end">รวม</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in cartItems)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="@item.ImageUrl" alt="@item.Name" class="product-thumbnail me-3" />
+                                                <span>@item.Name</span>
+                                            </div>
+                                        </td>
+                                        <td class="text-end">฿@item.Price.ToString("N2")</td>
+                                        <td class="text-center">@item.Quantity</td>
+                                        <td class="text-end">฿@((item.Price * item.Quantity).ToString("N2"))</td>
+                                        <td class="text-end">
+                                            <button class="btn btn-link text-danger p-0" @onclick="() => RemoveItem(item)">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="card">
+                <div class="card-header bg-white">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-receipt me-2"></i>
+                        <span>สรุปคำสั่งซื้อ</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-6">ราคารวมสินค้า</div>
+                        <div class="col-6 text-end">฿450.00</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-6">ค่าจัดส่ง</div>
+                        <div class="col-6 text-end">฿50.00</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <strong>รวม</strong>
+                        </div>
+                        <div class="col-6 text-end text-primary">
+                            <strong>฿500.00</strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-white">
+                    <button class="btn btn-primary w-100" @onclick="PlaceOrder">
+                        ยืนยันคำสั่งซื้อ
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<CartItem> cartItems = new()
+    {
+        new CartItem
+        {
+            Id = 1,
+            Name = "เหล็กเส้นกลม SR24 12 มม.",
+            Price = 450.00m,
+            Quantity = 1,
+            ImageUrl = "images/steel-rod-12mm-thumb.jpg"
+        }
+    };
+
+    private void RemoveItem(CartItem item)
+    {
+        cartItems.Remove(item);
+        StateHasChanged();
+    }
+
+    private void PlaceOrder()
+    {
+        // Implement order placement logic
+    }
+
+    private class CartItem
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public decimal Price { get; set; }
+        public int Quantity { get; set; }
+        public string ImageUrl { get; set; }
+    }
+}
+
+<style>
+    .card {
+        border: 1px solid #e2e8f0;
+        border-radius: 0.5rem;
+    }
+
+    .card-header {
+        border-bottom: 1px solid #e2e8f0;
+        padding: 1rem;
+    }
+
+    .card-body {
+        padding: 1.5rem;
+    }
+
+    .card-footer {
+        border-top: 1px solid #e2e8f0;
+        padding: 1rem;
+    }
+
+    .product-thumbnail {
+        width: 50px;
+        height: 50px;
+        object-fit: contain;
+        background-color: #f8f9fa;
+        border-radius: 0.25rem;
+    }
+
+    .table th {
+        font-weight: 500;
+        font-size: 0.875rem;
+    }
+
+    .table td {
+        vertical-align: middle;
+    }
+
+    .btn-primary {
+        background-color: #6366F1;
+        border-color: #6366F1;
+        font-weight: 500;
+    }
+
+        .btn-primary:hover {
+            background-color: #4F46E5;
+            border-color: #4F46E5;
+        }
+
+    .text-primary {
+        color: #6366F1 !important;
+    }
+
+    .text-danger {
+        color: #DC2626 !important;
+    }
+
+    .breadcrumb {
+        margin-bottom: 2rem;
+    }
+
+    .breadcrumb-item {
+        font-size: 0.875rem;
+    }
+
+        .breadcrumb-item.active {
+            color: #6366F1;
+        }
+
+    .bi {
+        font-size: 1.25rem;
+    }
+</style>

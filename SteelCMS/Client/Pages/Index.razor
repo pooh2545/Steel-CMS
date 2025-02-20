@@ -1,9 +1,176 @@
 ﻿@page "/"
+@using SteelCMS.Client.Shared
+@using Microsoft.AspNetCore.Components.Web
+@inject HttpClient Http
+<PageTitle>หน้าแรก</PageTitle>
 
-<PageTitle>Index</PageTitle>
+<div>
+<!-- Hero Carousel -->
+    <div class="carousel">
+        <div class="carousel-inner position-relative">
+            <img src="hero.jpg" class="w-100" alt="Construction workers reviewing documents" />
+            <div class="carousel-indicators position-absolute bottom-0 start-50 translate-middle-x mb-4">
+                <button class="mx-1 active"></button>
+                <button class="mx-1"></button>
+                <button class="mx-1"></button>
+                <button class="mx-1"></button>
+            </div>
+        </div>
+    </div>
 
-<h1>Hello, world!</h1>
+    <!-- How to Order Section -->
+    <section class="py-5">
+        <div class="container text-center">
+            <h2 class="mb-4">วิธีการสั่งซื้อ</h2>
+            <div class="video-placeholder bg-light rounded" style="height: 400px;">
+                <i class="bi bi-play-circle fs-1 text-secondary position-absolute top-50 start-50 translate-middle"></i>
+            </div>
+        </div>
+    </section>
 
-Welcome to your new app.
+    <!-- Products Section -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <h2 class="mb-4">สินค้าของเรา</h2>
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-4">
+                    <div class="product-card position-relative">
+                        <img src="steel-bars.jpg" class="w-100 rounded" alt="Steel bars" />
+                        <h3 class="position-absolute bottom-0 start-0 text-white p-3 m-0">เหล็กเส้น</h3>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="product-card position-relative">
+                        <img src="steel-plate.jpg" class="w-100 rounded" alt="Steel plate" />
+                        <h3 class="position-absolute bottom-0 start-0 text-white p-3 m-0">เหล็กแผ่น</h3>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="product-card position-relative">
+                        <img src="steel-pipe.jpg" class="w-100 rounded" alt="Steel pipe" />
+                        <h3 class="position-absolute bottom-0 start-0 text-white p-3 m-0">เหล็กรูปพรรณ</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+    <!-- Product Examples -->
+    <section class="py-5">
+        <div class="container">
+            <h2 class="mb-4">ตัวอย่างสินค้า</h2>
+            <div class="position-relative">
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <img src="example1.jpg" class="w-100 rounded" alt="Product example 1" />
+                    </div>
+                    <div class="col-md-4">
+                        <img src="example2.jpg" class="w-100 rounded" alt="Product example 2" />
+                    </div>
+                    <div class="col-md-4">
+                        <img src="example3.jpg" class="w-100 rounded" alt="Product example 3" />
+                    </div>
+                </div>
+                <button class="carousel-control-prev">
+                    <span class="carousel-control-prev-icon"></span>
+                </button>
+                <button class="carousel-control-next">
+                    <span class="carousel-control-next-icon"></span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    
+</div>
+
+@code {
+    // Add any required component logic here
+}
+
+<style>
+    .navbar {
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .carousel {
+        height: 600px;
+        overflow: hidden;
+    }
+
+    .carousel-inner img {
+        object-fit: cover;
+        height: 100%;
+    }
+
+    .carousel-indicators button {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: white;
+        border: none;
+        opacity: 0.5;
+    }
+
+        .carousel-indicators button.active {
+            opacity: 1;
+        }
+
+    .video-placeholder {
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+        .video-placeholder:hover {
+            opacity: 0.9;
+        }
+
+    .product-card {
+        overflow: hidden;
+        height: 300px;
+    }
+
+        .product-card img {
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .product-card:hover img {
+            transform: scale(1.05);
+        }
+
+        .product-card h3 {
+            background: linear-gradient(transparent, rgba(0,0,0,0.7));
+            width: 100%;
+        }
+
+    .carousel-control-prev,
+    .carousel-control-next {
+        width: 40px;
+        height: 40px;
+        background-color: #6366F1;
+        border-radius: 50%;
+        top: 50%;
+        transform: translateY(-50%);
+        position: absolute;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .carousel-control-prev {
+        left: -20px;
+    }
+
+    .carousel-control-next {
+        right: -20px;
+    }
+
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+        width: 20px;
+        height: 20px;
+    }
+</style>
