@@ -1,11 +1,21 @@
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+// เชื่อมต่อ SQL Server ภายนอก
+
+builder.Services.AddAuthorization();
+builder.Services.AddControllers();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7178/") });
 
 var app = builder.Build();
 
