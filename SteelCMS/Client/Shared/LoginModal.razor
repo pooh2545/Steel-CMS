@@ -1,5 +1,8 @@
 ﻿@using SteelCMS.Client.Shared
+@inject AuthService AuthService
+@inject NavigationManager Navigation
 @using Microsoft.AspNetCore.Components.Web
+@inject IJSRuntime JS
 @page "/Login"
 
 <div class="modal @(IsVisible ? "show" : "")" @onclick="Hide">
@@ -20,6 +23,7 @@
                 <a href="#">ลงทะเบียน</a>
             </div>
             <button class="login-submit" @onclick="HandleLogin">เข้าสู่ระบบ</button>
+            
         </div>
     </div>
 </div>
@@ -37,17 +41,30 @@
 
     public void Hide()
     {
-        IsVisible = false;
-        StateHasChanged();
+        if (IsVisible)  // ✅ Prevents rendering issues
+        {
+            IsVisible = false;
+            StateHasChanged();
+        }
     }
-
 
     private async Task HandleLogin()
     {
-        // Add login logic here
-        Hide();
+        bool success = await AuthService.LoginAsync(Email, Password);
+
+        if (success)
+        {
+            if (IsVisible)
+            {
+                Hide();
+            }
+
+            await JS.InvokeVoidAsync("console.log", "Login successful");
+            Navigation.NavigateTo("/");
+        }
     }
 }
+
 
 <style>
     .modal {

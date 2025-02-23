@@ -115,3 +115,8 @@ D:\Project\Steel\SteelCMS\Server\bin\Debug\net6.0\Microsoft.Extensions.Identity.
 D:\Project\Steel\SteelCMS\Server\bin\Debug\net6.0\Blazored.LocalStorage.dll
 D:\Project\Steel\SteelCMS\Server\bin\Debug\net6.0\Microsoft.Bcl.Memory.dll
 D:\Project\Steel\SteelCMS\Server\bin\Debug\net6.0\Microsoft.Bcl.TimeProvider.dll
+D:\Project\Steel\SteelCMS\Server\bin\Debug\net6.0\Microsoft.OpenApi.dll
+D:\Project\Steel\SteelCMS\Server\bin\Debug\net6.0\Swashbuckle.AspNetCore.Swagger.dll
+D:\Project\Steel\SteelCMS\Server\bin\Debug\net6.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+D:\Project\Steel\SteelCMS\Server\bin\Debug\net6.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+D:\Project\Steel\SteelCMS\Server\obj\Debug\net6.0\SteelCMS.Server.MvcApplicationPartsAssemblyInfo.cs

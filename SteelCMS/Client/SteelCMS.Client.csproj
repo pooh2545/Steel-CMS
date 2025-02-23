@@ -36,8 +36,4 @@
     <None Include="Pages\Products.razor" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Services\Authentication\" />
-  </ItemGroup>
-
 </Project>
