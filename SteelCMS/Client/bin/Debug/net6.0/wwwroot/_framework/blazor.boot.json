@@ -1,7 +1,7 @@
 {
   "entryAssembly": "SteelCMS.Client",
   "resources": {
-    "hash": "sha256-nwXKvxrZGs9aH1lkJNqXtYr3n4bxjXjvDQsxkKzMNfI=",
+    "hash": "sha256-2lAPh0ASvUb4/06vOkaoQyojXbOw9rWEVHRTc19KJp4=",
     "runtime": {
       "dotnet.6.0.32.6kg6pgt338.js": "sha256-6fa9WVfvYrd56Fl6GQXGO40czbLt6gcYgnZxXB+Sn5A=",
       "dotnet.timezones.blat": "sha256-ALK3ufXwNaP1t4mRlACcINalB2grQvfkrI/8lo7nNq0=",
@@ -210,12 +210,12 @@
       "mscorlib.dll": "sha256-ZcDPjThCN2BCEYQdojjXnlhAZFrqNEw/MX36GSJuFxw=",
       "netstandard.dll": "sha256-r5+y+NJTXzpyR9AaNMHpdVOOO50F+qLZjI83TNl3mwI=",
       "System.Private.CoreLib.dll": "sha256-f7ZZcXOXHgUqdmMScZ0DLX2KHCo02/IdYkvwk4mFL+0=",
-      "SteelCMS.Shared.dll": "sha256-14KCBzKo0Co/K1XCCQkuHpRxbiirD5fMtBRm+81Ydc0=",
-      "SteelCMS.Client.dll": "sha256-KJebO3Rph1zjkrE9GyhkrhSmW0PA2HzR2gEoYOTAfHs="
+      "SteelCMS.Shared.dll": "sha256-EMjO+Xetd7jVmIOwIse2OSbDUBGjy33bmDGvoE//nAA=",
+      "SteelCMS.Client.dll": "sha256-N4KqYtn8wTQfP3lAb4AjAN7UYesb8awNOcBBBFtMonw="
     },
     "pdb": {
-      "SteelCMS.Shared.pdb": "sha256-K34xuIjJhtz3XnRE1zom9FIsMmRMMSrg/nppJPrNm7A=",
-      "SteelCMS.Client.pdb": "sha256-KNOibDHYgsmBe8z/kJGaKZVGLtZghjxeaBPOfbfXcKA="
+      "SteelCMS.Shared.pdb": "sha256-kQI6mM0qzB9LRXxVzjvz9LTjstkICOPOZuaxKAT7fhI=",
+      "SteelCMS.Client.pdb": "sha256-uzxV+dJf1z9AeGVFkKHPuwdlOedhdtI9BTfRd6agYBE="
     },
     "runtimeAssets": {
       "dotnet.wasm": {
