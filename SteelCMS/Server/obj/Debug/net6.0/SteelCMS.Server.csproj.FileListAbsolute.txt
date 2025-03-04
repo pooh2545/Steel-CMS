@@ -120,3 +120,4 @@ D:\Project\Steel\SteelCMS\Server\bin\Debug\net6.0\Swashbuckle.AspNetCore.Swagger
 D:\Project\Steel\SteelCMS\Server\bin\Debug\net6.0\Swashbuckle.AspNetCore.SwaggerGen.dll
 D:\Project\Steel\SteelCMS\Server\bin\Debug\net6.0\Swashbuckle.AspNetCore.SwaggerUI.dll
 D:\Project\Steel\SteelCMS\Server\obj\Debug\net6.0\SteelCMS.Server.MvcApplicationPartsAssemblyInfo.cs
+D:\Project\Steel\SteelCMS\Server\bin\Debug\net6.0\BCrypt.Net-Next.dll

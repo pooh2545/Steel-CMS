@@ -13,23 +13,27 @@
         </div>
         <div class="modal-body">
             <div class="form-group">
-                <input type="text" placeholder="อีเมล" @bind="Email" />
+                <input type="text" placeholder="อีเมล" @bind="Email" required/>
             </div>
             <div class="form-group">
-                <input type="password" placeholder="รหัสผ่าน" @bind="Password" />
+                <input type="password" placeholder="รหัสผ่าน" @bind="Password" required/>
             </div>
             <div class="form-links">
                 <a href="#">ลืมรหัสผ่าน?</a>
-                <a href="#">ลงทะเบียน</a>
+                <a href="#" @onclick="ShowRegistration">ลงทะเบียน</a>
             </div>
             <button class="login-submit" @onclick="HandleLogin">เข้าสู่ระบบ</button>
-            
         </div>
     </div>
 </div>
 
+<Registration IsVisible="isRegisterVisible"
+              IsVisibleChanged="@(v => isRegisterVisible = v)"
+              OnCancel="ShowLogin" /> <!-- ✅ เมื่อกดยกเลิก จะเปิด LoginModal -->
 @code {
     private bool IsVisible;
+    private bool isRegisterVisible;
+
     private string? Email { get; set; }
     private string? Password { get; set; }
 
@@ -41,7 +45,7 @@
 
     public void Hide()
     {
-        if (IsVisible)  // ✅ Prevents rendering issues
+        if (IsVisible)
         {
             IsVisible = false;
             StateHasChanged();
@@ -54,16 +58,26 @@
 
         if (success)
         {
-            if (IsVisible)
-            {
-                Hide();
-            }
-
+            if (IsVisible) Hide();
             await JS.InvokeVoidAsync("console.log", "Login successful");
             Navigation.NavigateTo("/");
         }
     }
+
+    private void ShowRegistration()
+    {
+        IsVisible = false;  // ปิด LoginModal
+        isRegisterVisible = true;  // เปิด Registration
+    }
+
+    private void ShowLogin()
+    {
+        isRegisterVisible = false; // ปิด Registration
+        IsVisible = true; // เปิด LoginModal
+    }
 }
+
+
 
 
 <style>

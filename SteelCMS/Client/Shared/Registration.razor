@@ -1,0 +1,162 @@
+﻿@using SteelCMS.Client.Shared
+@inject AuthService AuthService
+@inject NavigationManager Navigation
+@using Microsoft.AspNetCore.Components.Web
+@inject IJSRuntime JS
+@page "/Register"
+
+<div class="modal @(IsVisible ? "show" : "")" @onclick="HandleCancel">
+    <div class="modal-content" @onclick:stopPropagation>
+        <div class="modal-header">
+            <h3>ลงทะเบียน</h3>
+            <button class="close-button" @onclick="HandleCancel">&times;</button>
+        </div>
+
+        <div class="modal-body">
+            <div class="form-group">
+                <input type="text" placeholder="ชื่อ-นามสกุล" @bind="fullName" required/>
+            </div>
+            <div class="form-group">
+                <input type="email" placeholder="อีเมล" @bind="email" required/>
+            </div>
+            <div class="form-group">
+                <input type="password" placeholder="รหัสผ่าน" @bind="password" required/>
+            </div>
+            <div class="form-group">
+                <input type="password" placeholder="ยืนยันรหัสผ่าน" @bind="confirmPassword" required/>
+            </div>
+
+            <div class="button-group">
+                <button class="btn-secondary" @onclick="HandleCancel">ยกเลิก</button>
+                <button class="btn-primary" @onclick="Register">ลงทะเบียน</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public bool IsVisible { get; set; }
+    [Parameter] public EventCallback<bool> IsVisibleChanged { get; set; }
+    [Parameter] public EventCallback<RegistrationModel> OnRegister { get; set; }
+    [Parameter] public EventCallback OnCancel { get; set; }  // ✅ เพิ่ม Callback เพื่อแจ้ง LoginModal
+
+    private string fullName = string.Empty;
+    private string email = string.Empty;
+    private string password = string.Empty;
+    private string confirmPassword = string.Empty;
+
+    private async Task HandleCancel()
+    {
+        await IsVisibleChanged.InvokeAsync(false); // ปิด Registration Popup
+        await OnCancel.InvokeAsync(); // ✅ แจ้งให้เปิด LoginModal อีกครั้ง
+    }
+
+    private async Task Register()
+    {
+        if (string.IsNullOrEmpty(fullName) || string.IsNullOrEmpty(email) ||
+            string.IsNullOrEmpty(password) || string.IsNullOrEmpty(confirmPassword))
+        {
+            return; // TODO: แจ้งเตือนให้กรอกข้อมูล
+        }
+
+        if (password != confirmPassword)
+        {
+            return; // TODO: แจ้งเตือนว่ารหัสผ่านไม่ตรงกัน
+        }
+
+        var model = new RegistrationModel
+            {
+                FullName = fullName,
+                Email = email,
+                Password = password
+            };
+
+        await OnRegister.InvokeAsync(model);
+        await IsVisibleChanged.InvokeAsync(false);
+    }
+
+    public class RegistrationModel
+    {
+        public string FullName { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+    }
+}
+
+
+
+<style>
+    .modal {
+        display: none; /* ซ่อน modal เริ่มต้น */
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+    }
+
+        .modal.show {
+            display: flex; /* แสดง modal เมื่อมีคลาส show */
+        }
+
+    .modal-content {
+        background-color: white;
+        padding: 2rem;
+        border-radius: 8px;
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .close-button {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+    }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+    .button-group {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 1rem;
+    }
+
+    .btn-primary {
+        background-color: #4361ee;
+        color: white;
+        border: none;
+        padding: 0.75rem;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .btn-secondary {
+        background-color: #E5E7EB;
+        color: #4B5563;
+        border: none;
+        padding: 0.75rem;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+</style>

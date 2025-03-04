@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SteelCMS.Shared")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+da7361cef7e534ab7de19fa54c0b77404c86d88a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8b90a45bc613b13c7df59cc1dcbd5fae2fd66652")]
 [assembly: System.Reflection.AssemblyProductAttribute("SteelCMS.Shared")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SteelCMS.Shared")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
