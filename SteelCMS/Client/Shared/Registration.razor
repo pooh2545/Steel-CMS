@@ -1,7 +1,6 @@
 ﻿@using SteelCMS.Client.Shared
-@inject AuthService AuthService
+@inject HttpClient Http // ✅ Inject HttpClient เพื่อเรียก API
 @inject NavigationManager Navigation
-@using Microsoft.AspNetCore.Components.Web
 @inject IJSRuntime JS
 @page "/Register"
 
@@ -14,17 +13,23 @@
 
         <div class="modal-body">
             <div class="form-group">
-                <input type="text" placeholder="ชื่อ-นามสกุล" @bind="fullName" required/>
+                <input type="text" placeholder="ชื่อ-นามสกุล" @bind="fullName" required />
             </div>
             <div class="form-group">
-                <input type="email" placeholder="อีเมล" @bind="email" required/>
+                <input type="email" placeholder="อีเมล" @bind="email" required />
             </div>
             <div class="form-group">
-                <input type="password" placeholder="รหัสผ่าน" @bind="password" required/>
+                <input type="password" placeholder="รหัสผ่าน" @bind="password" required />
             </div>
             <div class="form-group">
-                <input type="password" placeholder="ยืนยันรหัสผ่าน" @bind="confirmPassword" required/>
+                <input type="password" placeholder="ยืนยันรหัสผ่าน" @bind="confirmPassword" required />
             </div>
+
+            <!-- 🔥 แสดงข้อความแจ้งเตือน -->
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <p class="error-message">@errorMessage</p>
+            }
 
             <div class="button-group">
                 <button class="btn-secondary" @onclick="HandleCancel">ยกเลิก</button>
@@ -37,42 +42,64 @@
 @code {
     [Parameter] public bool IsVisible { get; set; }
     [Parameter] public EventCallback<bool> IsVisibleChanged { get; set; }
-    [Parameter] public EventCallback<RegistrationModel> OnRegister { get; set; }
-    [Parameter] public EventCallback OnCancel { get; set; }  // ✅ เพิ่ม Callback เพื่อแจ้ง LoginModal
+    [Parameter] public EventCallback OnCancel { get; set; }
 
     private string fullName = string.Empty;
     private string email = string.Empty;
     private string password = string.Empty;
     private string confirmPassword = string.Empty;
+    private string errorMessage = string.Empty; // ✅ เพิ่มตัวแปรเก็บข้อความแจ้งเตือน
 
     private async Task HandleCancel()
     {
-        await IsVisibleChanged.InvokeAsync(false); // ปิด Registration Popup
-        await OnCancel.InvokeAsync(); // ✅ แจ้งให้เปิด LoginModal อีกครั้ง
+        await IsVisibleChanged.InvokeAsync(false);
+        await OnCancel.InvokeAsync();
     }
 
     private async Task Register()
     {
+        errorMessage = ""; // รีเซ็ต errorMessage ก่อนเริ่ม
+
         if (string.IsNullOrEmpty(fullName) || string.IsNullOrEmpty(email) ||
             string.IsNullOrEmpty(password) || string.IsNullOrEmpty(confirmPassword))
         {
-            return; // TODO: แจ้งเตือนให้กรอกข้อมูล
+            errorMessage = "กรุณากรอกข้อมูลให้ครบถ้วน";
+            return;
         }
 
         if (password != confirmPassword)
         {
-            return; // TODO: แจ้งเตือนว่ารหัสผ่านไม่ตรงกัน
+            errorMessage = "รหัสผ่านไม่ตรงกัน";
+            return;
         }
 
-        var model = new RegistrationModel
+        var newUser = new RegistrationModel
             {
                 FullName = fullName,
                 Email = email,
                 Password = password
             };
 
-        await OnRegister.InvokeAsync(model);
-        await IsVisibleChanged.InvokeAsync(false);
+        try
+        {
+            var response = await Http.PostAsJsonAsync("https://localhost:7178/api/customers/register", newUser);
+
+            if (response.IsSuccessStatusCode)
+            {
+                await JS.InvokeVoidAsync("alert", "สมัครสมาชิกสำเร็จ!");
+                await IsVisibleChanged.InvokeAsync(false);
+            }
+            else
+            {
+                var errorResponse = await response.Content.ReadAsStringAsync();
+                errorMessage = errorResponse; // แสดง error message ที่ได้จาก API
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์";
+            Console.WriteLine(ex);
+        }
     }
 
     public class RegistrationModel
@@ -82,6 +109,7 @@
         public string Password { get; set; } = string.Empty;
     }
 }
+
 
 
 
@@ -158,5 +186,12 @@
         border-radius: 4px;
         cursor: pointer;
     }
+
+    .error-message {
+        color: red;
+        margin-top: 10px;
+        font-size: 0.9rem;
+    }
+
 
 </style>
