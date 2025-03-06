@@ -4969,24 +4969,27 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\AcerNitro\\.nuget\\packages\\": {},
-    "C:\\Program Files\\DevExpress 23.1\\Components\\Offline Packages": {}
+    "C:\\Users\\USER\\.nuget\\packages\\": {},
+    "C:\\Program Files\\DevExpress 23.1\\Components\\Offline Packages": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Project\\Steel\\SteelCMS\\Server\\SteelCMS.Server.csproj",
+      "projectUniqueName": "E:\\project jaaaaa\\SteelCMS\\Server\\SteelCMS.Server.csproj",
       "projectName": "SteelCMS.Server",
-      "projectPath": "D:\\Project\\Steel\\SteelCMS\\Server\\SteelCMS.Server.csproj",
-      "packagesPath": "C:\\Users\\AcerNitro\\.nuget\\packages\\",
-      "outputPath": "D:\\Project\\Steel\\SteelCMS\\Server\\obj\\",
+      "projectPath": "E:\\project jaaaaa\\SteelCMS\\Server\\SteelCMS.Server.csproj",
+      "packagesPath": "C:\\Users\\USER\\.nuget\\packages\\",
+      "outputPath": "E:\\project jaaaaa\\SteelCMS\\Server\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
-        "C:\\Program Files\\DevExpress 23.1\\Components\\Offline Packages"
+        "C:\\Program Files\\DevExpress 23.1\\Components\\Offline Packages",
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\AcerNitro\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\USER\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 23.1.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -5002,11 +5005,11 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "D:\\Project\\Steel\\SteelCMS\\Client\\SteelCMS.Client.csproj": {
-              "projectPath": "D:\\Project\\Steel\\SteelCMS\\Client\\SteelCMS.Client.csproj"
+            "E:\\project jaaaaa\\SteelCMS\\Client\\SteelCMS.Client.csproj": {
+              "projectPath": "E:\\project jaaaaa\\SteelCMS\\Client\\SteelCMS.Client.csproj"
             },
-            "D:\\Project\\Steel\\SteelCMS\\Shared\\SteelCMS.Shared.csproj": {
-              "projectPath": "D:\\Project\\Steel\\SteelCMS\\Shared\\SteelCMS.Shared.csproj"
+            "E:\\project jaaaaa\\SteelCMS\\Shared\\SteelCMS.Shared.csproj": {
+              "projectPath": "E:\\project jaaaaa\\SteelCMS\\Shared\\SteelCMS.Shared.csproj"
             }
           }
         }
@@ -5020,7 +5023,8 @@
         "enableAudit": "true",
         "auditLevel": "low",
         "auditMode": "direct"
-      }
+      },
+      "SdkAnalysisLevel": "9.0.100"
     },
     "frameworks": {
       "net6.0": {
@@ -5090,7 +5094,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.102\\RuntimeIdentifierGraph.json"
       }
     }
   },
@@ -5099,7 +5103,7 @@
       "code": "NU1603",
       "level": "Warning",
       "warningLevel": 1,
-      "message": "SteelCMS.Server depends on Microsoft.Bcl.Memory (>= 2.0.0) but Microsoft.Bcl.Memory 2.0.0 was not found. An approximate best match of Microsoft.Bcl.Memory 9.0.0 was resolved.",
+      "message": "SteelCMS.Server depends on Microsoft.Bcl.Memory (>= 2.0.0) but Microsoft.Bcl.Memory 2.0.0 was not found. Microsoft.Bcl.Memory 9.0.0 was resolved instead.",
       "libraryId": "Microsoft.Bcl.Memory",
       "targetGraphs": [
         "net6.0"

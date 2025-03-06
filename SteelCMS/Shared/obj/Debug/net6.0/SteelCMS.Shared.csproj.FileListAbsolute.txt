@@ -10,3 +10,15 @@ D:\Project\Steel\SteelCMS\Shared\obj\Debug\net6.0\SteelCMS.Shared.dll
 D:\Project\Steel\SteelCMS\Shared\obj\Debug\net6.0\refint\SteelCMS.Shared.dll
 D:\Project\Steel\SteelCMS\Shared\obj\Debug\net6.0\SteelCMS.Shared.pdb
 D:\Project\Steel\SteelCMS\Shared\obj\Debug\net6.0\ref\SteelCMS.Shared.dll
+E:\project jaaaaa\SteelCMS\Shared\bin\Debug\net6.0\SteelCMS.Shared.deps.json
+E:\project jaaaaa\SteelCMS\Shared\bin\Debug\net6.0\SteelCMS.Shared.dll
+E:\project jaaaaa\SteelCMS\Shared\bin\Debug\net6.0\SteelCMS.Shared.pdb
+E:\project jaaaaa\SteelCMS\Shared\obj\Debug\net6.0\SteelCMS.Shared.GeneratedMSBuildEditorConfig.editorconfig
+E:\project jaaaaa\SteelCMS\Shared\obj\Debug\net6.0\SteelCMS.Shared.AssemblyInfoInputs.cache
+E:\project jaaaaa\SteelCMS\Shared\obj\Debug\net6.0\SteelCMS.Shared.AssemblyInfo.cs
+E:\project jaaaaa\SteelCMS\Shared\obj\Debug\net6.0\SteelCMS.Shared.csproj.CoreCompileInputs.cache
+E:\project jaaaaa\SteelCMS\Shared\obj\Debug\net6.0\SteelCMS.Shared.sourcelink.json
+E:\project jaaaaa\SteelCMS\Shared\obj\Debug\net6.0\SteelCMS.Shared.dll
+E:\project jaaaaa\SteelCMS\Shared\obj\Debug\net6.0\refint\SteelCMS.Shared.dll
+E:\project jaaaaa\SteelCMS\Shared\obj\Debug\net6.0\SteelCMS.Shared.pdb
+E:\project jaaaaa\SteelCMS\Shared\obj\Debug\net6.0\ref\SteelCMS.Shared.dll

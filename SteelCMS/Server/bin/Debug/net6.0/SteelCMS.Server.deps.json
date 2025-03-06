@@ -1034,12 +1034,18 @@
           "System.IdentityModel.Tokens.Jwt": "8.6.0"
         },
         "runtime": {
-          "SteelCMS.Client.dll": {}
+          "SteelCMS.Client.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "SteelCMS.Shared/1.0.0": {
         "runtime": {
-          "SteelCMS.Shared.dll": {}
+          "SteelCMS.Shared.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       }
     }
