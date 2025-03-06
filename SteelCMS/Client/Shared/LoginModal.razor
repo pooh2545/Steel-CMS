@@ -53,15 +53,6 @@
         }
     }
 
-    protected override async Task OnInitializedAsync()
-    {
-        var token = await JS.InvokeAsync<string>("localStorage.getItem", "authToken");
-        if (!string.IsNullOrEmpty(token))
-        {
-            IsVisible = false; // ซ่อน Modal ถ้า Login แล้ว
-        }
-    }
-
 
     private async Task HandleLogin()
     {

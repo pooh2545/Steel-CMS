@@ -58,6 +58,21 @@ public class AuthController : ControllerBase
 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
+
+    private static HashSet<string> revokedTokens = new HashSet<string>();
+
+    [HttpPost("logout")]
+    public IActionResult Logout([FromBody] string token)
+    {
+        revokedTokens.Add(token);
+        return Ok(new { message = "Logged out successfully" });
+    }
+
+    private bool IsTokenRevoked(string token)
+    {
+        return revokedTokens.Contains(token);
+    }
+
 }
 
 public class LoginRequest

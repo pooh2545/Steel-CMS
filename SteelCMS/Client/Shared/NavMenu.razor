@@ -1,5 +1,8 @@
 ﻿@using SteelCMS.Client.Shared
 @using Microsoft.AspNetCore.Components.Web
+@inject AuthService AuthService
+@inject IJSRuntime JSRuntime
+@inject NavigationManager Navigation
 
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
@@ -28,7 +31,22 @@
                 <button class="btn btn-outline-secondary lang-toggle">TH</button>
                 <button class="btn btn-outline-primary cart-button"></button>
                 <button class="btn btn-outline-warning notification-button"></button>
-                <button @onclick="ShowLoginModal" class="btn btn-success login-button">เข้าสู่ระบบ</button>
+
+                @if (isLoggedIn)  
+                {
+                    <div class="dropdown">
+                        <button class="btn btn-success dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                            @userName
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <li><a class="dropdown-item" href="#" @onclick="Logout">ออกจากระบบ</a></li>
+                        </ul>
+                    </div>
+                }
+                else
+                {
+                    <button @onclick="ShowLoginModal" class="btn btn-success login-button">เข้าสู่ระบบ</button>
+                }
             </div>
         </div>
     </div>
@@ -36,33 +54,39 @@
 
 <LoginModal @ref="loginModal" />
 
-
 @code {
     private LoginModal? loginModal;
+    private bool isLoggedIn = false;
+    private string userName = "";
     private bool isRendered = false;
 
-    protected override void OnAfterRender(bool firstRender)
+    protected override async Task OnInitializedAsync()
     {
-        if (firstRender)
+        var token = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "jwtToken");
+        if (!string.IsNullOrEmpty(token))
         {
-            isRendered = true;
-            StateHasChanged();
+            isLoggedIn = true;
+            userName = "ผู้ใช้"; // คุณสามารถดึงชื่อผู้ใช้จาก API หรือที่อื่น
         }
     }
 
     private async Task ShowLoginModal()
     {
-        Console.WriteLine(loginModal +" "+isRendered);
-        if (isRendered && loginModal != null)
+        if (loginModal != null)
         {
             loginModal.Show();
         }
-        else
-        {
-            Console.WriteLine("LoginModal is not ready yet!");
-        }
+    }
+
+    private async Task Logout()
+    {
+        await JSRuntime.InvokeVoidAsync("localStorage.removeItem", "jwtToken");
+        isLoggedIn = false;
+        userName = "";
+        Navigation.NavigateTo("/", forceLoad: true);
     }
 }
+
 
 
  
