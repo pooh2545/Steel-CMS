@@ -1,6 +1,7 @@
 ﻿@using SteelCMS.Client.Shared
 @inject AuthService AuthService
 @inject NavigationManager Navigation
+@inject HttpClient Http
 @using Microsoft.AspNetCore.Components.Web
 @inject IJSRuntime JS
 @page "/Login"
@@ -52,17 +53,45 @@
         }
     }
 
-    private async Task HandleLogin()
+    protected override async Task OnInitializedAsync()
     {
-        bool success = await AuthService.LoginAsync(Email, Password);
-
-        if (success)
+        var token = await JS.InvokeAsync<string>("localStorage.getItem", "authToken");
+        if (!string.IsNullOrEmpty(token))
         {
-            if (IsVisible) Hide();
-            await JS.InvokeVoidAsync("console.log", "Login successful");
-            Navigation.NavigateTo("/");
+            IsVisible = false; // ซ่อน Modal ถ้า Login แล้ว
         }
     }
+
+
+    private async Task HandleLogin()
+    {
+        var loginData = new { Email, Password };
+        var response = await Http.PostAsJsonAsync("api/auth/login", loginData);
+
+        if (response.IsSuccessStatusCode)
+        {
+            var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
+
+            if (result?.Token != null)
+            {
+                await JS.InvokeVoidAsync("localStorage.setItem", "authToken", result.Token);
+                await JS.InvokeVoidAsync("console.log", "Login successful, Token stored");
+                Navigation.NavigateTo("/");
+                Hide();
+            }
+        }
+        else
+        {
+            await JS.InvokeVoidAsync("alert", "เข้าสู่ระบบล้มเหลว! กรุณาตรวจสอบอีเมลหรือรหัสผ่านอีกครั้ง");
+        }
+    }
+
+    private class LoginResponse
+    {
+        public string Token { get; set; }
+        public string Expires { get; set; }
+    }
+
 
     private void ShowRegistration()
     {
