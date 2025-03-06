@@ -1,26 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "E:\\project jaaaaa\\SteelCMS\\Shared\\SteelCMS.Shared.csproj": {}
+    "D:\\Project\\Steel\\SteelCMS\\Shared\\SteelCMS.Shared.csproj": {}
   },
   "projects": {
-    "E:\\project jaaaaa\\SteelCMS\\Shared\\SteelCMS.Shared.csproj": {
+    "D:\\Project\\Steel\\SteelCMS\\Shared\\SteelCMS.Shared.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\project jaaaaa\\SteelCMS\\Shared\\SteelCMS.Shared.csproj",
+        "projectUniqueName": "D:\\Project\\Steel\\SteelCMS\\Shared\\SteelCMS.Shared.csproj",
         "projectName": "SteelCMS.Shared",
-        "projectPath": "E:\\project jaaaaa\\SteelCMS\\Shared\\SteelCMS.Shared.csproj",
-        "packagesPath": "C:\\Users\\USER\\.nuget\\packages\\",
-        "outputPath": "E:\\project jaaaaa\\SteelCMS\\Shared\\obj\\",
+        "projectPath": "D:\\Project\\Steel\\SteelCMS\\Shared\\SteelCMS.Shared.csproj",
+        "packagesPath": "C:\\Users\\AcerNitro\\.nuget\\packages\\",
+        "outputPath": "D:\\Project\\Steel\\SteelCMS\\Shared\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Program Files\\DevExpress 23.1\\Components\\Offline Packages",
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+          "C:\\Program Files\\DevExpress 23.1\\Components\\Offline Packages"
         ],
         "configFilePaths": [
-          "C:\\Users\\USER\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\AcerNitro\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 23.1.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -47,8 +45,7 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        },
-        "SdkAnalysisLevel": "9.0.100"
+        }
       },
       "frameworks": {
         "net6.0": {
@@ -69,7 +66,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.102\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303\\RuntimeIdentifierGraph.json"
         }
       }
     }
