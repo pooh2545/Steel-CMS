@@ -11,3 +11,9 @@ SteelCMS/Server/obj/
 SteelCMS/Shared/bin/
 SteelCMS/Shared/obj/
 SteelCMS/.vs/SteelCMS/
+SteelCMS/Client/obj/Debug
+SteelCMS/Client/bin//Debug
+SteelCMS/Server/obj/Debug
+SteelCMS/Server/bin//Debug
+SteelCMS/Shared/obj/Debug
+SteelCMS/Shared/bin//Debug
