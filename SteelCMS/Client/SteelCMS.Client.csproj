@@ -32,8 +32,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Pages\ProductDetail.razor" />
-    <None Include="Pages\Products.razor" />
+    <None Include="Pages\Product\ProductDetail.razor" />
+    <None Include="Pages\Product\Products.razor" />
   </ItemGroup>
 
 </Project>
