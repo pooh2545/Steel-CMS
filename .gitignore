@@ -4,3 +4,16 @@ SteelCMS/.vs/SteelCMS/FileContentIndex/a66b974f-aff5-43c2-9f61-596b81b1ae60.vsid
 SteelCMS/.vs/SteelCMS/FileContentIndex/1f28b4ea-4046-4a1d-a249-f91b2dfc90d0.vsidx
 >>>>>>> refs/remotes/origin/main
 *.vsidx
+SteelCMS/Client/bin/
+SteelCMS/Client/obj/
+SteelCMS/Server/bin/
+SteelCMS/Server/obj/
+SteelCMS/Shared/bin/
+SteelCMS/Shared/obj/
+SteelCMS/.vs/SteelCMS/
+SteelCMS/Client/obj/Debug
+SteelCMS/Client/bin//Debug
+SteelCMS/Server/obj/Debug
+SteelCMS/Server/bin//Debug
+SteelCMS/Shared/obj/Debug
+SteelCMS/Shared/bin//Debug

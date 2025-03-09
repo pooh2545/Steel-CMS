@@ -1,8 +1,9 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "E:\\project jaaaaa\\SteelCMS\\",
+  "WorkspaceRootPath": "D:\\Project\\Steel\\SteelCMS\\",
   "Documents": [
     {
+<<<<<<< HEAD
       "AbsoluteMoniker": "D:0:0:{73C041A9-1BEC-4950-8CAA-71B697C9F47E}|Client\\SteelCMS.Client.csproj|e:\\project jaaaaa\\steelcms\\client\\pages\\profile.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{73C041A9-1BEC-4950-8CAA-71B697C9F47E}|Client\\SteelCMS.Client.csproj|solutionrelative:client\\pages\\profile.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
@@ -88,25 +89,72 @@
     },
     {
       "AbsoluteMoniker": "D:0:0:{73C041A9-1BEC-4950-8CAA-71B697C9F47E}|Client\\SteelCMS.Client.csproj|e:\\project jaaaaa\\steelcms\\client\\pages\\fetchdata.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+=======
+      "AbsoluteMoniker": "D:0:0:{73C041A9-1BEC-4950-8CAA-71B697C9F47E}|Client\\SteelCMS.Client.csproj|d:\\project\\steel\\steelcms\\client\\shared\\loginmodal.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{73C041A9-1BEC-4950-8CAA-71B697C9F47E}|Client\\SteelCMS.Client.csproj|solutionrelative:client\\shared\\loginmodal.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{73C041A9-1BEC-4950-8CAA-71B697C9F47E}|Client\\SteelCMS.Client.csproj|d:\\project\\steel\\steelcms\\client\\shared\\registration.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{73C041A9-1BEC-4950-8CAA-71B697C9F47E}|Client\\SteelCMS.Client.csproj|solutionrelative:client\\shared\\registration.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{73C041A9-1BEC-4950-8CAA-71B697C9F47E}|Client\\SteelCMS.Client.csproj|d:\\project\\steel\\steelcms\\client\\services\\authentication\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{73C041A9-1BEC-4950-8CAA-71B697C9F47E}|Client\\SteelCMS.Client.csproj|solutionrelative:client\\services\\authentication\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9CBE202B-8F27-4B0F-BB58-94EF4459FA8E}|Server\\SteelCMS.Server.csproj|d:\\project\\steel\\steelcms\\server\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9CBE202B-8F27-4B0F-BB58-94EF4459FA8E}|Server\\SteelCMS.Server.csproj|solutionrelative:server\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{73C041A9-1BEC-4950-8CAA-71B697C9F47E}|Client\\SteelCMS.Client.csproj|d:\\project\\steel\\steelcms\\client\\shared\\navmenu.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{73C041A9-1BEC-4950-8CAA-71B697C9F47E}|Client\\SteelCMS.Client.csproj|solutionrelative:client\\shared\\navmenu.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9CBE202B-8F27-4B0F-BB58-94EF4459FA8E}|Server\\SteelCMS.Server.csproj|d:\\project\\steel\\steelcms\\server\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9CBE202B-8F27-4B0F-BB58-94EF4459FA8E}|Server\\SteelCMS.Server.csproj|solutionrelative:server\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9CBE202B-8F27-4B0F-BB58-94EF4459FA8E}|Server\\SteelCMS.Server.csproj|d:\\project\\steel\\steelcms\\server\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{9CBE202B-8F27-4B0F-BB58-94EF4459FA8E}|Server\\SteelCMS.Server.csproj|solutionrelative:server\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9CBE202B-8F27-4B0F-BB58-94EF4459FA8E}|Server\\SteelCMS.Server.csproj|d:\\project\\steel\\steelcms\\server\\data\\steeldbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9CBE202B-8F27-4B0F-BB58-94EF4459FA8E}|Server\\SteelCMS.Server.csproj|solutionrelative:server\\data\\steeldbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9CBE202B-8F27-4B0F-BB58-94EF4459FA8E}|Server\\SteelCMS.Server.csproj|d:\\project\\steel\\steelcms\\server\\controllers\\customerscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9CBE202B-8F27-4B0F-BB58-94EF4459FA8E}|Server\\SteelCMS.Server.csproj|solutionrelative:server\\controllers\\customerscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{73C041A9-1BEC-4950-8CAA-71B697C9F47E}|Client\\SteelCMS.Client.csproj|d:\\project\\steel\\steelcms\\client\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{73C041A9-1BEC-4950-8CAA-71B697C9F47E}|Client\\SteelCMS.Client.csproj|solutionrelative:client\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{73C041A9-1BEC-4950-8CAA-71B697C9F47E}|Client\\SteelCMS.Client.csproj|d:\\project\\steel\\steelcms\\client\\wwwroot\\index.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{73C041A9-1BEC-4950-8CAA-71B697C9F47E}|Client\\SteelCMS.Client.csproj|solutionrelative:client\\wwwroot\\index.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{73C041A9-1BEC-4950-8CAA-71B697C9F47E}|Client\\SteelCMS.Client.csproj|d:\\project\\steel\\steelcms\\client\\pages\\fetchdata.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+>>>>>>> e498caeb1602ab185f2d853622eb221899e1716e
       "RelativeMoniker": "D:0:0:{73C041A9-1BEC-4950-8CAA-71B697C9F47E}|Client\\SteelCMS.Client.csproj|solutionrelative:client\\pages\\fetchdata.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\AcerNitro\\.nuget\\packages\\microsoft.bcl.memory\\9.0.0\\buildTransitive\\netcoreapp2.0\\Microsoft.Bcl.Memory.targets||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{73C041A9-1BEC-4950-8CAA-71B697C9F47E}|Client\\SteelCMS.Client.csproj|e:\\project jaaaaa\\steelcms\\client\\pages\\cart.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{73C041A9-1BEC-4950-8CAA-71B697C9F47E}|Client\\SteelCMS.Client.csproj|solutionrelative:client\\pages\\cart.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{73C041A9-1BEC-4950-8CAA-71B697C9F47E}|Client\\SteelCMS.Client.csproj|d:\\project\\steel\\steelcms\\client\\pages\\index.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{73C041A9-1BEC-4950-8CAA-71B697C9F47E}|Client\\SteelCMS.Client.csproj|solutionrelative:client\\pages\\index.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{73C041A9-1BEC-4950-8CAA-71B697C9F47E}|Client\\SteelCMS.Client.csproj|e:\\project jaaaaa\\steelcms\\client\\pages\\productdetail.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{73C041A9-1BEC-4950-8CAA-71B697C9F47E}|Client\\SteelCMS.Client.csproj|solutionrelative:client\\pages\\productdetail.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{73C041A9-1BEC-4950-8CAA-71B697C9F47E}|Client\\SteelCMS.Client.csproj|d:\\project\\steel\\steelcms\\client\\shared\\mainlayout.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{73C041A9-1BEC-4950-8CAA-71B697C9F47E}|Client\\SteelCMS.Client.csproj|solutionrelative:client\\shared\\mainlayout.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{73C041A9-1BEC-4950-8CAA-71B697C9F47E}|Client\\SteelCMS.Client.csproj|e:\\project jaaaaa\\steelcms\\client\\shared\\surveyprompt.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{73C041A9-1BEC-4950-8CAA-71B697C9F47E}|Client\\SteelCMS.Client.csproj|d:\\project\\steel\\steelcms\\client\\shared\\surveyprompt.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{73C041A9-1BEC-4950-8CAA-71B697C9F47E}|Client\\SteelCMS.Client.csproj|solutionrelative:client\\shared\\surveyprompt.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{73C041A9-1BEC-4950-8CAA-71B697C9F47E}|Client\\SteelCMS.Client.csproj|e:\\project jaaaaa\\steelcms\\client\\wwwroot\\css\\app.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "AbsoluteMoniker": "D:0:0:{73C041A9-1BEC-4950-8CAA-71B697C9F47E}|Client\\SteelCMS.Client.csproj|d:\\project\\steel\\steelcms\\client\\wwwroot\\css\\app.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
       "RelativeMoniker": "D:0:0:{73C041A9-1BEC-4950-8CAA-71B697C9F47E}|Client\\SteelCMS.Client.csproj|solutionrelative:client\\wwwroot\\css\\app.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
     }
   ],
@@ -117,25 +165,26 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
+<<<<<<< HEAD
           "SelectedChildIndex": 2,
+=======
+          "SelectedChildIndex": 12,
+>>>>>>> e498caeb1602ab185f2d853622eb221899e1716e
           "Children": [
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
-            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
             },
             {
               "$type": "Document",
+<<<<<<< HEAD
               "DocumentIndex": 0,
               "Title": "Profile.razor",
               "DocumentMoniker": "E:\\project jaaaaa\\SteelCMS\\Client\\Pages\\Profile.razor",
               "RelativeDocumentMoniker": "Client\\Pages\\Profile.razor",
               "ToolTip": "E:\\project jaaaaa\\SteelCMS\\Client\\Pages\\Profile.razor",
               "RelativeToolTip": "Client\\Pages\\Profile.razor",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-03-09T17:53:00.816Z",
               "EditorCaption": ""
@@ -262,11 +311,23 @@
               "ViewState": "AgIAABkAAAAAAAAAAAAowIUAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-03-06T15:29:13.1Z",
+=======
+              "DocumentIndex": 8,
+              "Title": "CustomersController.cs",
+              "DocumentMoniker": "D:\\Project\\Steel\\SteelCMS\\Server\\Controllers\\CustomersController.cs",
+              "RelativeDocumentMoniker": "Server\\Controllers\\CustomersController.cs",
+              "ToolTip": "D:\\Project\\Steel\\SteelCMS\\Server\\Controllers\\CustomersController.cs",
+              "RelativeToolTip": "Server\\Controllers\\CustomersController.cs",
+              "ViewState": "AQIAAA0AAAAAAAAAAAAQwBgAAAAlAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-04T16:51:52.579Z",
+>>>>>>> e498caeb1602ab185f2d853622eb221899e1716e
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
+<<<<<<< HEAD
               "Title": "Products.razor",
               "DocumentMoniker": "E:\\project jaaaaa\\SteelCMS\\Client\\Pages\\Products.razor",
               "RelativeDocumentMoniker": "Client\\Pages\\Products.razor",
@@ -340,6 +401,21 @@
             {
               "$type": "Document",
               "DocumentIndex": 22,
+=======
+              "Title": "Registration.razor",
+              "DocumentMoniker": "D:\\Project\\Steel\\SteelCMS\\Client\\Shared\\Registration.razor",
+              "RelativeDocumentMoniker": "Client\\Shared\\Registration.razor",
+              "ToolTip": "D:\\Project\\Steel\\SteelCMS\\Client\\Shared\\Registration.razor",
+              "RelativeToolTip": "Client\\Shared\\Registration.razor",
+              "ViewState": "AQIAADMAAAAAAAAAAAAAAAUAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-03-01T14:21:20.258Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+>>>>>>> e498caeb1602ab185f2d853622eb221899e1716e
               "Title": "Microsoft.Bcl.Memory.targets",
               "DocumentMoniker": "C:\\Users\\AcerNitro\\.nuget\\packages\\microsoft.bcl.memory\\9.0.0\\buildTransitive\\netcoreapp2.0\\Microsoft.Bcl.Memory.targets",
               "ToolTip": "C:\\Users\\AcerNitro\\.nuget\\packages\\microsoft.bcl.memory\\9.0.0\\buildTransitive\\netcoreapp2.0\\Microsoft.Bcl.Memory.targets",
@@ -349,6 +425,7 @@
             },
             {
               "$type": "Document",
+<<<<<<< HEAD
               "DocumentIndex": 16,
               "Title": "Username.cs",
               "DocumentMoniker": "E:\\project jaaaaa\\SteelCMS\\Shared\\Username.cs",
@@ -356,11 +433,21 @@
               "ToolTip": "E:\\project jaaaaa\\SteelCMS\\Shared\\Username.cs",
               "RelativeToolTip": "Shared\\Username.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAUAAAAWAAAA",
+=======
+              "DocumentIndex": 9,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\Project\\Steel\\SteelCMS\\Client\\Program.cs",
+              "RelativeDocumentMoniker": "Client\\Program.cs",
+              "ToolTip": "D:\\Project\\Steel\\SteelCMS\\Client\\Program.cs",
+              "RelativeToolTip": "Client\\Program.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABIAAAAAAAAA",
+>>>>>>> e498caeb1602ab185f2d853622eb221899e1716e
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-01T13:49:42.434Z"
+              "WhenOpened": "2025-02-23T16:08:13.475Z"
             },
             {
               "$type": "Document",
+<<<<<<< HEAD
               "DocumentIndex": 11,
               "Title": "Program.cs",
               "DocumentMoniker": "E:\\project jaaaaa\\SteelCMS\\Server\\Program.cs",
@@ -410,10 +497,65 @@
             {
               "$type": "Document",
               "DocumentIndex": 21,
+=======
+              "DocumentIndex": 2,
+              "Title": "AuthService.cs",
+              "DocumentMoniker": "D:\\Project\\Steel\\SteelCMS\\Client\\Services\\Authentication\\AuthService.cs",
+              "RelativeDocumentMoniker": "Client\\Services\\Authentication\\AuthService.cs",
+              "ToolTip": "D:\\Project\\Steel\\SteelCMS\\Client\\Services\\Authentication\\AuthService.cs",
+              "RelativeToolTip": "Client\\Services\\Authentication\\AuthService.cs",
+              "ViewState": "AQIAAA8AAAAAAAAAAAA1wBsAAAAQAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-23T15:59:45.188Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "AuthController.cs",
+              "DocumentMoniker": "D:\\Project\\Steel\\SteelCMS\\Server\\Controllers\\AuthController.cs",
+              "RelativeDocumentMoniker": "Server\\Controllers\\AuthController.cs",
+              "ToolTip": "D:\\Project\\Steel\\SteelCMS\\Server\\Controllers\\AuthController.cs",
+              "RelativeToolTip": "Server\\Controllers\\AuthController.cs",
+              "ViewState": "AQIAADQAAAAAAAAAAAAqwDEAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-23T13:22:13.082Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "SteelDbContext.cs",
+              "DocumentMoniker": "D:\\Project\\Steel\\SteelCMS\\Server\\Data\\SteelDbContext.cs",
+              "RelativeDocumentMoniker": "Server\\Data\\SteelDbContext.cs",
+              "ToolTip": "D:\\Project\\Steel\\SteelCMS\\Server\\Data\\SteelDbContext.cs",
+              "RelativeToolTip": "Server\\Data\\SteelDbContext.cs",
+              "ViewState": "AQIAAAIAAAAAAAAAAAAUwAoAAAABAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-23T13:16:45.01Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "D:\\Project\\Steel\\SteelCMS\\Server\\appsettings.json",
+              "RelativeDocumentMoniker": "Server\\appsettings.json",
+              "ToolTip": "D:\\Project\\Steel\\SteelCMS\\Server\\appsettings.json",
+              "RelativeToolTip": "Server\\appsettings.json",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAsAAAAEAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-02-23T12:44:23.192Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+>>>>>>> e498caeb1602ab185f2d853622eb221899e1716e
               "Title": "FetchData.razor",
-              "DocumentMoniker": "E:\\project jaaaaa\\SteelCMS\\Client\\Pages\\FetchData.razor",
+              "DocumentMoniker": "D:\\Project\\Steel\\SteelCMS\\Client\\Pages\\FetchData.razor",
               "RelativeDocumentMoniker": "Client\\Pages\\FetchData.razor",
-              "ToolTip": "E:\\project jaaaaa\\SteelCMS\\Client\\Pages\\FetchData.razor",
+              "ToolTip": "D:\\Project\\Steel\\SteelCMS\\Client\\Pages\\FetchData.razor",
               "RelativeToolTip": "Client\\Pages\\FetchData.razor",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAIAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
@@ -421,11 +563,28 @@
             },
             {
               "$type": "Document",
+<<<<<<< HEAD
               "DocumentIndex": 19,
+=======
+              "DocumentIndex": 5,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\Project\\Steel\\SteelCMS\\Server\\Program.cs",
+              "RelativeDocumentMoniker": "Server\\Program.cs",
+              "ToolTip": "D:\\Project\\Steel\\SteelCMS\\Server\\Program.cs",
+              "RelativeToolTip": "Server\\Program.cs",
+              "ViewState": "AQIAABAAAAAAAAAAAAAYwCgAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-17T17:57:25.203Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+>>>>>>> e498caeb1602ab185f2d853622eb221899e1716e
               "Title": "index.html",
-              "DocumentMoniker": "E:\\project jaaaaa\\SteelCMS\\Client\\wwwroot\\index.html",
+              "DocumentMoniker": "D:\\Project\\Steel\\SteelCMS\\Client\\wwwroot\\index.html",
               "RelativeDocumentMoniker": "Client\\wwwroot\\index.html",
-              "ToolTip": "E:\\project jaaaaa\\SteelCMS\\Client\\wwwroot\\index.html",
+              "ToolTip": "D:\\Project\\Steel\\SteelCMS\\Client\\wwwroot\\index.html",
               "RelativeToolTip": "Client\\wwwroot\\index.html",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAkAAAAwAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
@@ -433,11 +592,28 @@
             },
             {
               "$type": "Document",
+<<<<<<< HEAD
               "DocumentIndex": 25,
+=======
+              "DocumentIndex": 0,
+              "Title": "LoginModal.razor",
+              "DocumentMoniker": "D:\\Project\\Steel\\SteelCMS\\Client\\Shared\\LoginModal.razor",
+              "RelativeDocumentMoniker": "Client\\Shared\\LoginModal.razor",
+              "ToolTip": "D:\\Project\\Steel\\SteelCMS\\Client\\Shared\\LoginModal.razor",
+              "RelativeToolTip": "Client\\Shared\\LoginModal.razor",
+              "ViewState": "AQIAADcAAAAAAAAAAAAYwEMAAAAQAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-02-17T17:02:27.887Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+>>>>>>> e498caeb1602ab185f2d853622eb221899e1716e
               "Title": "SurveyPrompt.razor",
-              "DocumentMoniker": "E:\\project jaaaaa\\SteelCMS\\Client\\Shared\\SurveyPrompt.razor",
+              "DocumentMoniker": "D:\\Project\\Steel\\SteelCMS\\Client\\Shared\\SurveyPrompt.razor",
               "RelativeDocumentMoniker": "Client\\Shared\\SurveyPrompt.razor",
-              "ToolTip": "E:\\project jaaaaa\\SteelCMS\\Client\\Shared\\SurveyPrompt.razor",
+              "ToolTip": "D:\\Project\\Steel\\SteelCMS\\Client\\Shared\\SurveyPrompt.razor",
               "RelativeToolTip": "Client\\Shared\\SurveyPrompt.razor",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
@@ -445,15 +621,59 @@
             },
             {
               "$type": "Document",
+<<<<<<< HEAD
               "DocumentIndex": 26,
+=======
+              "DocumentIndex": 13,
+              "Title": "Index.razor",
+              "DocumentMoniker": "D:\\Project\\Steel\\SteelCMS\\Client\\Pages\\Index.razor",
+              "RelativeDocumentMoniker": "Client\\Pages\\Index.razor",
+              "ToolTip": "D:\\Project\\Steel\\SteelCMS\\Client\\Pages\\Index.razor",
+              "RelativeToolTip": "Client\\Pages\\Index.razor",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAMAAAAXAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-02-17T16:51:41.056Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+>>>>>>> e498caeb1602ab185f2d853622eb221899e1716e
               "Title": "app.css",
-              "DocumentMoniker": "E:\\project jaaaaa\\SteelCMS\\Client\\wwwroot\\css\\app.css",
+              "DocumentMoniker": "D:\\Project\\Steel\\SteelCMS\\Client\\wwwroot\\css\\app.css",
               "RelativeDocumentMoniker": "Client\\wwwroot\\css\\app.css",
-              "ToolTip": "E:\\project jaaaaa\\SteelCMS\\Client\\wwwroot\\css\\app.css",
+              "ToolTip": "D:\\Project\\Steel\\SteelCMS\\Client\\wwwroot\\css\\app.css",
               "RelativeToolTip": "Client\\wwwroot\\css\\app.css",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
               "WhenOpened": "2025-02-17T16:49:26.997Z"
+<<<<<<< HEAD
+=======
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "NavMenu.razor",
+              "DocumentMoniker": "D:\\Project\\Steel\\SteelCMS\\Client\\Shared\\NavMenu.razor",
+              "RelativeDocumentMoniker": "Client\\Shared\\NavMenu.razor",
+              "ToolTip": "D:\\Project\\Steel\\SteelCMS\\Client\\Shared\\NavMenu.razor",
+              "RelativeToolTip": "Client\\Shared\\NavMenu.razor",
+              "ViewState": "AQIAAHYAAAAAAAAAAAAYwI8AAAAIAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-02-17T16:36:28.445Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "MainLayout.razor",
+              "DocumentMoniker": "D:\\Project\\Steel\\SteelCMS\\Client\\Shared\\MainLayout.razor",
+              "RelativeDocumentMoniker": "Client\\Shared\\MainLayout.razor",
+              "ToolTip": "D:\\Project\\Steel\\SteelCMS\\Client\\Shared\\MainLayout.razor",
+              "RelativeToolTip": "Client\\Shared\\MainLayout.razor",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABcAAAANAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-02-17T16:36:21.61Z"
+>>>>>>> e498caeb1602ab185f2d853622eb221899e1716e
             }
           ]
         }
