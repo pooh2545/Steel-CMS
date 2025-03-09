@@ -1718,9 +1718,6 @@ E:\project jaaaaa\SteelCMS\Client\obj\Debug\net6.0\compressed\ldscp5i0k6-xxwcmr9
 E:\project jaaaaa\SteelCMS\Client\obj\Debug\net6.0\compressed\h71oi8a5i5-pf4yq2tlc6.gz
 E:\project jaaaaa\SteelCMS\Client\obj\Debug\net6.0\compressed\hu0yblmpf8-iae98ybg1a.gz
 E:\project jaaaaa\SteelCMS\Client\obj\Debug\net6.0\compressed\tyti1qg7t1-vl1kptfaj5.gz
-E:\project jaaaaa\SteelCMS\Client\obj\Debug\net6.0\compressed\8lud0wtszf-eff3nzr234.gz
-E:\project jaaaaa\SteelCMS\Client\obj\Debug\net6.0\compressed\2ee04xuvpf-1vda9qrs20.gz
-E:\project jaaaaa\SteelCMS\Client\obj\Debug\net6.0\compressed\hz3lc6ecf8-jyti56nb4v.gz
 E:\project jaaaaa\SteelCMS\Client\obj\Debug\net6.0\staticwebassets.build.json
 E:\project jaaaaa\SteelCMS\Client\obj\Debug\net6.0\staticwebassets.development.json
 E:\project jaaaaa\SteelCMS\Client\obj\Debug\net6.0\staticwebassets.build.endpoints.json
@@ -1736,3 +1733,6 @@ E:\project jaaaaa\SteelCMS\Client\obj\Debug\net6.0\SteelCMS.Client.dll
 E:\project jaaaaa\SteelCMS\Client\obj\Debug\net6.0\refint\SteelCMS.Client.dll
 E:\project jaaaaa\SteelCMS\Client\obj\Debug\net6.0\SteelCMS.Client.pdb
 E:\project jaaaaa\SteelCMS\Client\obj\Debug\net6.0\ref\SteelCMS.Client.dll
+E:\project jaaaaa\SteelCMS\Client\obj\Debug\net6.0\compressed\8lud0wtszf-26oyrc1ztz.gz
+E:\project jaaaaa\SteelCMS\Client\obj\Debug\net6.0\compressed\2ee04xuvpf-oszxt2gae7.gz
+E:\project jaaaaa\SteelCMS\Client\obj\Debug\net6.0\compressed\hz3lc6ecf8-w4acr30px1.gz

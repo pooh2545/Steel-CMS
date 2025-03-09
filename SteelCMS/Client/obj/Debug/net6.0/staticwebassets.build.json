@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "eWmoQZgqLu0wJiF6X1yulGf3cfomDeW7Ja/phS4nVoM=",
+  "Hash": "BsWVmmuNRiAhpwLHiCwqgDymkoL6z6U9ec8CZfozpZ4=",
   "Source": "SteelCMS.Client",
   "BasePath": "/",
   "Mode": "Root",
@@ -31,8 +31,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "WasmResource",
       "AssetTraitValue": "manifest",
-      "Fingerprint": "jyti56nb4v",
-      "Integrity": "1Wob9IrlWJbFuphQ2vOEJazm4h7Yka42yCQTTOeJgF4=",
+      "Fingerprint": "w4acr30px1",
+      "Integrity": "UOUVWbZzclM33XGpMIe4o+0sUJHmlHSxtjWe0tW93uU=",
       "CopyToOutputDirectory": "PreserveNewest",
       "CopyToPublishDirectory": "Never",
       "OriginalItemSpec": "obj\\Debug\\net6.0\\blazor.boot.json"
@@ -1018,8 +1018,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "WasmResource",
       "AssetTraitValue": "runtime",
-      "Fingerprint": "eff3nzr234",
-      "Integrity": "2oO6pwEarRRMtWv8GJplUhC/EXJjY6dnQyxHVOFj1fg=",
+      "Fingerprint": "26oyrc1ztz",
+      "Integrity": "JtbIx0U0oQ+PIPBsTB1VOJZEO8Npy3te2vBdjnveDik=",
       "CopyToOutputDirectory": "PreserveNewest",
       "CopyToPublishDirectory": "Never",
       "OriginalItemSpec": "obj\\Debug\\net6.0\\SteelCMS.Client.dll"
@@ -1039,8 +1039,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "WasmResource",
       "AssetTraitValue": "symbol",
-      "Fingerprint": "1vda9qrs20",
-      "Integrity": "U5p14+TGZbWUoxpJ7FELb6S/NnyoeEAhPCKEAb7tcu0=",
+      "Fingerprint": "oszxt2gae7",
+      "Integrity": "iMeRLMEoUZKprEKbQkP7pwaCom73nCn6knq6YVnMqa8=",
       "CopyToOutputDirectory": "PreserveNewest",
       "CopyToPublishDirectory": "Never",
       "OriginalItemSpec": "obj\\Debug\\net6.0\\SteelCMS.Client.pdb"
@@ -4805,7 +4805,7 @@
       "OriginalItemSpec": "E:\\project jaaaaa\\SteelCMS\\Client\\bin\\Debug\\net6.0\\wwwroot\\_framework\\System.ComponentModel.DataAnnotations.dll"
     },
     {
-      "Identity": "E:\\project jaaaaa\\SteelCMS\\Client\\obj\\Debug\\net6.0\\compressed\\2ee04xuvpf-1vda9qrs20.gz",
+      "Identity": "E:\\project jaaaaa\\SteelCMS\\Client\\obj\\Debug\\net6.0\\compressed\\2ee04xuvpf-oszxt2gae7.gz",
       "SourceId": "SteelCMS.Client",
       "SourceType": "Computed",
       "ContentRoot": "E:\\project jaaaaa\\SteelCMS\\Client\\obj\\Debug\\net6.0\\compressed\\",
@@ -4819,8 +4819,8 @@
       "RelatedAsset": "E:\\project jaaaaa\\SteelCMS\\Client\\bin\\Debug\\net6.0\\wwwroot\\_framework\\SteelCMS.Client.pdb",
       "AssetTraitName": "Content-Encoding",
       "AssetTraitValue": "gzip",
-      "Fingerprint": "p9wff5zmtl",
-      "Integrity": "41sV1/lBhd3yepUM9SH87QImdJWOjfaQbn9l/t8dzkU=",
+      "Fingerprint": "txe0icevq4",
+      "Integrity": "oe2zsKQ0ohgjkBPdY8xGDxNDZ6Q5RV4rGvfuHvXoH+A=",
       "CopyToOutputDirectory": "PreserveNewest",
       "CopyToPublishDirectory": "Never",
       "OriginalItemSpec": "E:\\project jaaaaa\\SteelCMS\\Client\\bin\\Debug\\net6.0\\wwwroot\\_framework\\SteelCMS.Client.pdb"
@@ -5708,7 +5708,7 @@
       "OriginalItemSpec": "E:\\project jaaaaa\\SteelCMS\\Client\\bin\\Debug\\net6.0\\wwwroot\\_framework\\System.Collections.NonGeneric.dll"
     },
     {
-      "Identity": "E:\\project jaaaaa\\SteelCMS\\Client\\obj\\Debug\\net6.0\\compressed\\8lud0wtszf-eff3nzr234.gz",
+      "Identity": "E:\\project jaaaaa\\SteelCMS\\Client\\obj\\Debug\\net6.0\\compressed\\8lud0wtszf-26oyrc1ztz.gz",
       "SourceId": "SteelCMS.Client",
       "SourceType": "Computed",
       "ContentRoot": "E:\\project jaaaaa\\SteelCMS\\Client\\obj\\Debug\\net6.0\\compressed\\",
@@ -5722,8 +5722,8 @@
       "RelatedAsset": "E:\\project jaaaaa\\SteelCMS\\Client\\bin\\Debug\\net6.0\\wwwroot\\_framework\\SteelCMS.Client.dll",
       "AssetTraitName": "Content-Encoding",
       "AssetTraitValue": "gzip",
-      "Fingerprint": "gtaltptbek",
-      "Integrity": "BPsv+Zj3+a5xMz2PsG1k+F1Y4JsbmBdGyzRD1CEcVx8=",
+      "Fingerprint": "vy9jq7h8c7",
+      "Integrity": "yWAjpa/lRTv/BV18vjSqLxgAUjyzMpBaWJ8Th2u0swE=",
       "CopyToOutputDirectory": "PreserveNewest",
       "CopyToPublishDirectory": "Never",
       "OriginalItemSpec": "E:\\project jaaaaa\\SteelCMS\\Client\\bin\\Debug\\net6.0\\wwwroot\\_framework\\SteelCMS.Client.dll"
@@ -6674,7 +6674,7 @@
       "OriginalItemSpec": "E:\\project jaaaaa\\SteelCMS\\Client\\bin\\Debug\\net6.0\\wwwroot\\_framework\\SteelCMS.Shared.dll"
     },
     {
-      "Identity": "E:\\project jaaaaa\\SteelCMS\\Client\\obj\\Debug\\net6.0\\compressed\\hz3lc6ecf8-jyti56nb4v.gz",
+      "Identity": "E:\\project jaaaaa\\SteelCMS\\Client\\obj\\Debug\\net6.0\\compressed\\hz3lc6ecf8-w4acr30px1.gz",
       "SourceId": "SteelCMS.Client",
       "SourceType": "Computed",
       "ContentRoot": "E:\\project jaaaaa\\SteelCMS\\Client\\obj\\Debug\\net6.0\\compressed\\",
@@ -6688,8 +6688,8 @@
       "RelatedAsset": "E:\\project jaaaaa\\SteelCMS\\Client\\bin\\Debug\\net6.0\\wwwroot\\_framework\\blazor.boot.json",
       "AssetTraitName": "Content-Encoding",
       "AssetTraitValue": "gzip",
-      "Fingerprint": "c1x01qg6k4",
-      "Integrity": "wI8WmzKZwBzsLGqkR8/gR/GR1dMuEpmeCXp9I9h5vFw=",
+      "Fingerprint": "6nxf3e2igt",
+      "Integrity": "EtMfaiEV3m9aUGfeU6o9egcqnJqnNUi37duOdBg+q80=",
       "CopyToOutputDirectory": "PreserveNewest",
       "CopyToPublishDirectory": "Never",
       "OriginalItemSpec": "E:\\project jaaaaa\\SteelCMS\\Client\\bin\\Debug\\net6.0\\wwwroot\\_framework\\blazor.boot.json"
@@ -9248,7 +9248,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "20570"
+          "Value": "20533"
         },
         {
           "Name": "Content-Type",
@@ -9256,11 +9256,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"1Wob9IrlWJbFuphQ2vOEJazm4h7Yka42yCQTTOeJgF4=\""
+          "Value": "\"UOUVWbZzclM33XGpMIe4o+0sUJHmlHSxtjWe0tW93uU=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 05 Mar 2025 15:33:35 GMT"
+          "Value": "Sun, 09 Mar 2025 17:41:21 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -9270,18 +9270,18 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-1Wob9IrlWJbFuphQ2vOEJazm4h7Yka42yCQTTOeJgF4="
+          "Value": "sha256-UOUVWbZzclM33XGpMIe4o+0sUJHmlHSxtjWe0tW93uU="
         }
       ]
     },
     {
       "Route": "_framework/blazor.boot.json",
-      "AssetFile": "E:\\project jaaaaa\\SteelCMS\\Client\\obj\\Debug\\net6.0\\compressed\\hz3lc6ecf8-jyti56nb4v.gz",
+      "AssetFile": "E:\\project jaaaaa\\SteelCMS\\Client\\obj\\Debug\\net6.0\\compressed\\hz3lc6ecf8-w4acr30px1.gz",
       "Selectors": [
         {
           "Name": "Content-Encoding",
           "Value": "gzip",
-          "Quality": "0.000106928999"
+          "Quality": "0.000106906136"
         }
       ],
       "ResponseHeaders": [
@@ -9291,15 +9291,15 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "9351"
+          "Value": "9353"
         },
         {
           "Name": "ETag",
-          "Value": "\"wI8WmzKZwBzsLGqkR8/gR/GR1dMuEpmeCXp9I9h5vFw=\""
+          "Value": "\"EtMfaiEV3m9aUGfeU6o9egcqnJqnNUi37duOdBg+q80=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 05 Mar 2025 15:31:51 GMT"
+          "Value": "Sun, 09 Mar 2025 16:30:35 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -9319,19 +9319,19 @@
         },
         {
           "Name": "ETag",
-          "Value": "W/\"1Wob9IrlWJbFuphQ2vOEJazm4h7Yka42yCQTTOeJgF4=\""
+          "Value": "W/\"UOUVWbZzclM33XGpMIe4o+0sUJHmlHSxtjWe0tW93uU=\""
         }
       ],
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-1Wob9IrlWJbFuphQ2vOEJazm4h7Yka42yCQTTOeJgF4="
+          "Value": "sha256-UOUVWbZzclM33XGpMIe4o+0sUJHmlHSxtjWe0tW93uU="
         }
       ]
     },
     {
       "Route": "_framework/blazor.boot.json.gz",
-      "AssetFile": "E:\\project jaaaaa\\SteelCMS\\Client\\obj\\Debug\\net6.0\\compressed\\hz3lc6ecf8-jyti56nb4v.gz",
+      "AssetFile": "E:\\project jaaaaa\\SteelCMS\\Client\\obj\\Debug\\net6.0\\compressed\\hz3lc6ecf8-w4acr30px1.gz",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -9340,7 +9340,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "9351"
+          "Value": "9353"
         },
         {
           "Name": "Content-Type",
@@ -9348,11 +9348,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"wI8WmzKZwBzsLGqkR8/gR/GR1dMuEpmeCXp9I9h5vFw=\""
+          "Value": "\"EtMfaiEV3m9aUGfeU6o9egcqnJqnNUi37duOdBg+q80=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 05 Mar 2025 15:31:51 GMT"
+          "Value": "Sun, 09 Mar 2025 16:30:35 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -9370,7 +9370,7 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-wI8WmzKZwBzsLGqkR8/gR/GR1dMuEpmeCXp9I9h5vFw="
+          "Value": "sha256-EtMfaiEV3m9aUGfeU6o9egcqnJqnNUi37duOdBg+q80="
         }
       ]
     },
@@ -9573,7 +9573,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 05 Mar 2025 15:33:35 GMT"
+          "Value": "Sat, 10 Feb 2024 00:16:14 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -9626,7 +9626,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 05 Mar 2025 15:33:35 GMT"
+          "Value": "Sat, 10 Feb 2024 00:16:14 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -9710,7 +9710,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 05 Mar 2025 15:33:35 GMT"
+          "Value": "Tue, 15 Oct 2024 03:24:52 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -9763,7 +9763,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 05 Mar 2025 15:33:35 GMT"
+          "Value": "Tue, 15 Oct 2024 03:24:52 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -10121,7 +10121,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 05 Mar 2025 15:33:35 GMT"
+          "Value": "Tue, 15 Oct 2024 03:24:36 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -10174,7 +10174,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 05 Mar 2025 15:33:35 GMT"
+          "Value": "Tue, 15 Oct 2024 03:24:36 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -10806,7 +10806,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 05 Mar 2025 15:33:35 GMT"
+          "Value": "Wed, 16 Oct 2024 17:31:10 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -10859,7 +10859,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 05 Mar 2025 15:33:35 GMT"
+          "Value": "Wed, 16 Oct 2024 17:31:10 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -11628,7 +11628,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 05 Mar 2025 15:33:35 GMT"
+          "Value": "Tue, 31 Oct 2023 14:58:50 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -11681,7 +11681,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 05 Mar 2025 15:33:35 GMT"
+          "Value": "Tue, 31 Oct 2023 14:58:50 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -11765,7 +11765,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 05 Mar 2025 15:33:35 GMT"
+          "Value": "Tue, 29 Oct 2024 02:40:02 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -11818,7 +11818,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 05 Mar 2025 15:33:35 GMT"
+          "Value": "Tue, 29 Oct 2024 02:40:02 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -11902,7 +11902,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 05 Mar 2025 15:33:35 GMT"
+          "Value": "Thu, 30 Nov 2023 08:31:58 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -11955,7 +11955,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 05 Mar 2025 15:33:35 GMT"
+          "Value": "Thu, 30 Nov 2023 08:31:58 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -14094,7 +14094,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 05 Mar 2025 15:33:35 GMT"
+          "Value": "Sat, 22 Feb 2025 02:14:24 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -14147,7 +14147,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 05 Mar 2025 15:33:35 GMT"
+          "Value": "Sat, 22 Feb 2025 02:14:24 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -14231,7 +14231,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 05 Mar 2025 15:33:35 GMT"
+          "Value": "Sat, 22 Feb 2025 02:14:04 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -14284,7 +14284,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 05 Mar 2025 15:33:35 GMT"
+          "Value": "Sat, 22 Feb 2025 02:14:04 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -14368,7 +14368,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 05 Mar 2025 15:33:35 GMT"
+          "Value": "Sat, 22 Feb 2025 02:13:54 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -14421,7 +14421,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 05 Mar 2025 15:33:35 GMT"
+          "Value": "Sat, 22 Feb 2025 02:13:54 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -14505,7 +14505,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 05 Mar 2025 15:33:35 GMT"
+          "Value": "Sat, 22 Feb 2025 02:14:34 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -14558,7 +14558,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 05 Mar 2025 15:33:35 GMT"
+          "Value": "Sat, 22 Feb 2025 02:14:34 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -15687,7 +15687,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "64512"
+          "Value": "81920"
         },
         {
           "Name": "Content-Type",
@@ -15695,11 +15695,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"2oO6pwEarRRMtWv8GJplUhC/EXJjY6dnQyxHVOFj1fg=\""
+          "Value": "\"JtbIx0U0oQ+PIPBsTB1VOJZEO8Npy3te2vBdjnveDik=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 05 Mar 2025 15:33:34 GMT"
+          "Value": "Sun, 09 Mar 2025 17:41:21 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -15709,18 +15709,18 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-2oO6pwEarRRMtWv8GJplUhC/EXJjY6dnQyxHVOFj1fg="
+          "Value": "sha256-JtbIx0U0oQ+PIPBsTB1VOJZEO8Npy3te2vBdjnveDik="
         }
       ]
     },
     {
       "Route": "_framework/SteelCMS.Client.dll",
-      "AssetFile": "E:\\project jaaaaa\\SteelCMS\\Client\\obj\\Debug\\net6.0\\compressed\\8lud0wtszf-eff3nzr234.gz",
+      "AssetFile": "E:\\project jaaaaa\\SteelCMS\\Client\\obj\\Debug\\net6.0\\compressed\\8lud0wtszf-26oyrc1ztz.gz",
       "Selectors": [
         {
           "Name": "Content-Encoding",
           "Value": "gzip",
-          "Quality": "0.000050423558"
+          "Quality": "0.000041900612"
         }
       ],
       "ResponseHeaders": [
@@ -15730,15 +15730,15 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "19831"
+          "Value": "23865"
         },
         {
           "Name": "ETag",
-          "Value": "\"BPsv+Zj3+a5xMz2PsG1k+F1Y4JsbmBdGyzRD1CEcVx8=\""
+          "Value": "\"yWAjpa/lRTv/BV18vjSqLxgAUjyzMpBaWJ8Th2u0swE=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 05 Mar 2025 15:31:51 GMT"
+          "Value": "Sun, 09 Mar 2025 16:30:35 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -15758,19 +15758,19 @@
         },
         {
           "Name": "ETag",
-          "Value": "W/\"2oO6pwEarRRMtWv8GJplUhC/EXJjY6dnQyxHVOFj1fg=\""
+          "Value": "W/\"JtbIx0U0oQ+PIPBsTB1VOJZEO8Npy3te2vBdjnveDik=\""
         }
       ],
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-2oO6pwEarRRMtWv8GJplUhC/EXJjY6dnQyxHVOFj1fg="
+          "Value": "sha256-JtbIx0U0oQ+PIPBsTB1VOJZEO8Npy3te2vBdjnveDik="
         }
       ]
     },
     {
       "Route": "_framework/SteelCMS.Client.dll.gz",
-      "AssetFile": "E:\\project jaaaaa\\SteelCMS\\Client\\obj\\Debug\\net6.0\\compressed\\8lud0wtszf-eff3nzr234.gz",
+      "AssetFile": "E:\\project jaaaaa\\SteelCMS\\Client\\obj\\Debug\\net6.0\\compressed\\8lud0wtszf-26oyrc1ztz.gz",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -15779,7 +15779,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "19831"
+          "Value": "23865"
         },
         {
           "Name": "Content-Type",
@@ -15787,11 +15787,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"BPsv+Zj3+a5xMz2PsG1k+F1Y4JsbmBdGyzRD1CEcVx8=\""
+          "Value": "\"yWAjpa/lRTv/BV18vjSqLxgAUjyzMpBaWJ8Th2u0swE=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 05 Mar 2025 15:31:51 GMT"
+          "Value": "Sun, 09 Mar 2025 16:30:35 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -15809,7 +15809,7 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-BPsv+Zj3+a5xMz2PsG1k+F1Y4JsbmBdGyzRD1CEcVx8="
+          "Value": "sha256-yWAjpa/lRTv/BV18vjSqLxgAUjyzMpBaWJ8Th2u0swE="
         }
       ]
     },
@@ -15824,7 +15824,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "39984"
+          "Value": "46240"
         },
         {
           "Name": "Content-Type",
@@ -15832,11 +15832,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"U5p14+TGZbWUoxpJ7FELb6S/NnyoeEAhPCKEAb7tcu0=\""
+          "Value": "\"iMeRLMEoUZKprEKbQkP7pwaCom73nCn6knq6YVnMqa8=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 05 Mar 2025 15:33:34 GMT"
+          "Value": "Sun, 09 Mar 2025 17:41:21 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -15846,18 +15846,18 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-U5p14+TGZbWUoxpJ7FELb6S/NnyoeEAhPCKEAb7tcu0="
+          "Value": "sha256-iMeRLMEoUZKprEKbQkP7pwaCom73nCn6knq6YVnMqa8="
         }
       ]
     },
     {
       "Route": "_framework/SteelCMS.Client.pdb",
-      "AssetFile": "E:\\project jaaaaa\\SteelCMS\\Client\\obj\\Debug\\net6.0\\compressed\\2ee04xuvpf-1vda9qrs20.gz",
+      "AssetFile": "E:\\project jaaaaa\\SteelCMS\\Client\\obj\\Debug\\net6.0\\compressed\\2ee04xuvpf-oszxt2gae7.gz",
       "Selectors": [
         {
           "Name": "Content-Encoding",
           "Value": "gzip",
-          "Quality": "0.000031685678"
+          "Quality": "0.000026219192"
         }
       ],
       "ResponseHeaders": [
@@ -15867,15 +15867,15 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "31559"
+          "Value": "38139"
         },
         {
           "Name": "ETag",
-          "Value": "\"41sV1/lBhd3yepUM9SH87QImdJWOjfaQbn9l/t8dzkU=\""
+          "Value": "\"oe2zsKQ0ohgjkBPdY8xGDxNDZ6Q5RV4rGvfuHvXoH+A=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 05 Mar 2025 15:31:51 GMT"
+          "Value": "Sun, 09 Mar 2025 16:30:35 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -15895,19 +15895,19 @@
         },
         {
           "Name": "ETag",
-          "Value": "W/\"U5p14+TGZbWUoxpJ7FELb6S/NnyoeEAhPCKEAb7tcu0=\""
+          "Value": "W/\"iMeRLMEoUZKprEKbQkP7pwaCom73nCn6knq6YVnMqa8=\""
         }
       ],
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-U5p14+TGZbWUoxpJ7FELb6S/NnyoeEAhPCKEAb7tcu0="
+          "Value": "sha256-iMeRLMEoUZKprEKbQkP7pwaCom73nCn6knq6YVnMqa8="
         }
       ]
     },
     {
       "Route": "_framework/SteelCMS.Client.pdb.gz",
-      "AssetFile": "E:\\project jaaaaa\\SteelCMS\\Client\\obj\\Debug\\net6.0\\compressed\\2ee04xuvpf-1vda9qrs20.gz",
+      "AssetFile": "E:\\project jaaaaa\\SteelCMS\\Client\\obj\\Debug\\net6.0\\compressed\\2ee04xuvpf-oszxt2gae7.gz",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -15916,7 +15916,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "31559"
+          "Value": "38139"
         },
         {
           "Name": "Content-Type",
@@ -15924,11 +15924,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"41sV1/lBhd3yepUM9SH87QImdJWOjfaQbn9l/t8dzkU=\""
+          "Value": "\"oe2zsKQ0ohgjkBPdY8xGDxNDZ6Q5RV4rGvfuHvXoH+A=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 05 Mar 2025 15:31:51 GMT"
+          "Value": "Sun, 09 Mar 2025 16:30:35 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -15946,7 +15946,7 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-41sV1/lBhd3yepUM9SH87QImdJWOjfaQbn9l/t8dzkU="
+          "Value": "sha256-oe2zsKQ0ohgjkBPdY8xGDxNDZ6Q5RV4rGvfuHvXoH+A="
         }
       ]
     },
@@ -16012,7 +16012,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 05 Mar 2025 15:30:49 GMT"
+          "Value": "Wed, 05 Mar 2025 15:33:31 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -16065,7 +16065,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 05 Mar 2025 15:30:49 GMT"
+          "Value": "Wed, 05 Mar 2025 15:33:31 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -16098,7 +16098,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "11116"
+          "Value": "11112"
         },
         {
           "Name": "Content-Type",
@@ -16149,7 +16149,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 05 Mar 2025 15:30:49 GMT"
+          "Value": "Wed, 05 Mar 2025 15:33:31 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -16202,7 +16202,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 05 Mar 2025 15:30:49 GMT"
+          "Value": "Wed, 05 Mar 2025 15:33:31 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -21355,7 +21355,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 05 Mar 2025 15:33:35 GMT"
+          "Value": "Sat, 22 Feb 2025 02:13:54 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -21408,7 +21408,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 05 Mar 2025 15:33:35 GMT"
+          "Value": "Sat, 22 Feb 2025 02:13:54 GMT"
         },
         {
           "Name": "Cache-Control",

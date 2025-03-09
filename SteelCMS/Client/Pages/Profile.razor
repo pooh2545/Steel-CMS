@@ -1,0 +1,70 @@
+﻿@page "/profile"
+
+<div class="profile-container">
+    <!-- Left side navigation menu -->
+    <div class="sidebar">
+        <div class="user-info">
+            <img src="/images/profile-pic.jpg" alt="User profile" class="profile-pic-small" />
+            <span class="user-name">Amanda Smith</span>
+        </div>
+
+        <nav class="nav-menu">
+            <ul>
+                <li class="nav-item active">
+                    <i class="fas fa-user"></i>
+                    <span>ข้อมูลส่วนตัว</span>
+                </li>
+                <li class="nav-item">
+                    <i class="fas fa-file-alt"></i>
+                    <span>ประวัติส่วนตัว</span>
+                </li>
+                <li class="nav-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>ออกจากระบบ</span>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Right side content area -->
+    <div class="content">
+        <div class="profile-card">
+            <h2 class="section-title">ข้อมูลส่วนตัว</h2>
+
+            <div class="profile-form">
+                <div class="profile-pic-container">
+                    <img src="/images/profile-pic.jpg" alt="User profile" class="profile-pic-large" />
+                </div>
+
+                <div class="form-fields">
+                    <div class="form-group">
+                        <label>ชื่อ-นามสกุล</label>
+                        <input type="text" class="form-control" value="Amanda Smith" />
+                    </div>
+
+                    <div class="form-group">
+                        <label>อีเมล</label>
+                        <input type="email" class="form-control" value="amanda@gmail.com" />
+                    </div>
+
+                    <div class="form-group">
+                        <label>เบอร์โทรศัพท์</label>
+                        <input type="tel" class="form-control" value="089xxxxxxxx" />
+                    </div>
+
+                    <div class="button-container">
+                        <button @onclick="SaveProfile" class="btn-save">บันทึก</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private async Task SaveProfile()
+    {
+        // In a real app, you'd save the profile data here
+        await JSRuntime.InvokeVoidAsync("alert", "บันทึกข้อมูลสำเร็จ");
+    }
+}
