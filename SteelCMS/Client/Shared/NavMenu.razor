@@ -3,6 +3,7 @@
 @using System.IdentityModel.Tokens.Jwt;
 @using System.Linq;
 @using System.Security.Claims;
+@implements IDisposable
 @inject AuthService AuthService
 @inject IJSRuntime JSRuntime
 @inject NavigationManager Navigation
@@ -77,12 +78,8 @@
                 @if (isLoggedIn is true)
                 {
                     <div class="dropdown">
-                        <button class="btn btn-success dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown">
-                            @userName
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <li><a class="dropdown-item" href="#" @onclick="Logout">ออกจากระบบ</a></li>
-                        </ul>
+                        @userName
+                       
                     </div>
                     <a class="dropdown-item" href="#" @onclick="Logout">ออกจากระบบ</a>
                 }
@@ -109,32 +106,26 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await LoadUserState();  // ✅ โหลดสถานะล็อกอิน
+        // ✅ ฟัง Event เมื่อ AuthService เปลี่ยนแปลง
+        AuthService.OnAuthStateChanged += AuthStateChanged;
+
+        // ✅ โหลดสถานะล็อกอินเริ่มต้น
+        await LoadUserState();
+        Console.WriteLine(isLoggedIn);
         selectedLanguage = await LocalStorage.GetItemAsync<string>("language") ?? "TH";
     }
 
-    private string GetUserNameFromToken(string token)
+    private async void AuthStateChanged()
     {
-        var handler = new JwtSecurityTokenHandler();
-        var jwtToken = handler.ReadJwtToken(token);
-        var claim = jwtToken.Claims.FirstOrDefault(c => c.Type == "fullname");
-        return claim?.Value ?? "ผู้ใช้";
+        // ✅ อัปเดตค่า isLoggedIn และ userName ทันทีเมื่อมีการเปลี่ยนแปลง
+        await LoadUserState();
+        StateHasChanged();  // ✅ บอก Blazor ให้ Refresh UI
     }
 
     private async Task LoadUserState()
     {
-        var token = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "authToken");
-
-        if (!string.IsNullOrEmpty(token))
-        {
-            isLoggedIn = true;
-            userName = GetUserNameFromToken(token); // ✅ ดึงชื่อจาก Token
-        }
-        else
-        {
-            isLoggedIn = false;
-            userName = "";
-        }
+        isLoggedIn = await AuthService.IsUserLoggedIn();
+        userName = await AuthService.GetUserNameAsync();
     }
 
     private async Task ShowLoginModal()
@@ -147,16 +138,18 @@
 
     private async Task Logout()
     {
-        await AuthService.LogoutAsync();  // ✅ เรียกใช้ Logout จาก AuthService
-        isLoggedIn = false;
-        userName = "";
+        await AuthService.LogoutAsync();
         Navigation.NavigateTo("/", forceLoad: true);
     }
 
+    public void Dispose()
+    {
+        AuthService.OnAuthStateChanged -= AuthStateChanged;
+    }
 
     <!-- Language -->
     private bool isDropdownOpen = false;
-    private string selectedLanguage = "EN";
+    private string selectedLanguage = "TH";
 
     private async Task ChangeLanguage(string lang)
     {
