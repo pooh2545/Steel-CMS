@@ -1,13 +1,19 @@
 ﻿@using SteelCMS.Client.Shared
 @using Microsoft.AspNetCore.Components.Web
+@using System.IdentityModel.Tokens.Jwt;
+@using System.Linq;
+@using System.Security.Claims;
+@implements IDisposable
 @inject AuthService AuthService
 @inject IJSRuntime JSRuntime
 @inject NavigationManager Navigation
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+
 
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
         <a class="navbar-brand" href="">
-            <img src="images/logo.png" alt="Logo" class="logo" />
+            <img src="images/logo.png" alt="Logo" class="logo-icon" />
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -30,26 +36,58 @@
                     <NavLink class="nav-link" href="contact">ติดต่อเรา</NavLink>
                 </li>
             </ul>
-            <div class="d-flex">
-                <button class="btn btn-outline-secondary lang-toggle">TH</button>
-                <button class="btn btn-outline-primary cart-button"></button>
-                <button class="btn btn-outline-warning notification-button"></button>
 
-                @if (isLoggedIn)  
+            <!-- Language -->
+            <div class="d-flex">
+                <div class="dropdown">
+                    <button class="dropdown-toggle" @onclick="ToggleDropdown">
+                        🌐 @selectedLanguage.ToUpper()
+                    </button>
+                    <ul class="dropdown-menu" style="@(isDropdownOpen ? "display: block;" : "display: none;")">
+                        <li><a href="#" @onclick="@(() => ChangeLanguage("en"))">English</a></li>
+                        <li><a href="#" @onclick="@(() => ChangeLanguage("th"))">ไทย</a></li>
+                    </ul>
+                </div>
+
+                <!-- Cart -->
+                <a class="navbar-brand" href="cart">
+                    <img src="images/shopping-cart.png" alt="Shopping-cart" class="icon-size" />
+                </a>
+
+                <!-- Notification -->
+                <div class="dropdown">
+                    <a class="navbar-brand" href="#" @onclick="ToggleNotificationDropdown">
+                        <img src="images/notification.png" alt="Notification" class="icon-size" />
+                    </a>
+                    <ul class="dropdown-menu notification-menu" style="@(isNotificationOpen ? "display: block;" : "display: none;")">
+                        @if (notifications.Any())
+                        {
+                            @foreach (var notification in notifications)
+                            {
+                                <li><a class="dropdown-item" href="#">@notification</a></li>
+                            }
+                        }
+                        else
+                        {
+                            <li><a class="dropdown-item text-muted" href="#">ไม่มีการแจ้งเตือน</a></li>
+                        }
+                    </ul>
+                </div>
+
+                <!-- Login -->
+                @if (isLoggedIn is true)
                 {
                     <div class="dropdown">
-                        <button class="btn btn-success dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                            @userName
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <li><a class="dropdown-item" href="#" @onclick="Logout">ออกจากระบบ</a></li>
-                        </ul>
+                        @userName
+                       
                     </div>
+                    <a class="dropdown-item" href="#" @onclick="Logout">ออกจากระบบ</a>
                 }
                 else
                 {
                     <button @onclick="ShowLoginModal" class="btn btn-success login-button">เข้าสู่ระบบ</button>
                 }
+                
             </div>
         </div>
     </div>
@@ -57,20 +95,37 @@
 
 <LoginModal @ref="loginModal" />
 
+
 @code {
+
+    <!-- Login -->
     private LoginModal? loginModal;
-    private bool isLoggedIn = false;
+    private bool isLoggedIn;
     private string userName = "";
     private bool isRendered = false;
 
     protected override async Task OnInitializedAsync()
     {
-        var token = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "jwtToken");
-        if (!string.IsNullOrEmpty(token))
-        {
-            isLoggedIn = true;
-            userName = "ผู้ใช้"; // คุณสามารถดึงชื่อผู้ใช้จาก API หรือที่อื่น
-        }
+        // ✅ ฟัง Event เมื่อ AuthService เปลี่ยนแปลง
+        AuthService.OnAuthStateChanged += AuthStateChanged;
+
+        // ✅ โหลดสถานะล็อกอินเริ่มต้น
+        await LoadUserState();
+        Console.WriteLine(isLoggedIn);
+        selectedLanguage = await LocalStorage.GetItemAsync<string>("language") ?? "TH";
+    }
+
+    private async void AuthStateChanged()
+    {
+        // ✅ อัปเดตค่า isLoggedIn และ userName ทันทีเมื่อมีการเปลี่ยนแปลง
+        await LoadUserState();
+        StateHasChanged();  // ✅ บอก Blazor ให้ Refresh UI
+    }
+
+    private async Task LoadUserState()
+    {
+        isLoggedIn = await AuthService.IsUserLoggedIn();
+        userName = await AuthService.GetUserNameAsync();
     }
 
     private async Task ShowLoginModal()
@@ -83,12 +138,47 @@
 
     private async Task Logout()
     {
-        await JSRuntime.InvokeVoidAsync("localStorage.removeItem", "jwtToken");
-        isLoggedIn = false;
-        userName = "";
+        await AuthService.LogoutAsync();
         Navigation.NavigateTo("/", forceLoad: true);
     }
+
+    public void Dispose()
+    {
+        AuthService.OnAuthStateChanged -= AuthStateChanged;
+    }
+
+    <!-- Language -->
+    private bool isDropdownOpen = false;
+    private string selectedLanguage = "TH";
+
+    private async Task ChangeLanguage(string lang)
+    {
+        selectedLanguage = lang.ToUpper();
+        await LocalStorage.SetItemAsync("language", lang);
+        Navigation.NavigateTo(Navigation.Uri, forceLoad: true);
+    }
+
+    private void ToggleDropdown()
+    {
+        isDropdownOpen = !isDropdownOpen;
+    }
+
+    <!-- Notification -->
+    private bool isNotificationOpen = false;
+    private List<string> notifications = new List<string>
+    {
+        "แจ้งเตือนใหม่ 1",
+        "แจ้งเตือนใหม่ 2",
+        "อัพเดทล่าสุด!"
+    };
+
+    private void ToggleNotificationDropdown()
+    {
+        isNotificationOpen = !isNotificationOpen;
+    }
+
 }
+
 
 
 
@@ -124,7 +214,7 @@
 
     .nav-link {
         text-decoration: none;
-        color: #333;
+        color: black;
         font-weight: 500;
     }
 
@@ -135,7 +225,7 @@
     }
 
     .login-button {
-        background-color: #4361ee;
+        background-color: #6366F1;
         color: white;
         border: none;
         padding: 0.5rem 1rem;
@@ -143,5 +233,80 @@
         cursor: pointer;
     }
 
+    .icon-size{
+        width: 24px;
+        height: 24px;
+    }
+
+    .logo-icon {
+        height: 40px;
+    }
     
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .dropdown-toggle {
+        background: none;
+        border: none;
+        font-size: 16px;
+        cursor: pointer;
+        padding: 5px 10px;
+    }
+
+    .dropdown-menu {
+        position: absolute;
+        background: white;
+        border: 1px solid #6366F1;
+        list-style: none;
+        padding: 10px;
+        margin: 0;
+        display: none;
+        min-width: 120px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .dropdown-menu li {
+        padding: 5px 10px;
+    }
+
+    .dropdown-menu li a {
+        text-decoration: none;
+        color: black;
+        display: block;         
+    }
+
+    .dropdown-menu li a:hover {
+        background-color: rgba(0,0,0,0.1);
+    }
+
+    <!-- Notification -->
+    .notification-menu {
+        position: absolute;
+        right: 0;
+        background: white;
+        border: 1px solid #6366F1;
+        list-style: none;
+        padding: 10px;
+        margin-top: 10px;
+        display: none;
+        min-width: 200px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+        .notification-menu li {
+            padding: 5px 10px;
+        }
+
+            .notification-menu li a {
+                text-decoration: none;
+                color: black;
+                display: block;
+            }
+
+                .notification-menu li a:hover {
+                    background-color: rgba(0, 0, 0, 0.1);
+                }
+
 </style>

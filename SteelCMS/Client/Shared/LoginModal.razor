@@ -56,26 +56,21 @@
 
     private async Task HandleLogin()
     {
-        var loginData = new { Email, Password };
-        var response = await Http.PostAsJsonAsync("api/auth/login", loginData);
+        bool isSuccess = await AuthService.LoginAsync(Email, Password);
 
-        if (response.IsSuccessStatusCode)
+        if (isSuccess)
         {
-            var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
-
-            if (result?.Token != null)
-            {
-                await JS.InvokeVoidAsync("localStorage.setItem", "authToken", result.Token);
-                await JS.InvokeVoidAsync("console.log", "Login successful, Token stored");
-                Navigation.NavigateTo("/");
-                Hide();
-            }
+            string token = await JS.InvokeAsync<string>("localStorage.getItem", "authToken");
+            Console.WriteLine($"Stored Token: {token}");
+            Navigation.NavigateTo("/");
+            Hide();
         }
         else
         {
             await JS.InvokeVoidAsync("alert", "เข้าสู่ระบบล้มเหลว! กรุณาตรวจสอบอีเมลหรือรหัสผ่านอีกครั้ง");
         }
     }
+
 
     private class LoginResponse
     {
