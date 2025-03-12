@@ -1,0 +1,348 @@
+﻿@page "/order-history"
+@using System.ComponentModel.DataAnnotations
+@inject AuthService AuthService
+@inject IJSRuntime JSRuntime
+@inject NavigationManager Navigation
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+
+<div class="profile-container">
+    <div class="sidebar">
+        <div class="user-brief">
+            <img src="images/profile.jpg" alt="Profile picture" class="avatar" />
+            <div class="name">Amanda Smith</div>
+        </div>
+        <nav class="menu">
+            <div class="menu-item">
+                <NavLink class="nav-link" href="profile">ข้อมูลส่วนตัว</NavLink>
+            </div>
+            <div class="menu-item active">
+                <NavLink class="nav-link" href="order-history">ประวัติคำสั่งซื้อ</NavLink>
+            </div>
+            <div class="menu-item">
+                <NavLink class="nav-link" @onclick="Logout">ออกจากระบบ</NavLink>
+            </div>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <div class="profile-card">
+            <div class="card-header">
+                <h2>ประวัติคำสั่งซื้อ</h2>
+            </div>
+            <div class="card-body">
+                <div class="order-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>เลขที่คำสั่งซื้อ</th>
+                                <th>สถานะ</th>
+                                <th>ราคา</th>
+                                <th>รายละเอียด</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var order in Orders)
+                            {
+                                <tr>
+                                    <td>#@order.OrderNumber</td>
+                                    <td>
+                                        <span class="status-badge @GetStatusClass(order.Status)">
+                                            @order.Status
+                                        </span>
+                                    </td>
+                                    <td>฿@order.Price.ToString("0.00")</td>
+                                    <td>
+                                        <button class="btn-details" @onclick="() => ViewOrderDetails(order.Id)">
+                                            <span class="detail-icon">&#x1F4C4;</span>
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<OrderModel> Orders { get; set; } = new List<OrderModel>();
+
+    protected override void OnInitialized()
+    {
+        // Initialize with sample order data
+        Orders = new List<OrderModel>
+        {
+            new OrderModel
+            {
+                Id = 1,
+                OrderNumber = "STEEL12345",
+                Status = "อยู่ระหว่างการจัดส่ง",
+                Price = 500.00
+            },
+            new OrderModel
+            {
+                Id = 2,
+                OrderNumber = "STEEL67890",
+                Status = "จัดส่งสำเร็จ",
+                Price = 800.00
+            }
+        };
+    }
+
+    private string GetStatusClass(string status)
+    {
+        return status switch
+        {
+            "อยู่ระหว่างการจัดส่ง" => "status-shipping",
+            "จัดส่งสำเร็จ" => "status-delivered",
+            "ยกเลิก" => "status-cancelled",
+            "รอชำระเงิน" => "status-pending",
+            _ => "status-default"
+        };
+    }
+
+    private void ViewOrderDetails(int orderId)
+    {
+        // Navigation or modal logic would go here
+        Console.WriteLine($"Viewing details for order ID: {orderId}");
+    }
+
+    private void NavigateToProfile()
+    {
+        // Navigation logic - typically would use NavigationManager
+        Console.WriteLine("Navigating to profile page");
+    }
+
+    private void NavigateToOrderHistory()
+    {
+        // Already on this page
+    }
+
+    private void NavigateToReports()
+    {
+        // Navigation logic - typically would use NavigationManager
+        Console.WriteLine("Navigating to reports page");
+    }
+
+    public class OrderModel
+    {
+        public int Id { get; set; }
+        public string OrderNumber { get; set; }
+        public string Status { get; set; }
+        public double Price { get; set; }
+    }
+
+    private async Task Logout()
+    {
+        await AuthService.LogoutAsync();
+        Navigation.NavigateTo("/", forceLoad: true);
+    }
+}
+
+<style>
+    /* Main layout */
+    :root {
+        --primary-color: #5b56e8;
+        --secondary-color: #f8f9fa;
+        --text-color: #343a40;
+        --border-color: #e1e5eb;
+        --light-gray: #f5f6fa;
+        --white: #ffffff;
+        --danger-color: #dc3545;
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: var(--text-color);
+        background-color: var(--light-gray);
+        margin: 0;
+        padding: 0;
+    }
+
+    .profile-container {
+        display: flex;
+        max-width: 1200px;
+        margin: 20px auto;
+        background-color: var(--light-gray);
+    }
+
+    /* Sidebar styles */
+    .sidebar {
+        width: 250px;
+        background-color: var(--white);
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .user-brief {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 10px;
+    }
+
+    .name {
+        font-weight: 600;
+        font-size: 16px;
+    }
+
+    .menu {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .menu-item {
+        padding: 12px 15px;
+        margin-bottom: 5px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        display: flex;
+        align-items: center;
+    }
+
+        .menu-item span {
+            margin-left: 5px;
+        }
+
+        .menu-item:hover {
+            background-color: rgba(91, 86, 232, 0.1);
+            color: var(--primary-color);
+        }
+
+        .menu-item.active {
+            background-color: rgba(91, 86, 232, 0.1);
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+    /* Main content styles */
+    .main-content {
+        flex: 1;
+        padding-left: 20px;
+    }
+
+    .profile-card {
+        background-color: var(--white);
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+    }
+
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+        .card-header h2 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    /* Order history table styles */
+    .order-table {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+        .order-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .order-table th,
+        .order-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .order-table th {
+            font-weight: 600;
+            color: #555;
+            background-color: var(--light-gray);
+        }
+
+        .order-table tr:hover {
+            background-color: rgba(0, 0, 0, 0.01);
+        }
+
+    /* Status badges */
+    .status-badge {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 500;
+    }
+
+    .status-shipping {
+        background-color: rgba(103, 58, 183, 0.1);
+        color: #673ab7;
+    }
+
+    .status-delivered {
+        background-color: rgba(76, 175, 80, 0.1);
+        color: #4caf50;
+    }
+
+    .status-cancelled {
+        background-color: rgba(244, 67, 54, 0.1);
+        color: #f44336;
+    }
+
+    .status-pending {
+        background-color: rgba(255, 152, 0, 0.1);
+        color: #ff9800;
+    }
+
+    .status-default {
+        background-color: rgba(96, 125, 139, 0.1);
+        color: #607d8b;
+    }
+
+    /* Detail button */
+    .btn-details {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+        .btn-details:hover {
+            background-color: #4a45e0;
+        }
+
+    .detail-icon {
+        font-size: 16px;
+    }
+
+</style>

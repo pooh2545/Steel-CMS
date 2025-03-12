@@ -1,556 +1,319 @@
 ﻿@page "/profile"
-@using System.Collections.Generic
+@using System.ComponentModel.DataAnnotations
+@inject AuthService AuthService
+@inject IJSRuntime JSRuntime
+@inject NavigationManager Navigation
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 
-<div class="app-container">
-    <div class="sidebar @(isSidebarCollapsed ? "collapsed" : "")">
-        <div class="sidebar-header">
-            <div class="profile-container">
-                <img src="/api/placeholder/100/100" alt="User profile" class="profile-image" />
-                <div class="profile-info @(isSidebarCollapsed ? "hidden" : "")">
-                    <h3>Amanda Smith</h3>
-                </div>
+<div class="profile-container">
+    <div class="sidebar">
+        <div class="user-brief">
+            <img src="images/profile.jpg" alt="Profile picture" class="avatar" />
+            <div class="name">Amanda Smith</div>
+        </div>
+        <nav class="menu">
+            <div class="menu-item active">
+                <NavLink class="nav-link" href="profile">ข้อมูลส่วนตัว</NavLink>
             </div>
-            <button @onclick="ToggleSidebar" class="toggle-button">
-                @(isSidebarCollapsed ? ">" : "<")
-            </button>
-        </div>
-        <div class="sidebar-menu">
-            @foreach (var item in menuItems)
-            {
-                <div class="menu-item @(currentPage == item.Id ? "active" : "")" @onclick="() => NavigateTo(item.Id)">
-                    <i class="@item.IconClass"></i>
-                    <span class="@(isSidebarCollapsed ? "hidden" : "")">@item.Label</span>
-                </div>
-            }
-        </div>
+            <div class="menu-item">
+                <NavLink class="nav-link" href="order-history">ประวัติคำสั่งซื้อ</NavLink>
+            </div>
+            <div class="menu-item">
+                <NavLink class="nav-link" @onclick="Logout">ออกจากระบบ</NavLink>
+            </div>
+        </nav>
     </div>
 
     <div class="main-content">
-        <div class="content-header">
-            <h2>@currentPageTitle</h2>
-            <button class="primary-button">บันทึก</button>
-        </div>
-
-        <div class="content-body">
-            @if (currentPage == "profile")
-            {
+        <div class="profile-card">
+            <div class="card-header">
+                <h2>ข้อมูลส่วนตัว</h2>
+                <div class="action-buttons">
+                    @if (IsEditing)
+                    {
+                        <button class="btn-cancel" @onclick="CancelEdit">ยกเลิก</button>
+                        <button class="btn-save" @onclick="SaveProfile">บันทึก</button>
+                    }
+                    else
+                    {
+                        <button class="btn-edit" @onclick="EnableEdit">แก้ไข</button>
+                    }
+                </div>
+            </div>
+            <div class="card-body">
                 <div class="profile-form">
-                    <div class="form-section">
-                        <div class="profile-picture-section">
-                            <img src="/api/placeholder/150/150" alt="Profile picture" class="large-profile-image" />
+                    <div class="profile-image-container">
+                        <img src="images/profile.jpg" alt="Profile picture" class="profile-image" />
+                    </div>
+                    <div class="form-fields">
+                        <div class="form-group">
+                            <label for="fullName">ชื่อ-นามสกุล</label>
+                            <input type="text" id="fullName" @bind="UserProfile.FullName" class="form-control" disabled="@(!IsEditing)" />
                         </div>
-
-                        <div class="form-fields">
-                            <div class="form-group">
-                                <label>ชื่อ-นามสกุล</label>
-                                <input type="text" value="Amanda Smith" />
-                            </div>
-
-                            <div class="form-group">
-                                <label>อีเมล</label>
-                                <input type="email" value="amanda.s@gmail.com" />
-                            </div>
-
-                            <div class="form-group">
-                                <label>เบอร์โทรศัพท์</label>
-                                <input type="tel" value="088xxxxxxx" />
-                            </div>
+                        <div class="form-group">
+                            <label for="email">อีเมล</label>
+                            <input type="email" id="email" @bind="UserProfile.Email" class="form-control" disabled="@(!IsEditing)" />
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">เบอร์โทรศัพท์</label>
+                            <input type="text" id="phone" @bind="UserProfile.Phone" class="form-control" disabled="@(!IsEditing)" />
                         </div>
                     </div>
                 </div>
-            }
-            else if (currentPage == "appointments")
-            {
-                <div class="appointments-container">
-                    <h3>การนัดหมายของคุณ</h3>
-                    <div class="appointments-list">
-                        <div class="appointment-card">
-                            <div class="appointment-date">15 มีนาคม 2025</div>
-                            <div class="appointment-time">14:30 น.</div>
-                            <div class="appointment-description">ตรวจสุขภาพประจำปี</div>
-                        </div>
-                        <div class="appointment-card">
-                            <div class="appointment-date">22 มีนาคม 2025</div>
-                            <div class="appointment-time">10:00 น.</div>
-                            <div class="appointment-description">ปรึกษาแพทย์เฉพาะทาง</div>
-                        </div>
-                    </div>
-                </div>
-            }
-            else if (currentPage == "documents")
-            {
-                <div class="documents-container">
-                    <h3>เอกสารของคุณ</h3>
-                    <div class="documents-list">
-                        <div class="document-card">
-                            <i class="document-icon">📄</i>
-                            <div class="document-name">ผลการตรวจประจำปี 2024</div>
-                            <div class="document-date">24 ตุลาคม 2024</div>
-                        </div>
-                        <div class="document-card">
-                            <i class="document-icon">📄</i>
-                            <div class="document-name">ใบรับรองแพทย์</div>
-                            <div class="document-date">15 กันยายน 2024</div>
-                        </div>
-                    </div>
-                </div>
-            }
+            </div>
         </div>
     </div>
 </div>
 
-<style>
-    /* Global styles */
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    /* App Container */
-    .app-container {
-        display: flex;
-        height: 100vh;
-        width: 100%;
-    }
-
-    /* Sidebar Styles */
-    .sidebar {
-        background-color: #f5f6fa;
-        width: 250px;
-        height: 100%;
-        transition: width 0.3s ease;
-        border-right: 1px solid #e0e0e0;
-        display: flex;
-        flex-direction: column;
-    }
-
-        .sidebar.collapsed {
-            width: 70px;
-        }
-
-    .sidebar-header {
-        padding: 20px 15px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        border-bottom: 1px solid #e0e0e0;
-    }
-
-    .profile-container {
-        display: flex;
-        align-items: center;
-    }
-
-    .profile-image {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        object-fit: cover;
-    }
-
-    .profile-info {
-        margin-left: 10px;
-        transition: opacity 0.2s ease;
-    }
-
-        .profile-info.hidden {
-            display: none;
-        }
-
-    .toggle-button {
-        background-color: transparent;
-        border: none;
-        cursor: pointer;
-        color: #555;
-        font-size: 16px;
-    }
-
-    .sidebar-menu {
-        display: flex;
-        flex-direction: column;
-        padding: 20px 0;
-        flex-grow: 1;
-    }
-
-    .menu-item {
-        padding: 15px 20px;
-        display: flex;
-        align-items: center;
-        cursor: pointer;
-        transition: background-color 0.2s ease;
-        color: #555;
-    }
-
-        .menu-item:hover {
-            background-color: #e9ecef;
-            color: #5352ed;
-        }
-
-        .menu-item.active {
-            background-color: #e9ecef;
-            color: #5352ed;
-            border-left: 3px solid #5352ed;
-        }
-
-        .menu-item i {
-            font-size: 18px;
-            min-width: 30px;
-        }
-
-        .menu-item span {
-            margin-left: 10px;
-            transition: opacity 0.2s ease;
-        }
-
-            .menu-item span.hidden {
-                display: none;
-            }
-
-    /* Main Content Styles */
-    .main-content {
-        flex-grow: 1;
-        padding: 0;
-        background-color: #fff;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .content-header {
-        padding: 20px 30px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border-bottom: 1px solid #e0e0e0;
-    }
-
-    .primary-button {
-        background-color: #5352ed;
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 5px;
-        cursor: pointer;
-        font-weight: 500;
-    }
-
-        .primary-button:hover {
-            background-color: #4543e8;
-        }
-
-    .content-body {
-        padding: 30px;
-        flex-grow: 1;
-        overflow-y: auto;
-    }
-
-    /* Profile Form Styles */
-    .profile-form {
-        max-width: 800px;
-        margin: 0 auto;
-    }
-
-    .form-section {
-        background-color: #fff;
-        border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-        padding: 30px;
-        display: flex;
-    }
-
-    .profile-picture-section {
-        margin-right: 40px;
-    }
-
-    .large-profile-image {
-        width: 150px;
-        height: 150px;
-        border-radius: 50%;
-        object-fit: cover;
-    }
-
-    .form-fields {
-        flex-grow: 1;
-    }
-
-    .form-group {
-        margin-bottom: 20px;
-    }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: #333;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 14px;
-        }
-
-    /* Appointments Styles */
-    .appointments-container {
-        max-width: 800px;
-        margin: 0 auto;
-    }
-
-    .appointments-list {
-        margin-top: 20px;
-    }
-
-    .appointment-card {
-        background-color: #fff;
-        border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-        padding: 20px;
-        margin-bottom: 15px;
-        display: flex;
-        align-items: center;
-    }
-
-    .appointment-date {
-        font-weight: 500;
-        min-width: 120px;
-    }
-
-    .appointment-time {
-        color: #5352ed;
-        font-weight: 500;
-        min-width: 80px;
-    }
-
-    .appointment-description {
-        color: #555;
-    }
-
-    /* Documents Styles */
-    .documents-container {
-        max-width: 800px;
-        margin: 0 auto;
-    }
-
-    .documents-list {
-        margin-top: 20px;
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: 20px;
-    }
-
-    .document-card {
-        background-color: #fff;
-        border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-        padding: 20px;
-        text-align: center;
-    }
-
-    .document-icon {
-        font-size: 30px;
-        margin-bottom: 10px;
-    }
-
-    .document-name {
-        font-weight: 500;
-        margin-bottom: 5px;
-    }
-
-    .document-date {
-        color: #777;
-        font-size: 12px;
-    }
-</style>
-
 @code {
-    private bool isSidebarCollapsed = false;
-    private string currentPage = "profile";
-    private string currentPageTitle = "ข้อมูลส่วนตัว";
+    private UserProfileModel UserProfile { get; set; } = new UserProfileModel();
+    private UserProfileModel OriginalProfile { get; set; } = new UserProfileModel();
+    private bool IsEditing { get; set; } = false;
 
-    private List<MenuItem> menuItems = new List<MenuItem>
+    protected override void OnInitialized()
     {
-        new MenuItem { Id = "profile", Label = "โปรไฟล์", IconClass = "📋" },
-        new MenuItem { Id = "appointments", Label = "การนัดหมาย", IconClass = "📅" },
-        new MenuItem { Id = "documents", Label = "เอกสาร", IconClass = "📁" }
-    };
+        // Initialize with sample data
+        UserProfile.FullName = "Amanda Smith";
+        UserProfile.Email = "amanda.s@gmail.com";
+        UserProfile.Phone = "080xxxxxxx";
 
-    private void ToggleSidebar()
-    {
-        isSidebarCollapsed = !isSidebarCollapsed;
+        // Copy values to the original profile for potential restore during cancel
+        OriginalProfile = CopyProfile(UserProfile);
     }
 
-    private void NavigateTo(string pageId)
+    private UserProfileModel CopyProfile(UserProfileModel source)
     {
-        currentPage = pageId;
-
-        // Update the page title based on the selected page
-        switch (pageId)
-        {
-            case "profile":
-                currentPageTitle = "ข้อมูลส่วนตัว";
-                break;
-            case "appointments":
-                currentPageTitle = "การนัดหมาย";
-                break;
-            case "documents":
-                currentPageTitle = "เอกสาร";
-                break;
-        }
+        return new UserProfileModel
+            {
+                FullName = source.FullName,
+                Email = source.Email,
+                Phone = source.Phone
+            };
     }
 
-    public class MenuItem
+    private void EnableEdit()
     {
-        public string Id { get; set; }
-        public string Label { get; set; }
-        public string IconClass { get; set; }
+        IsEditing = true;
+        // Save current values in case of cancel
+        OriginalProfile = CopyProfile(UserProfile);
+    }
+
+    private void CancelEdit()
+    {
+        IsEditing = false;
+        // Restore original values
+        UserProfile = CopyProfile(OriginalProfile);
+    }
+
+    private void SaveProfile()
+    {
+        IsEditing = false;
+        // Save profile logic would go here
+        Console.WriteLine("Profile saved");
+
+        // Update the original values after save
+        OriginalProfile = CopyProfile(UserProfile);
+    }
+
+    public class UserProfileModel
+    {
+        [Required]
+        public string FullName { get; set; }
+
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; }
+
+        [Required]
+        [Phone]
+        public string Phone { get; set; }
+    }
+
+    private async Task Logout()
+    {
+        await AuthService.LogoutAsync();
+        Navigation.NavigateTo("/", forceLoad: true);
     }
 }
 
 <style>
+    /* Main layout */
     :root {
-        --primary-color: #5E72E4;
-        --text-color: #333;
-        --light-gray: #f5f5f5;
-        --border-color: #e0e0e0;
-        --border-radius: 8px;
-        --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        --transition: all 0.3s ease;
+        --primary-color: #5b56e8;
+        --secondary-color: #f8f9fa;
+        --text-color: #343a40;
+        --border-color: #e1e5eb;
+        --light-gray: #f5f6fa;
+        --white: #ffffff;
+        --danger-color: #dc3545;
     }
 
     body {
-        font-family: 'Prompt', sans-serif;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: var(--text-color);
+        background-color: var(--light-gray);
         margin: 0;
         padding: 0;
-        background-color: #f8f9fe;
-        color: var(--text-color);
     }
 
     .profile-container {
         display: flex;
-        min-height: 100vh;
+        max-width: 1200px;
+        margin: 20px auto;
+        background-color: var(--light-gray);
     }
 
-    /* Sidebar Styles */
+    /* Sidebar styles */
     .sidebar {
         width: 250px;
-        background-color: white;
-        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
-        padding: 20px 0;
-        display: flex;
-        flex-direction: column;
+        background-color: var(--white);
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
     }
 
-    .profile-pic-small {
+    .user-brief {
         display: flex;
         flex-direction: column;
         align-items: center;
-        padding: 20px;
+        margin-bottom: 20px;
+        padding-bottom: 20px;
         border-bottom: 1px solid var(--border-color);
     }
 
-        .profile-pic-small img {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-bottom: 10px;
-        }
+    .avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 10px;
+    }
 
-        .profile-pic-small h3 {
-            margin: 10px 0;
-            font-size: 16px;
-            font-weight: 500;
-        }
+    .name {
+        font-weight: 600;
+        font-size: 16px;
+    }
 
-    .menu-items {
-        list-style: none;
-        padding: 0;
-        margin: 20px 0;
+    .menu {
+        display: flex;
+        flex-direction: column;
     }
 
     .menu-item {
-        padding: 12px 20px;
+        padding: 12px 15px;
+        margin-bottom: 5px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.2s;
         display: flex;
         align-items: center;
-        cursor: pointer;
-        transition: var(--transition);
     }
 
-        .menu-item i {
-            margin-right: 10px;
-            width: 20px;
-            color: #777;
+        .menu-item span {
+            margin-left: 5px;
         }
 
         .menu-item:hover {
-            background-color: #f5f7ff;
+            background-color: rgba(91, 86, 232, 0.1);
+            color: var(--primary-color);
         }
 
         .menu-item.active {
-            background-color: #eef0ff;
-            border-left: 3px solid var(--primary-color);
+            background-color: rgba(91, 86, 232, 0.1);
+            color: var(--primary-color);
+            font-weight: 500;
         }
 
-            .menu-item.active i,
-            .menu-item.active span {
-                color: var(--primary-color);
-            }
-
-    /* Main Content Styles */
-    .content {
+    /* Main content styles */
+    .main-content {
         flex: 1;
-        padding: 30px;
+        padding-left: 20px;
     }
 
     .profile-card {
-        background-color: white;
-        border-radius: var(--border-radius);
-        box-shadow: var(--shadow);
-        padding: 30px;
+        background-color: var(--white);
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
     }
 
-    .card-title {
-        margin-top: 0;
-        margin-bottom: 20px;
-        padding-bottom: 10px;
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 20px;
         border-bottom: 1px solid var(--border-color);
+    }
+
+        .card-header h2 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+    .action-buttons {
+        display: flex;
+        gap: 10px;
+    }
+
+    .btn-edit, .btn-save, .btn-cancel {
+        border: none;
+        border-radius: 5px;
+        padding: 8px 20px;
+        cursor: pointer;
         font-weight: 500;
-        font-size: 20px;
+        transition: background-color 0.2s;
+    }
+
+    .btn-edit {
+        background-color: var(--primary-color);
+        color: var(--white);
+    }
+
+        .btn-edit:hover {
+            background-color: #4a45e0;
+        }
+
+    .btn-save {
+        background-color: var(--primary-color);
+        color: var(--white);
+    }
+
+        .btn-save:hover {
+            background-color: #4a45e0;
+        }
+
+    .btn-cancel {
+        background-color: #f8f9fa;
+        color: var(--text-color);
+        border: 1px solid var(--border-color);
+    }
+
+        .btn-cancel:hover {
+            background-color: #e9ecef;
+        }
+
+    .card-body {
+        padding: 20px;
     }
 
     .profile-form {
         display: flex;
-        flex-wrap: wrap;
     }
 
-    .profile-image-section {
-        width: 30%;
-        min-width: 200px;
-        display: flex;
-        justify-content: center;
-        padding: 10px;
+    .profile-image-container {
+        width: 150px;
+        margin-right: 30px;
     }
 
     .profile-image {
-        width: 150px;
-        height: 150px;
-        overflow: hidden;
+        width: 100%;
         border-radius: 5px;
+        object-fit: cover;
     }
 
-        .profile-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-    .profile-details {
+    .form-fields {
         flex: 1;
-        min-width: 300px;
-        padding: 10px;
     }
 
     .form-group {
@@ -561,38 +324,25 @@
             display: block;
             margin-bottom: 8px;
             font-weight: 500;
-            font-size: 14px;
         }
 
     .form-control {
         width: 100%;
         padding: 10px;
         border: 1px solid var(--border-color);
-        border-radius: 4px;
-        font-family: 'Prompt', sans-serif;
+        border-radius: 5px;
         font-size: 14px;
     }
 
-    .form-actions {
-        display: flex;
-        justify-content: flex-end;
-        margin-top: 30px;
-    }
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(91, 86, 232, 0.1);
+        }
 
-    .btn-save {
-        background-color: var(--primary-color);
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 4px;
-        cursor: pointer;
-        font-family: 'Prompt', sans-serif;
-        font-weight: 500;
-        transition: background-color 0.2s;
-    }
-
-        .btn-save:hover {
-            background-color: #4a5dd0;
+        .form-control:disabled {
+            background-color: var(--secondary-color);
+            cursor: not-allowed;
         }
 
 </style>
