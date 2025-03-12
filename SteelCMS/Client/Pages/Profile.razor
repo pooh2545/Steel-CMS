@@ -1,71 +1,411 @@
 ﻿@page "/profile"
-@inject IJSRuntime JSRuntime
+@using System.Collections.Generic
 
-<div class="profile-container">
-    <!-- Sidebar Menu -->
-    <div class="sidebar">
-        <div class="profile-pic-small">
-            <img src="/images/profile-pic.jpg" alt="Amanda Smith" />
-            <h3>Amanda Smith</h3>
-        </div>
-        <ul class="menu-items">
-            <li class="menu-item active">
-                <i class="fas fa-user"></i>
-                <span>ข้อมูลส่วนตัว</span>
-            </li>
-            <li class="menu-item">
-                <i class="fas fa-file-alt"></i>
-                <span>ประวัติส่วนตัว</span>
-            </li>
-            <li class="menu-item">
-                <i class="fas fa-sign-out-alt"></i>
-                <span>ออกจากระบบ</span>
-            </li>
-        </ul>
-    </div>
-
-    <!-- Main Content Area -->
-    <div class="content">
-        <div class="profile-card">
-            <h2 class="card-title">ข้อมูลส่วนตัว</h2>
-
-            <div class="profile-form">
-                <div class="profile-image-section">
-                    <div class="profile-image">
-                        <img src="/images/profile-pic.jpg" alt="Profile picture" />
-                    </div>
-                </div>
-
-                <div class="profile-details">
-                    <div class="form-group">
-                        <label for="fullname">ชื่อ-นามสกุล</label>
-                        <input type="text" id="fullname" class="form-control" value="Amanda Smith" />
-                    </div>
-
-                    <div class="form-group">
-                        <label for="email">อีเมล</label>
-                        <input type="email" id="email" class="form-control" value="amanda@gmail.com" />
-                    </div>
-
-                    <div class="form-group">
-                        <label for="phone">เบอร์โทรศัพท์</label>
-                        <input type="tel" id="phone" class="form-control" value="0902xxxxxxx" />
-                    </div>
-
-                    <div class="form-actions">
-                        <button class="btn-save" @onclick="SaveProfile">บันทึก</button>
-                    </div>
+<div class="app-container">
+    <div class="sidebar @(isSidebarCollapsed ? "collapsed" : "")">
+        <div class="sidebar-header">
+            <div class="profile-container">
+                <img src="/api/placeholder/100/100" alt="User profile" class="profile-image" />
+                <div class="profile-info @(isSidebarCollapsed ? "hidden" : "")">
+                    <h3>Amanda Smith</h3>
                 </div>
             </div>
+            <button @onclick="ToggleSidebar" class="toggle-button">
+                @(isSidebarCollapsed ? ">" : "<")
+            </button>
+        </div>
+        <div class="sidebar-menu">
+            @foreach (var item in menuItems)
+            {
+                <div class="menu-item @(currentPage == item.Id ? "active" : "")" @onclick="() => NavigateTo(item.Id)">
+                    <i class="@item.IconClass"></i>
+                    <span class="@(isSidebarCollapsed ? "hidden" : "")">@item.Label</span>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="content-header">
+            <h2>@currentPageTitle</h2>
+            <button class="primary-button">บันทึก</button>
+        </div>
+
+        <div class="content-body">
+            @if (currentPage == "profile")
+            {
+                <div class="profile-form">
+                    <div class="form-section">
+                        <div class="profile-picture-section">
+                            <img src="/api/placeholder/150/150" alt="Profile picture" class="large-profile-image" />
+                        </div>
+
+                        <div class="form-fields">
+                            <div class="form-group">
+                                <label>ชื่อ-นามสกุล</label>
+                                <input type="text" value="Amanda Smith" />
+                            </div>
+
+                            <div class="form-group">
+                                <label>อีเมล</label>
+                                <input type="email" value="amanda.s@gmail.com" />
+                            </div>
+
+                            <div class="form-group">
+                                <label>เบอร์โทรศัพท์</label>
+                                <input type="tel" value="088xxxxxxx" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            else if (currentPage == "appointments")
+            {
+                <div class="appointments-container">
+                    <h3>การนัดหมายของคุณ</h3>
+                    <div class="appointments-list">
+                        <div class="appointment-card">
+                            <div class="appointment-date">15 มีนาคม 2025</div>
+                            <div class="appointment-time">14:30 น.</div>
+                            <div class="appointment-description">ตรวจสุขภาพประจำปี</div>
+                        </div>
+                        <div class="appointment-card">
+                            <div class="appointment-date">22 มีนาคม 2025</div>
+                            <div class="appointment-time">10:00 น.</div>
+                            <div class="appointment-description">ปรึกษาแพทย์เฉพาะทาง</div>
+                        </div>
+                    </div>
+                </div>
+            }
+            else if (currentPage == "documents")
+            {
+                <div class="documents-container">
+                    <h3>เอกสารของคุณ</h3>
+                    <div class="documents-list">
+                        <div class="document-card">
+                            <i class="document-icon">📄</i>
+                            <div class="document-name">ผลการตรวจประจำปี 2024</div>
+                            <div class="document-date">24 ตุลาคม 2024</div>
+                        </div>
+                        <div class="document-card">
+                            <i class="document-icon">📄</i>
+                            <div class="document-name">ใบรับรองแพทย์</div>
+                            <div class="document-date">15 กันยายน 2024</div>
+                        </div>
+                    </div>
+                </div>
+            }
         </div>
     </div>
 </div>
 
+<style>
+    /* Global styles */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* App Container */
+    .app-container {
+        display: flex;
+        height: 100vh;
+        width: 100%;
+    }
+
+    /* Sidebar Styles */
+    .sidebar {
+        background-color: #f5f6fa;
+        width: 250px;
+        height: 100%;
+        transition: width 0.3s ease;
+        border-right: 1px solid #e0e0e0;
+        display: flex;
+        flex-direction: column;
+    }
+
+        .sidebar.collapsed {
+            width: 70px;
+        }
+
+    .sidebar-header {
+        padding: 20px 15px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .profile-container {
+        display: flex;
+        align-items: center;
+    }
+
+    .profile-image {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .profile-info {
+        margin-left: 10px;
+        transition: opacity 0.2s ease;
+    }
+
+        .profile-info.hidden {
+            display: none;
+        }
+
+    .toggle-button {
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        color: #555;
+        font-size: 16px;
+    }
+
+    .sidebar-menu {
+        display: flex;
+        flex-direction: column;
+        padding: 20px 0;
+        flex-grow: 1;
+    }
+
+    .menu-item {
+        padding: 15px 20px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+        color: #555;
+    }
+
+        .menu-item:hover {
+            background-color: #e9ecef;
+            color: #5352ed;
+        }
+
+        .menu-item.active {
+            background-color: #e9ecef;
+            color: #5352ed;
+            border-left: 3px solid #5352ed;
+        }
+
+        .menu-item i {
+            font-size: 18px;
+            min-width: 30px;
+        }
+
+        .menu-item span {
+            margin-left: 10px;
+            transition: opacity 0.2s ease;
+        }
+
+            .menu-item span.hidden {
+                display: none;
+            }
+
+    /* Main Content Styles */
+    .main-content {
+        flex-grow: 1;
+        padding: 0;
+        background-color: #fff;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .content-header {
+        padding: 20px 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .primary-button {
+        background-color: #5352ed;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: 500;
+    }
+
+        .primary-button:hover {
+            background-color: #4543e8;
+        }
+
+    .content-body {
+        padding: 30px;
+        flex-grow: 1;
+        overflow-y: auto;
+    }
+
+    /* Profile Form Styles */
+    .profile-form {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .form-section {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        padding: 30px;
+        display: flex;
+    }
+
+    .profile-picture-section {
+        margin-right: 40px;
+    }
+
+    .large-profile-image {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .form-fields {
+        flex-grow: 1;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+    /* Appointments Styles */
+    .appointments-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .appointments-list {
+        margin-top: 20px;
+    }
+
+    .appointment-card {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        padding: 20px;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+    }
+
+    .appointment-date {
+        font-weight: 500;
+        min-width: 120px;
+    }
+
+    .appointment-time {
+        color: #5352ed;
+        font-weight: 500;
+        min-width: 80px;
+    }
+
+    .appointment-description {
+        color: #555;
+    }
+
+    /* Documents Styles */
+    .documents-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .documents-list {
+        margin-top: 20px;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 20px;
+    }
+
+    .document-card {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        padding: 20px;
+        text-align: center;
+    }
+
+    .document-icon {
+        font-size: 30px;
+        margin-bottom: 10px;
+    }
+
+    .document-name {
+        font-weight: 500;
+        margin-bottom: 5px;
+    }
+
+    .document-date {
+        color: #777;
+        font-size: 12px;
+    }
+</style>
+
 @code {
-    private async Task SaveProfile()
+    private bool isSidebarCollapsed = false;
+    private string currentPage = "profile";
+    private string currentPageTitle = "ข้อมูลส่วนตัว";
+
+    private List<MenuItem> menuItems = new List<MenuItem>
     {
-        // Show save confirmation (simulating save)
-        await JSRuntime.InvokeVoidAsync("alert", "ข้อมูลถูกบันทึกเรียบร้อยแล้ว");
+        new MenuItem { Id = "profile", Label = "โปรไฟล์", IconClass = "📋" },
+        new MenuItem { Id = "appointments", Label = "การนัดหมาย", IconClass = "📅" },
+        new MenuItem { Id = "documents", Label = "เอกสาร", IconClass = "📁" }
+    };
+
+    private void ToggleSidebar()
+    {
+        isSidebarCollapsed = !isSidebarCollapsed;
+    }
+
+    private void NavigateTo(string pageId)
+    {
+        currentPage = pageId;
+
+        // Update the page title based on the selected page
+        switch (pageId)
+        {
+            case "profile":
+                currentPageTitle = "ข้อมูลส่วนตัว";
+                break;
+            case "appointments":
+                currentPageTitle = "การนัดหมาย";
+                break;
+            case "documents":
+                currentPageTitle = "เอกสาร";
+                break;
+        }
+    }
+
+    public class MenuItem
+    {
+        public string Id { get; set; }
+        public string Label { get; set; }
+        public string IconClass { get; set; }
     }
 }
 
