@@ -1,0 +1,23 @@
+﻿@inherits LayoutComponentBase
+
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <main>
+        <div class="top-row px-4">
+            <div class="user-info">
+                <span>Admin User</span>
+                <a href="/profile">
+                    <i class="fas fa-user-circle"></i>
+                </a>
+            </div>
+            <a href="/logout">Logout</a>
+        </div>
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
