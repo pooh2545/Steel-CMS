@@ -1,90 +1,104 @@
 ﻿@page "/about-us"
 
 <div class="container">
-    <h1 class="thai-header">เกี่ยวกับเรา</h1>
+    <div class="header">
+        <h1>เกี่ยวกับเรา</h1>
+    </div>
 
-    <h2 class="company-title">บริษัท...</h2>
+    <div class="content">
+        <div class="company-section">
+            <h2>บริษัท...</h2>
+        </div>
 
-    <div class="content-section">
-        <img src="/f1-racing-car.jpg" alt="Formula 1 Racing Car" class="f1-image" />
-
-        <div class="quotes-section">
-            <div class="quote">
-                <p class="quote-author">Martin Brundle (Sky Sports F1, English):</p>
-                <p class="quote-text">"Mercedes will leave, Red Bull will be relegated, they may indeed a brilliant championship battle, but the championship can only be won by one, and it's going Dutch in 2021!"</p>
+        <div class="f1-content">
+            <div class="image-container">
+                <img src="images/test-about-us.jpg" alt="F1 Race with Max Verstappen" class="f1-image" />
             </div>
 
-            <div class="quote">
-                <p class="quote-author">David Croft:</p>
-                <p class="quote-text">"Max Verstappen, for the first time now, is champion of the world!"</p>
-            </div>
+            <div class="quotes-container">
+                <div class="quote">
+                    <p class="quote-author">Martin Brundle (Sky Sports F1 - English):</p>
+                    <p class="quote-text">"Mercedes not happy. Red Bull will be delighted, they have shared a brilliant championship battle, but the championship can only be won by one and it's going Dutch in 2021!"</p>
+                </div>
 
-            <div class="quote">
-                <p class="quote-author">Gianpiero (Red Bull team radio):</p>
-                <p class="quote-text">Christian Horner (Red Bull team principal):</p>
-                <p class="quote-text">"Max Verstappen, you are the world champion! The world champion!"</p>
-            </div>
+                <div class="quote">
+                    <p class="quote-author">David Croft:</p>
+                    <p class="quote-text">"Max Verstappen, for the first time ever, is champion of the world!"</p>
+                </div>
 
-            <div class="quote">
-                <p class="quote-author">Max Verstappen (radio/tearful):</p>
-                <p class="quote-text">"Oh my god, guys, I love you so much!"</p>
+                <div class="quote">
+                    <p class="quote-author">(Verstappen's Red Bull team radio plays)</p>
+                    <p class="quote-author">Christian Horner (Red Bull team principal):</p>
+                    <p class="quote-text">"Max Verstappen, you are the world champion! The world champion!"</p>
+                </div>
+
+                <div class="quote">
+                    <p class="quote-author">Max Verstappen (overwhelmed):</p>
+                    <p class="quote-text">"Oh my god, guys, I love you so much!"</p>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<style>
-    body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background-color: #f5f5f5;
-        margin: 0;
-        padding: 0;
-    }
+@code {
+    // You can add any C# code needed for the page here
+}
 
+<style>
     .container {
-        max-width: 800px;
+        max-width: 1200px;
         margin: 0 auto;
         padding: 20px;
+        font-family: 'Prompt', 'Sarabun', sans-serif; /* Thai-friendly fonts */
     }
 
-    .thai-header {
+    .header {
         text-align: center;
-        font-size: 32px;
-        margin-bottom: 30px;
-        color: #333;
+        margin-bottom: 40px;
     }
 
-    .company-title {
+    h1 {
+        font-size: 32px;
+        font-weight: 600;
+    }
+
+    .company-section {
+        margin-bottom: 30px;
+    }
+
+    h2 {
         font-size: 24px;
-        color: #444;
+        font-weight: 500;
         margin-bottom: 20px;
     }
 
-    .content-section {
+    .f1-content {
         display: flex;
         flex-direction: column;
-        background-color: white;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
+        gap: 30px;
+    }
+
+    .image-container {
+        width: 100%;
     }
 
     .f1-image {
         width: 100%;
-        height: auto;
         max-height: 400px;
         object-fit: cover;
-        border-bottom: 4px solid #16a951;
+        border-radius: 4px;
     }
 
-    .quotes-section {
-        padding: 20px;
+    .quotes-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
     }
 
     .quote {
-        margin-bottom: 15px;
-        padding-bottom: 15px;
-        border-bottom: 1px solid #eee;
+        padding: 10px 0;
+        border-bottom: 1px solid #eaeaea;
     }
 
         .quote:last-child {
@@ -92,15 +106,14 @@
         }
 
     .quote-author {
-        color: #16a951;
-        font-weight: bold;
+        font-weight: 600;
         margin-bottom: 5px;
+        color: #333;
     }
 
     .quote-text {
-        color: #555;
+        font-style: italic;
+        color: #444;
         line-height: 1.5;
-        margin-top: 0;
     }
-
 </style>

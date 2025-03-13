@@ -1,9 +1,14 @@
 ﻿@using SteelCMS.Client.Shared
 @using Microsoft.AspNetCore.Components.Web
+@using System.IdentityModel.Tokens.Jwt;
+@using System.Linq;
+@using System.Security.Claims;
+@implements IDisposable
 @inject AuthService AuthService
 @inject IJSRuntime JSRuntime
 @inject NavigationManager Navigation
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+
 
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
@@ -70,21 +75,19 @@
                 </div>
 
                 <!-- Login -->
-                @if (isLoggedIn)
+                @if (isLoggedIn is true)
                 {
                     <div class="dropdown">
-                        <button class="btn btn-success dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                            @userName
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <li><a class="dropdown-item" href="#" @onclick="Logout">ออกจากระบบ</a></li>
-                        </ul>
+                        @userName
+                       
                     </div>
+                    <a class="dropdown-item" href="#" @onclick="Logout">ออกจากระบบ</a>
                 }
                 else
                 {
                     <button @onclick="ShowLoginModal" class="btn btn-success login-button">เข้าสู่ระบบ</button>
                 }
+                
             </div>
         </div>
     </div>
@@ -92,28 +95,38 @@
 
 <LoginModal @ref="loginModal" />
 
+
 @code {
 
     <!-- Login -->
     private LoginModal? loginModal;
-    private bool isLoggedIn = false;
+    private bool isLoggedIn;
     private string userName = "";
     private bool isRendered = false;
 
     protected override async Task OnInitializedAsync()
     {
-        // Load authentication status
-        var token = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "jwtToken");
-        if (!string.IsNullOrEmpty(token))
-        {
-            isLoggedIn = true;
-            userName = "ผู้ใช้"; // คุณสามารถดึงชื่อผู้ใช้จาก API หรือที่อื่น
-        }
+        // ✅ ฟัง Event เมื่อ AuthService เปลี่ยนแปลง
+        AuthService.OnAuthStateChanged += AuthStateChanged;
 
-        // Load selected language
+        // ✅ โหลดสถานะล็อกอินเริ่มต้น
+        await LoadUserState();
+        Console.WriteLine(isLoggedIn);
         selectedLanguage = await LocalStorage.GetItemAsync<string>("language") ?? "TH";
     }
 
+    private async void AuthStateChanged()
+    {
+        // ✅ อัปเดตค่า isLoggedIn และ userName ทันทีเมื่อมีการเปลี่ยนแปลง
+        await LoadUserState();
+        StateHasChanged();  // ✅ บอก Blazor ให้ Refresh UI
+    }
+
+    private async Task LoadUserState()
+    {
+        isLoggedIn = await AuthService.IsUserLoggedIn();
+        userName = await AuthService.GetUserNameAsync();
+    }
 
     private async Task ShowLoginModal()
     {
@@ -125,15 +138,18 @@
 
     private async Task Logout()
     {
-        await JSRuntime.InvokeVoidAsync("localStorage.removeItem", "jwtToken");
-        isLoggedIn = false;
-        userName = "";
+        await AuthService.LogoutAsync();
         Navigation.NavigateTo("/", forceLoad: true);
+    }
+
+    public void Dispose()
+    {
+        AuthService.OnAuthStateChanged -= AuthStateChanged;
     }
 
     <!-- Language -->
     private bool isDropdownOpen = false;
-    private string selectedLanguage = "EN";
+    private string selectedLanguage = "TH";
 
     private async Task ChangeLanguage(string lang)
     {

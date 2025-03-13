@@ -1,59 +1,63 @@
 ﻿@page "/profile"
+@using System.ComponentModel.DataAnnotations
+@inject AuthService AuthService
 @inject IJSRuntime JSRuntime
+@inject NavigationManager Navigation
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 
 <div class="profile-container">
-    <!-- Sidebar Menu -->
     <div class="sidebar">
-        <div class="profile-pic-small">
-            <img src="/images/profile-pic.jpg" alt="Amanda Smith" />
-            <h3>Amanda Smith</h3>
+        <div class="user-brief">
+            <img src="images/profile.jpg" alt="Profile picture" class="avatar" />
+            <div class="name">Amanda Smith</div>
         </div>
-        <ul class="menu-items">
-            <li class="menu-item active">
-                <i class="fas fa-user"></i>
-                <span>ข้อมูลส่วนตัว</span>
-            </li>
-            <li class="menu-item">
-                <i class="fas fa-file-alt"></i>
-                <span>ประวัติส่วนตัว</span>
-            </li>
-            <li class="menu-item">
-                <i class="fas fa-sign-out-alt"></i>
-                <span>ออกจากระบบ</span>
-            </li>
-        </ul>
+        <nav class="menu">
+            <div class="menu-item active">
+                <NavLink class="nav-link" href="profile">ข้อมูลส่วนตัว</NavLink>
+            </div>
+            <div class="menu-item">
+                <NavLink class="nav-link" href="order-history">ประวัติคำสั่งซื้อ</NavLink>
+            </div>
+            <div class="menu-item">
+                <NavLink class="nav-link" @onclick="Logout">ออกจากระบบ</NavLink>
+            </div>
+        </nav>
     </div>
 
-    <!-- Main Content Area -->
-    <div class="content">
+    <div class="main-content">
         <div class="profile-card">
-            <h2 class="card-title">ข้อมูลส่วนตัว</h2>
-
-            <div class="profile-form">
-                <div class="profile-image-section">
-                    <div class="profile-image">
-                        <img src="/images/profile-pic.jpg" alt="Profile picture" />
-                    </div>
-                </div>
-
-                <div class="profile-details">
-                    <div class="form-group">
-                        <label for="fullname">ชื่อ-นามสกุล</label>
-                        <input type="text" id="fullname" class="form-control" value="Amanda Smith" />
-                    </div>
-
-                    <div class="form-group">
-                        <label for="email">อีเมล</label>
-                        <input type="email" id="email" class="form-control" value="amanda@gmail.com" />
-                    </div>
-
-                    <div class="form-group">
-                        <label for="phone">เบอร์โทรศัพท์</label>
-                        <input type="tel" id="phone" class="form-control" value="0902xxxxxxx" />
-                    </div>
-
-                    <div class="form-actions">
+            <div class="card-header">
+                <h2>ข้อมูลส่วนตัว</h2>
+                <div class="action-buttons">
+                    @if (IsEditing)
+                    {
+                        <button class="btn-cancel" @onclick="CancelEdit">ยกเลิก</button>
                         <button class="btn-save" @onclick="SaveProfile">บันทึก</button>
+                    }
+                    else
+                    {
+                        <button class="btn-edit" @onclick="EnableEdit">แก้ไข</button>
+                    }
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="profile-form">
+                    <div class="profile-image-container">
+                        <img src="images/profile.jpg" alt="Profile picture" class="profile-image" />
+                    </div>
+                    <div class="form-fields">
+                        <div class="form-group">
+                            <label for="fullName">ชื่อ-นามสกุล</label>
+                            <input type="text" id="fullName" @bind="UserProfile.FullName" class="form-control" disabled="@(!IsEditing)" />
+                        </div>
+                        <div class="form-group">
+                            <label for="email">อีเมล</label>
+                            <input type="email" id="email" @bind="UserProfile.Email" class="form-control" disabled="@(!IsEditing)" />
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">เบอร์โทรศัพท์</label>
+                            <input type="text" id="phone" @bind="UserProfile.Phone" class="form-control" disabled="@(!IsEditing)" />
+                        </div>
                     </div>
                 </div>
             </div>
@@ -62,155 +66,254 @@
 </div>
 
 @code {
-    private async Task SaveProfile()
+    private UserProfileModel UserProfile { get; set; } = new UserProfileModel();
+    private UserProfileModel OriginalProfile { get; set; } = new UserProfileModel();
+    private bool IsEditing { get; set; } = false;
+
+    protected override void OnInitialized()
     {
-        // Show save confirmation (simulating save)
-        await JSRuntime.InvokeVoidAsync("alert", "ข้อมูลถูกบันทึกเรียบร้อยแล้ว");
+        // Initialize with sample data
+        UserProfile.FullName = "Amanda Smith";
+        UserProfile.Email = "amanda.s@gmail.com";
+        UserProfile.Phone = "080xxxxxxx";
+
+        // Copy values to the original profile for potential restore during cancel
+        OriginalProfile = CopyProfile(UserProfile);
+    }
+
+    private UserProfileModel CopyProfile(UserProfileModel source)
+    {
+        return new UserProfileModel
+            {
+                FullName = source.FullName,
+                Email = source.Email,
+                Phone = source.Phone
+            };
+    }
+
+    private void EnableEdit()
+    {
+        IsEditing = true;
+        // Save current values in case of cancel
+        OriginalProfile = CopyProfile(UserProfile);
+    }
+
+    private void CancelEdit()
+    {
+        IsEditing = false;
+        // Restore original values
+        UserProfile = CopyProfile(OriginalProfile);
+    }
+
+    private void SaveProfile()
+    {
+        IsEditing = false;
+        // Save profile logic would go here
+        Console.WriteLine("Profile saved");
+
+        // Update the original values after save
+        OriginalProfile = CopyProfile(UserProfile);
+    }
+
+    public class UserProfileModel
+    {
+        [Required]
+        public string FullName { get; set; }
+
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; }
+
+        [Required]
+        [Phone]
+        public string Phone { get; set; }
+    }
+
+    private async Task Logout()
+    {
+        await AuthService.LogoutAsync();
+        Navigation.NavigateTo("/", forceLoad: true);
     }
 }
 
 <style>
+    /* Main layout */
     :root {
-        --primary-color: #5E72E4;
-        --text-color: #333;
-        --light-gray: #f5f5f5;
-        --border-color: #e0e0e0;
-        --border-radius: 8px;
-        --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        --transition: all 0.3s ease;
+        --primary-color: #5b56e8;
+        --secondary-color: #f8f9fa;
+        --text-color: #343a40;
+        --border-color: #e1e5eb;
+        --light-gray: #f5f6fa;
+        --white: #ffffff;
+        --danger-color: #dc3545;
     }
 
     body {
-        font-family: 'Prompt', sans-serif;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: var(--text-color);
+        background-color: var(--light-gray);
         margin: 0;
         padding: 0;
-        background-color: #f8f9fe;
-        color: var(--text-color);
     }
 
     .profile-container {
         display: flex;
-        min-height: 100vh;
+        max-width: 1200px;
+        margin: 20px auto;
+        background-color: var(--light-gray);
     }
 
-    /* Sidebar Styles */
+    /* Sidebar styles */
     .sidebar {
         width: 250px;
-        background-color: white;
-        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
-        padding: 20px 0;
-        display: flex;
-        flex-direction: column;
+        background-color: var(--white);
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
     }
 
-    .profile-pic-small {
+    .user-brief {
         display: flex;
         flex-direction: column;
         align-items: center;
-        padding: 20px;
+        margin-bottom: 20px;
+        padding-bottom: 20px;
         border-bottom: 1px solid var(--border-color);
     }
 
-        .profile-pic-small img {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-bottom: 10px;
-        }
+    .avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 10px;
+    }
 
-        .profile-pic-small h3 {
-            margin: 10px 0;
-            font-size: 16px;
-            font-weight: 500;
-        }
+    .name {
+        font-weight: 600;
+        font-size: 16px;
+    }
 
-    .menu-items {
-        list-style: none;
-        padding: 0;
-        margin: 20px 0;
+    .menu {
+        display: flex;
+        flex-direction: column;
     }
 
     .menu-item {
-        padding: 12px 20px;
+        padding: 12px 15px;
+        margin-bottom: 5px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.2s;
         display: flex;
         align-items: center;
-        cursor: pointer;
-        transition: var(--transition);
     }
 
-        .menu-item i {
-            margin-right: 10px;
-            width: 20px;
-            color: #777;
+        .menu-item span {
+            margin-left: 5px;
         }
 
         .menu-item:hover {
-            background-color: #f5f7ff;
+            background-color: rgba(91, 86, 232, 0.1);
+            color: var(--primary-color);
         }
 
         .menu-item.active {
-            background-color: #eef0ff;
-            border-left: 3px solid var(--primary-color);
+            background-color: rgba(91, 86, 232, 0.1);
+            color: var(--primary-color);
+            font-weight: 500;
         }
 
-            .menu-item.active i,
-            .menu-item.active span {
-                color: var(--primary-color);
-            }
-
-    /* Main Content Styles */
-    .content {
+    /* Main content styles */
+    .main-content {
         flex: 1;
-        padding: 30px;
+        padding-left: 20px;
     }
 
     .profile-card {
-        background-color: white;
-        border-radius: var(--border-radius);
-        box-shadow: var(--shadow);
-        padding: 30px;
+        background-color: var(--white);
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
     }
 
-    .card-title {
-        margin-top: 0;
-        margin-bottom: 20px;
-        padding-bottom: 10px;
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 20px;
         border-bottom: 1px solid var(--border-color);
+    }
+
+        .card-header h2 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+    .action-buttons {
+        display: flex;
+        gap: 10px;
+    }
+
+    .btn-edit, .btn-save, .btn-cancel {
+        border: none;
+        border-radius: 5px;
+        padding: 8px 20px;
+        cursor: pointer;
         font-weight: 500;
-        font-size: 20px;
+        transition: background-color 0.2s;
+    }
+
+    .btn-edit {
+        background-color: var(--primary-color);
+        color: var(--white);
+    }
+
+        .btn-edit:hover {
+            background-color: #4a45e0;
+        }
+
+    .btn-save {
+        background-color: var(--primary-color);
+        color: var(--white);
+    }
+
+        .btn-save:hover {
+            background-color: #4a45e0;
+        }
+
+    .btn-cancel {
+        background-color: #f8f9fa;
+        color: var(--text-color);
+        border: 1px solid var(--border-color);
+    }
+
+        .btn-cancel:hover {
+            background-color: #e9ecef;
+        }
+
+    .card-body {
+        padding: 20px;
     }
 
     .profile-form {
         display: flex;
-        flex-wrap: wrap;
     }
 
-    .profile-image-section {
-        width: 30%;
-        min-width: 200px;
-        display: flex;
-        justify-content: center;
-        padding: 10px;
+    .profile-image-container {
+        width: 150px;
+        margin-right: 30px;
     }
 
     .profile-image {
-        width: 150px;
-        height: 150px;
-        overflow: hidden;
+        width: 100%;
         border-radius: 5px;
+        object-fit: cover;
     }
 
-        .profile-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-    .profile-details {
+    .form-fields {
         flex: 1;
-        min-width: 300px;
-        padding: 10px;
     }
 
     .form-group {
@@ -221,38 +324,25 @@
             display: block;
             margin-bottom: 8px;
             font-weight: 500;
-            font-size: 14px;
         }
 
     .form-control {
         width: 100%;
         padding: 10px;
         border: 1px solid var(--border-color);
-        border-radius: 4px;
-        font-family: 'Prompt', sans-serif;
+        border-radius: 5px;
         font-size: 14px;
     }
 
-    .form-actions {
-        display: flex;
-        justify-content: flex-end;
-        margin-top: 30px;
-    }
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(91, 86, 232, 0.1);
+        }
 
-    .btn-save {
-        background-color: var(--primary-color);
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 4px;
-        cursor: pointer;
-        font-family: 'Prompt', sans-serif;
-        font-weight: 500;
-        transition: background-color 0.2s;
-    }
-
-        .btn-save:hover {
-            background-color: #4a5dd0;
+        .form-control:disabled {
+            background-color: var(--secondary-color);
+            cursor: not-allowed;
         }
 
 </style>
