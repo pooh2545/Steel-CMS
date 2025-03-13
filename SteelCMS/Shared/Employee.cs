@@ -11,4 +11,5 @@ public class employee
     public string emp_email { get; set; }
     public string emp_pass { get; set; }
     public int? position_id { get; set; }
+    public string img_path { get; set; } = "";
 }
