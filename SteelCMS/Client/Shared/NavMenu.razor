@@ -37,29 +37,93 @@
                 </li>
             </ul>
 
-            <!-- Language -->
-            <div class="d-flex">
-                <div class="dropdown">
-                    <button class="dropdown-toggle" @onclick="ToggleDropdown">
+            <!-- Mobile View Action Items -->
+            <ul class="navbar-nav d-lg-none">
+                <!-- Language Dropdown -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="mobileLangDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        🌐 @selectedLanguage.ToUpper()
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="mobileLangDropdown">
+                        <li><a class="dropdown-item" href="#" @onclick="@(() => ChangeLanguage("en"))">English</a></li>
+                        <li><a class="dropdown-item" href="#" @onclick="@(() => ChangeLanguage("th"))">ไทย</a></li>
+                    </ul>
+                </li>
+
+                <!-- Cart Link -->
+                <li class="nav-item">
+                    <a class="nav-link" href="cart">
+                        <img src="images/shopping-cart.png" alt="Shopping-cart" class="icon-size" /> ตะกร้าสินค้า
+                    </a>
+                </li>
+
+                <!-- Notification Dropdown -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="mobileNotifDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="images/notification.png" alt="Notification" class="icon-size" /> การแจ้งเตือน
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="mobileNotifDropdown">
+                        @if (notifications.Any())
+                        {
+                            @foreach (var notification in notifications)
+                            {
+                                <li><a class="dropdown-item" href="#">@notification</a></li>
+                            }
+                        }
+                        else
+                        {
+                            <li><a class="dropdown-item text-muted" href="#">ไม่มีการแจ้งเตือน</a></li>
+                        }
+                    </ul>
+                </li>
+
+                <!-- User Section for Mobile -->
+                @if (isLoggedIn is true)
+                {
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="mobileUserDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person-circle"></i> @userName
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="mobileUserDropdown">
+                            <li><a class="dropdown-item" href="profile">โปรไฟล์</a></li>
+                            <li><a class="dropdown-item" href="orders">รายการสั่งซื้อ</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#" @onclick="Logout">ออกจากระบบ</a></li>
+                        </ul>
+                    </li>
+                }
+                else
+                {
+                    <li class="nav-item">
+                        <button @onclick="ShowLoginModal" class="btn btn-success login-button m-2">เข้าสู่ระบบ</button>
+                    </li>
+                }
+            </ul>
+
+            <!-- Desktop View Action Items -->
+            <div class="d-none d-lg-flex align-items-center">
+                <!-- Language -->
+                <div class="dropdown me-2">
+                    <button class="btn dropdown-toggle" type="button" id="desktopLangDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                         🌐 @selectedLanguage.ToUpper()
                     </button>
-                    <ul class="dropdown-menu" style="@(isDropdownOpen ? "display: block;" : "display: none;")">
-                        <li><a href="#" @onclick="@(() => ChangeLanguage("en"))">English</a></li>
-                        <li><a href="#" @onclick="@(() => ChangeLanguage("th"))">ไทย</a></li>
+                    <ul class="dropdown-menu" aria-labelledby="desktopLangDropdown">
+                        <li><a class="dropdown-item" href="#" @onclick="@(() => ChangeLanguage("en"))">English</a></li>
+                        <li><a class="dropdown-item" href="#" @onclick="@(() => ChangeLanguage("th"))">ไทย</a></li>
                     </ul>
                 </div>
 
                 <!-- Cart -->
-                <a class="navbar-brand" href="cart">
+                <a class="nav-item me-3" href="cart">
                     <img src="images/shopping-cart.png" alt="Shopping-cart" class="icon-size" />
                 </a>
 
                 <!-- Notification -->
-                <div class="dropdown">
-                    <a class="navbar-brand" href="#" @onclick="ToggleNotificationDropdown">
+                <div class="dropdown me-3">
+                    <button class="btn dropdown-toggle p-0" type="button" id="desktopNotifDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                         <img src="images/notification.png" alt="Notification" class="icon-size" />
-                    </a>
-                    <ul class="dropdown-menu notification-menu" style="@(isNotificationOpen ? "display: block;" : "display: none;")">
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="desktopNotifDropdown">
                         @if (notifications.Any())
                         {
                             @foreach (var notification in notifications)
@@ -74,20 +138,25 @@
                     </ul>
                 </div>
 
-                <!-- Login -->
+                <!-- User Account -->
                 @if (isLoggedIn is true)
                 {
                     <div class="dropdown">
-                        @userName
-                       
+                        <button class="btn dropdown-toggle" type="button" id="desktopUserDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person-circle"></i> @userName
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="desktopUserDropdown">
+                            <li><a class="dropdown-item" href="profile">โปรไฟล์</a></li>
+                            <li><a class="dropdown-item" href="orders">รายการสั่งซื้อ</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#" @onclick="Logout">ออกจากระบบ</a></li>
+                        </ul>
                     </div>
-                    <a class="dropdown-item" href="#" @onclick="Logout">ออกจากระบบ</a>
                 }
                 else
                 {
                     <button @onclick="ShowLoginModal" class="btn btn-success login-button">เข้าสู่ระบบ</button>
                 }
-                
             </div>
         </div>
     </div>
@@ -97,29 +166,45 @@
 
 
 @code {
-
-    <!-- Login -->
+    // Login
     private LoginModal? loginModal;
     private bool isLoggedIn;
     private string userName = "";
-    private bool isRendered = false;
+
+    // Notifications
+    private List<string> notifications = new List<string>
+    {
+        "แจ้งเตือนใหม่ 1",
+        "แจ้งเตือนใหม่ 2",
+        "อัพเดทล่าสุด!"
+    };
+
+    // Language
+    private string selectedLanguage = "TH";
 
     protected override async Task OnInitializedAsync()
     {
-        // ✅ ฟัง Event เมื่อ AuthService เปลี่ยนแปลง
+        // ฟัง Event เมื่อ AuthService เปลี่ยนแปลง
         AuthService.OnAuthStateChanged += AuthStateChanged;
 
-        // ✅ โหลดสถานะล็อกอินเริ่มต้น
+        // โหลดสถานะล็อกอินเริ่มต้น
         await LoadUserState();
-        Console.WriteLine(isLoggedIn);
         selectedLanguage = await LocalStorage.GetItemAsync<string>("language") ?? "TH";
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("initializeBootstrapComponents");
+        }
     }
 
     private async void AuthStateChanged()
     {
-        // ✅ อัปเดตค่า isLoggedIn และ userName ทันทีเมื่อมีการเปลี่ยนแปลง
+        // อัปเดตค่า isLoggedIn และ userName ทันทีเมื่อมีการเปลี่ยนแปลง
         await LoadUserState();
-        StateHasChanged();  // ✅ บอก Blazor ให้ Refresh UI
+        StateHasChanged();  // บอก Blazor ให้ Refresh UI
     }
 
     private async Task LoadUserState()
@@ -142,15 +227,6 @@
         Navigation.NavigateTo("/", forceLoad: true);
     }
 
-    public void Dispose()
-    {
-        AuthService.OnAuthStateChanged -= AuthStateChanged;
-    }
-
-    <!-- Language -->
-    private bool isDropdownOpen = false;
-    private string selectedLanguage = "TH";
-
     private async Task ChangeLanguage(string lang)
     {
         selectedLanguage = lang.ToUpper();
@@ -158,31 +234,12 @@
         Navigation.NavigateTo(Navigation.Uri, forceLoad: true);
     }
 
-    private void ToggleDropdown()
+    public void Dispose()
     {
-        isDropdownOpen = !isDropdownOpen;
+        AuthService.OnAuthStateChanged -= AuthStateChanged;
     }
-
-    <!-- Notification -->
-    private bool isNotificationOpen = false;
-    private List<string> notifications = new List<string>
-    {
-        "แจ้งเตือนใหม่ 1",
-        "แจ้งเตือนใหม่ 2",
-        "อัพเดทล่าสุด!"
-    };
-
-    private void ToggleNotificationDropdown()
-    {
-        isNotificationOpen = !isNotificationOpen;
-    }
-
 }
 
-
-
-
- 
 <style>
     .nav-container {
         position: fixed;
@@ -192,6 +249,11 @@
         background-color: white;
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         z-index: 100;
+    }
+
+    .navbar-nav .dropdown-menu {
+        position: static;
+        float: none;
     }
 
     .nav-content {
@@ -247,15 +309,17 @@
         display: inline-block;
     }
 
-    .dropdown-toggle {
+    .dropdown-toggle, .user-toggle {
         background: none;
         border: none;
         font-size: 16px;
         cursor: pointer;
         padding: 5px 10px;
+        display: flex;
+        align-items: center;
     }
 
-    .dropdown-menu {
+    .custom-dropdown {
         position: absolute;
         background: white;
         border: 1px solid #6366F1;
@@ -265,48 +329,35 @@
         display: none;
         min-width: 120px;
         box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
     }
 
-    .dropdown-menu li {
+    .custom-dropdown li {
         padding: 5px 10px;
     }
 
-    .dropdown-menu li a {
+    .custom-dropdown li a {
         text-decoration: none;
         color: black;
         display: block;         
     }
 
-    .dropdown-menu li a:hover {
+    .custom-dropdown li a:hover {
         background-color: rgba(0,0,0,0.1);
     }
 
-    <!-- Notification -->
+    /* Notification */
     .notification-menu {
         position: absolute;
         right: 0;
-        background: white;
-        border: 1px solid #6366F1;
-        list-style: none;
-        padding: 10px;
-        margin-top: 10px;
-        display: none;
         min-width: 200px;
-        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     }
 
-        .notification-menu li {
-            padding: 5px 10px;
-        }
-
-            .notification-menu li a {
-                text-decoration: none;
-                color: black;
-                display: block;
-            }
-
-                .notification-menu li a:hover {
-                    background-color: rgba(0, 0, 0, 0.1);
-                }
-
+    /* User menu */
+    .user-menu {
+        position: absolute;
+        right: 0;
+        min-width: 150px;
+    }
+    
 </style>

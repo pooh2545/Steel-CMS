@@ -11,5 +11,5 @@ public class customers
     public string email { get; set; }
     public string password { get; set; }
     public string? tel { get; set; }
-    public string img_path { get; set; } = "";
+    public string? img_path { get; set; }
 }
