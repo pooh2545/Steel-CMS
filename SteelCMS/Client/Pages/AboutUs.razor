@@ -1,119 +1,91 @@
 ﻿@page "/about-us"
 
 <div class="container">
-    <div class="header">
-        <h1>เกี่ยวกับเรา</h1>
-    </div>
+    <div class="about-section">
+        <h1 class="section-title">เกี่ยวกับเรา</h1>
 
-    <div class="content">
-        <div class="company-section">
-            <h2>บริษัท...</h2>
-        </div>
-
-        <div class="f1-content">
+        <div class="content-wrapper">
             <div class="image-container">
-                <img src="images/test-about-us.jpg" alt="F1 Race with Max Verstappen" class="f1-image" />
+                <img src="images/test-about-us.jpg" alt="Formula 1 racing car" class="racing-image" />
             </div>
 
-            <div class="quotes-container">
-                <div class="quote">
-                    <p class="quote-author">Martin Brundle (Sky Sports F1 - English):</p>
-                    <p class="quote-text">"Mercedes not happy. Red Bull will be delighted, they have shared a brilliant championship battle, but the championship can only be won by one and it's going Dutch in 2021!"</p>
-                </div>
+            <div class="text-content">
+                <h2 class="company-title">บริษัท...</h2>
 
-                <div class="quote">
-                    <p class="quote-author">David Croft:</p>
-                    <p class="quote-text">"Max Verstappen, for the first time ever, is champion of the world!"</p>
-                </div>
+                <p class="company-description">
+                    กรุณากรอกข้อมูล เกี่ยวกับบริษัทของท่าน เกี่ยวกับเรา เราเป็นบริษัทเกี่ยวกับการแข่งรถ เปิดให้บริการ ผลิตอะไหล่ อุปกรณ์ต่างๆ มากว่า 20 ปี ช่างฝีมือ ทีมงานพร้อมให้บริการคำแนะนำแก่ลูกค้าทุกท่าน กรุณากรอกข้อมูล เกี่ยวกับบริษัทของท่าน เกี่ยวกับเรา เราเป็นบริษัทเกี่ยวกับการแข่งรถ เปิดให้บริการ ผลิตอะไหล่ อุปกรณ์ต่างๆ มากว่า 20 ปี ช่างฝีมือ ทีมงานพร้อมให้บริการคำแนะนำแก่ลูกค้าทุกท่าน
+                </p>
 
-                <div class="quote">
-                    <p class="quote-author">(Verstappen's Red Bull team radio plays)</p>
-                    <p class="quote-author">Christian Horner (Red Bull team principal):</p>
-                    <p class="quote-text">"Max Verstappen, you are the world champion! The world champion!"</p>
-                </div>
+                <p class="company-description">
+                    กรุณากรอกข้อมูล เกี่ยวกับบริษัทของท่าน เกี่ยวกับเรา เราเป็นบริษัทเกี่ยวกับการแข่งรถ เปิดให้บริการ ผลิตอะไหล่ อุปกรณ์ต่างๆ มากว่า 20 ปี ช่างฝีมือ ทีมงานพร้อมให้บริการคำแนะนำแก่ลูกค้าทุกท่าน กรุณากรอกข้อมูล เกี่ยวกับบริษัทของท่าน เกี่ยวกับเรา เราเป็นบริษัทเกี่ยวกับการแข่งรถ เปิดให้บริการ ผลิตอะไหล่ อุปกรณ์ต่างๆ มากว่า 20 ปี ช่างฝีมือ ทีมงานพร้อมให้บริการคำแนะนำแก่ลูกค้าทุกท่าน
+                </p>
 
-                <div class="quote">
-                    <p class="quote-author">Max Verstappen (overwhelmed):</p>
-                    <p class="quote-text">"Oh my god, guys, I love you so much!"</p>
-                </div>
+                <p class="company-description">
+                    กรุณากรอกข้อมูล เกี่ยวกับบริษัทของท่าน เกี่ยวกับเรา เราเป็นบริษัทเกี่ยวกับการแข่งรถ เปิดให้บริการ ผลิตอะไหล่ อุปกรณ์ต่างๆ มากว่า 20 ปี ช่างฝีมือ ทีมงานพร้อมให้บริการคำแนะนำแก่ลูกค้าทุกท่าน กรุณากรอกข้อมูล เกี่ยวกับบริษัทของท่าน เกี่ยวกับเรา เราเป็นบริษัทเกี่ยวกับการแข่งรถ เปิดให้บริการ ผลิตอะไหล่ อุปกรณ์ต่างๆ มากว่า 20 ปี ช่างฝีมือ ทีมงานพร้อมให้บริการคำแนะนำแก่ลูกค้าทุกท่าน
+                </p>
             </div>
         </div>
     </div>
 </div>
 
 @code {
-    // You can add any C# code needed for the page here
+    // Any C# code can go here
 }
 
 <style>
+    /* Main container styles */
     .container {
         max-width: 1200px;
         margin: 0 auto;
         padding: 20px;
-        font-family: 'Prompt', 'Sarabun', sans-serif; /* Thai-friendly fonts */
+        font-family: 'Prompt', 'Sarabun', sans-serif; /* Thai friendly fonts */
     }
 
-    .header {
+    /* About section styles */
+    .about-section {
+        margin-top: 40px;
+    }
+
+    .section-title {
         text-align: center;
-        margin-bottom: 40px;
-    }
-
-    h1 {
         font-size: 32px;
-        font-weight: 600;
-    }
-
-    .company-section {
-        margin-bottom: 30px;
-    }
-
-    h2 {
-        font-size: 24px;
-        font-weight: 500;
-        margin-bottom: 20px;
-    }
-
-    .f1-content {
-        display: flex;
-        flex-direction: column;
-        gap: 30px;
-    }
-
-    .image-container {
-        width: 100%;
-    }
-
-    .f1-image {
-        width: 100%;
-        max-height: 400px;
-        object-fit: cover;
-        border-radius: 4px;
-    }
-
-    .quotes-container {
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-    }
-
-    .quote {
-        padding: 10px 0;
-        border-bottom: 1px solid #eaeaea;
-    }
-
-        .quote:last-child {
-            border-bottom: none;
-        }
-
-    .quote-author {
-        font-weight: 600;
-        margin-bottom: 5px;
+        margin-bottom: 40px;
         color: #333;
     }
 
-    .quote-text {
-        font-style: italic;
+    .content-wrapper {
+        display: flex;
+        flex-direction: row;
+        gap: 30px;
+    }
+
+    /* Image container styles */
+    .image-container {
+        flex: 1;
+        max-width: 500px;
+    }
+
+    .racing-image {
+        width: 100%;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Text content styles */
+    .text-content {
+        flex: 1;
+    }
+
+    .company-title {
+        font-size: 24px;
+        margin-bottom: 20px;
         color: #444;
-        line-height: 1.5;
+    }
+
+    .company-description {
+        font-size: 16px;
+        line-height: 1.6;
+        color: #666;
+        margin-bottom: 20px;
     }
 </style>
