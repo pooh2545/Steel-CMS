@@ -1,0 +1,682 @@
+﻿@page "/checkout"
+@using System.Collections.Generic
+
+<div class="checkout-container">
+    <h1 class="checkout-title">ชำระเงิน</h1>
+    <div class="breadcrumb">
+        <span>ยืนยันการชำระเงิน</span>
+    </div>
+
+    <div class="checkout-section">
+        <div class="section-header">
+            <i class="icon document-icon"></i>
+            <span>ข้อมูลการจัดส่ง</span>
+        </div>
+        <div class="add-address-btn" @onclick="ShowAddressPopup">
+            <i class="plus-icon">+</i>
+            <span>เพิ่มที่อยู่</span>
+        </div>
+    </div>
+
+    <div class="checkout-section">
+        <div class="section-header">
+            <i class="icon receipt-icon"></i>
+            <span>สรุปคำสั่งซื้อ</span>
+        </div>
+        <div class="order-summary">
+            <table class="order-table">
+                <thead>
+                    <tr>
+                        <th class="product-col">ชื่อ</th>
+                        <th class="price-col">ราคา</th>
+                        <th class="quantity-col">จำนวน</th>
+                        <th class="total-col">รวม</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="product-details">
+                            <div class="product-image">
+                                <img src="images/steel-bars.png" alt="สกรีมไม้มอบ SD40 12mm" />
+                            </div>
+                            <div class="product-name">สกรีมไม้มอบ SD40 12mm.</div>
+                        </td>
+                        <td class="price">฿450.00</td>
+                        <td class="quantity">1</td>
+                        <td class="total">฿450.00</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="order-summary-footer">
+                <div class="shipping-fee">
+                    <div class="shipping-label">ค่าจัดส่ง</div>
+                    <div class="shipping-price">฿50.00</div>
+                </div>
+                <div class="order-total">
+                    <div class="total-label">รวม</div>
+                    <div class="total-price">฿500.00</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="checkout-section">
+        <div class="section-header">
+            <i class="icon payment-icon"></i>
+            <span>ช่องทางการชำระเงิน</span>
+        </div>
+        <div class="payment-methods">
+            <div class="payment-type">ธนาคาร</div>
+            <div class="payment-options">
+                <label class="payment-option">
+                    <input type="radio" name="paymentMethod" value="credit" />
+                    <span>ธนาคารกรุงเทพ</span>
+                </label>
+                <label class="payment-option">
+                    <input type="radio" name="paymentMethod" value="internet" checked />
+                    <span>ธนาคารกรุงไทย</span>
+                </label>
+                <label class="payment-option">
+                    <input type="radio" name="paymentMethod" value="banking" />
+                    <span>ธนาคารกสิกรไทย</span>
+                </label>
+            </div>
+            <div class="payment-details">
+                <div class="bank-info">
+                    <div class="bank-logo">
+                        <img src="/images/ krungthai.jpg" alt="ธนาคารกรุงไทย" />
+                    </div>
+                    <div class="bank-account">
+                        <div>ชื่อบัญชี สตรีทวิชา</div>
+                        <div>xxx-x-xx123-4</div>
+                    </div>
+                </div>
+                <div class="payment-verification">
+                    <a href="#" class="verification-link">กรุณาตรวจสอบบัญชีให้ถูกต้องก่อนการโอนเงิน</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="payment-slip-upload">
+            <div class="upload-area">
+                <div class="upload-icon">
+                    <i class="receipt-icon"></i>
+                </div>
+                <div class="upload-text">อัพโหลดสลิป</div>
+                <button class="upload-button">อัพโหลด</button>
+            </div>
+        </div>
+    </div>
+
+    <button class="confirm-payment-btn">ยืนยันการชำระเงิน</button>
+</div>
+
+@if (isAddressPopupVisible)
+{
+    <AddressPopup OnClose="HideAddressPopup" OnSave="SaveNewAddress" />
+}
+
+@code {
+    private bool isAddressPopupVisible = false;
+
+    private void ShowAddressPopup()
+    {
+        isAddressPopupVisible = true;
+    }
+
+    private void HideAddressPopup()
+    {
+        isAddressPopupVisible = false;
+    }
+
+    private void SaveNewAddress(AddressModel address)
+    {
+        // สามารถเพิ่มที่อยู่ลงในรายการได้ที่นี่
+        isAddressPopupVisible = false;
+    }
+}
+
+<style>
+    /* Main Styles */
+:root {
+    --primary-color: #6366F1;
+    --secondary-color: #F3F4F6;
+    --border-color: #E5E7EB;
+    --text-color: #374151;
+    --light-text: #6B7280;
+}
+
+body {
+    font-family: 'Prompt', 'Noto Sans Thai', sans-serif;
+    color: var(--text-color);
+    background-color: #F9FAFB;
+    margin: 0;
+    padding: 0;
+}
+
+.checkout-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.checkout-title {
+    color: var(--primary-color);
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.breadcrumb {
+    color: var(--light-text);
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+/* Section Styling */
+.checkout-section {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    padding: 16px;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+    font-weight: 500;
+}
+
+.icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    display: inline-block;
+}
+
+/* Add Address Button */
+.add-address-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    border: 1px dashed var(--border-color);
+    border-radius: 6px;
+    color: var(--primary-color);
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.plus-icon {
+    margin-right: 5px;
+    font-weight: bold;
+}
+
+/* Order Summary */
+.order-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.order-table th, .order-table td {
+    padding: 10px;
+    text-align: left;
+}
+
+.order-table th {
+    color: var(--light-text);
+    font-weight: 500;
+    font-size: 14px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.product-details {
+    display: flex;
+    align-items: center;
+}
+
+.product-image {
+    width: 60px;
+    height: 60px;
+    margin-right: 15px;
+    background-color: #f3f4f6;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.product-image img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.product-name {
+    font-size: 14px;
+}
+
+.price, .quantity, .total {
+    font-size: 14px;
+}
+
+.order-summary-footer {
+    margin-top: 10px;
+    border-top: 1px solid var(--border-color);
+    padding-top: 10px;
+}
+
+.shipping-fee, .order-total {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 10px;
+}
+
+.order-total {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+/* Payment Methods */
+.payment-methods {
+    margin-bottom: 20px;
+}
+
+.payment-type {
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+.payment-options {
+    display: flex;
+    margin-bottom: 15px;
+}
+
+.payment-option {
+    margin-right: 20px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.payment-option input {
+    margin-right: 5px;
+}
+
+.bank-info {
+    display: flex;
+    align-items: center;
+    background-color: var(--secondary-color);
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+}
+
+.bank-logo {
+    max-width: 50px;
+    max-height: 50px;
+    background-color: #E5E7EB;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+}
+
+.bank-account {
+    font-size: 14px;
+}
+
+.payment-verification {
+    font-size: 13px;
+    color: #EF4444;
+}
+
+.verification-link {
+    color: #EF4444;
+    text-decoration: none;
+}
+
+/* Upload Slip */
+.payment-slip-upload {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.upload-area {
+    border: 1px dashed var(--border-color);
+    border-radius: 8px;
+    padding: 20px;
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.upload-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #E5E7EB;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.upload-text {
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.upload-button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 12px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+/* Confirm Button */
+.confirm-payment-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    width: 100%;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+/* Address Popup */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+        justify-content: center; /* Main Styles */
+        : root
+
+    {
+        --primary-color: #6366F1;
+        --secondary-color: #F3F4F6;
+        --border-color: #E5E7EB;
+        --text-color: #374151;
+        --light-text: #6B7280;
+    }
+
+    body {
+        font-family: 'Prompt', 'Noto Sans Thai', sans-serif;
+        color: var(--text-color);
+        background-color: #F9FAFB;
+        margin: 0;
+        padding: 0;
+    }
+
+    .checkout-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .checkout-title {
+        color: var(--primary-color);
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+
+    .breadcrumb {
+        color: var(--light-text);
+        font-size: 14px;
+        margin-bottom: 20px;
+    }
+
+    /* Section Styling */
+    .checkout-section {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+        padding: 16px;
+    }
+
+    .section-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 16px;
+        font-weight: 500;
+    }
+
+    .icon {
+        width: 20px;
+        height: 20px;
+        margin-right: 8px;
+        display: inline-block;
+    }
+
+    /* Add Address Button */
+    .add-address-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px;
+        border: 1px dashed var(--border-color);
+        border-radius: 6px;
+        color: var(--primary-color);
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .plus-icon {
+        margin-right: 5px;
+        font-weight: bold;
+    }
+
+    /* Order Summary */
+    .order-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .order-table th, .order-table td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        .order-table th {
+            color: var(--light-text);
+            font-weight: 500;
+            font-size: 14px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+    .product-details {
+        display: flex;
+        align-items: center;
+    }
+
+    .product-image {
+        width: 60px;
+        height: 60px;
+        margin-right: 15px;
+        background-color: #f3f4f6;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .product-image img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+    .product-name {
+        font-size: 14px;
+    }
+
+    .price, .quantity, .total {
+        font-size: 14px;
+    }
+
+    .order-summary-footer {
+        margin-top: 10px;
+        border-top: 1px solid var(--border-color);
+        padding-top: 10px;
+    }
+
+    .shipping-fee, .order-total {
+        display: flex;
+        justify-content: space-between;
+        padding: 5px 10px;
+    }
+
+    .order-total {
+        font-weight: 600;
+        color: var(--primary-color);
+    }
+
+    /* Payment Methods */
+    .payment-methods {
+        margin-bottom: 20px;
+    }
+
+    .payment-type {
+        font-weight: 500;
+        margin-bottom: 10px;
+    }
+
+    .payment-options {
+        display: flex;
+        margin-bottom: 15px;
+    }
+
+    .payment-option {
+        margin-right: 20px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+    }
+
+        .payment-option input {
+            margin-right: 5px;
+        }
+
+    .bank-info {
+        display: flex;
+        align-items: center;
+        background-color: var(--secondary-color);
+        padding: 10px;
+        border-radius: 6px;
+        margin-bottom: 10px;
+    }
+
+    .bank-logo {
+        width: 50px;
+        height: 50px;
+        background-color: #E5E7EB;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 10px;
+    }
+
+        .bank-logo img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+    .bank-account {
+        font-size: 14px;
+    }
+
+    .payment-verification {
+        font-size: 13px;
+        color: #EF4444;
+    }
+
+    .verification-link {
+        color: #EF4444;
+        text-decoration: none;
+    }
+
+    /* Upload Slip */
+    .payment-slip-upload {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .upload-area {
+        border: 1px dashed var(--border-color);
+        border-radius: 8px;
+        padding: 20px;
+        width: 50%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .upload-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: #E5E7EB;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 10px;
+    }
+
+    .upload-text {
+        margin-bottom: 10px;
+        font-weight: 500;
+    }
+
+    .upload-button {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        padding: 6px 12px;
+        font-size: 14px;
+        cursor: pointer;
+    }
+
+    /* Confirm Button */
+    .confirm-payment-btn {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        padding: 12px;
+        font-size: 16px;
+        font-weight: 500;
+        width: 100%;
+        cursor: pointer;
+        margin-top: 20px;
+    }
+
+    /* Address Popup */
+    .popup-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+</style>

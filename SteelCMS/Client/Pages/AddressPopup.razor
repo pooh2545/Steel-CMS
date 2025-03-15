@@ -1,0 +1,297 @@
+﻿@page "/address-popup"
+
+<div class="popup-overlay">
+    <div class="address-popup">
+        <div class="popup-header">
+            <div class="header-icon">
+                <i class="fas fa-map-marker-alt"></i>
+            </div>
+            <h2 class="header-title">ข้อมูลที่อยู่จะจัดส่ง</h2>
+        </div>
+
+        <div class="popup-body">
+            <div class="form-group">
+                <label for="fullName">ชื่อ-นามสกุล</label>
+                <input type="text" id="fullName" class="form-control" placeholder="ชื่อ-นามสกุล" />
+            </div>
+
+            <div class="form-group">
+                <label for="phone">เบอร์โทรศัพท์</label>
+                <input type="tel" id="phone" class="form-control" placeholder="เบอร์โทรศัพท์" />
+            </div>
+
+            <div class="form-group">
+                <label for="address">ที่อยู่</label>
+                <textarea id="address" class="form-control address-textarea" placeholder="รายละเอียดที่อยู่"></textarea>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group half-width">
+                    <label for="province">จังหวัด</label>
+                    <div class="select-wrapper">
+                        <select id="province" class="form-select">
+                            <option value="" disabled selected>จังหวัด</option>
+                            <option value="bangkok">กรุงเทพมหานคร</option>
+                            <option value="chiang-mai">เชียงใหม่</option>
+                            <option value="khon-kaen">ขอนแก่น</option>
+                        </select>
+                        <div class="select-arrow">▼</div>
+                    </div>
+                </div>
+
+                <div class="form-group half-width">
+                    <label for="district">อำเภอ / เขต</label>
+                    <div class="select-wrapper">
+                        <select id="district" class="form-select">
+                            <option value="" disabled selected>อำเภอ / เขต</option>
+                        </select>
+                        <div class="select-arrow">▼</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group half-width">
+                    <label for="subdistrict">ตำบล / แขวง</label>
+                    <div class="select-wrapper">
+                        <select id="subdistrict" class="form-select">
+                            <option value="" disabled selected>ตำบล / แขวง</option>
+                        </select>
+                        <div class="select-arrow">▼</div>
+                    </div>
+                </div>
+
+                <div class="form-group half-width">
+                    <label for="zipcode">รหัสไปรษณีย์</label>
+                    <div class="select-wrapper">
+                        <select id="zipcode" class="form-select">
+                            <option value="" disabled selected>รหัสไปรษณีย์</option>
+                        </select>
+                        <div class="select-arrow">▼</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="popup-footer">
+            <button type="button" class="btn-cancel" @onclick="Cancel">ยกเลิก</button>
+            <button type="button" class="btn-submit" @onclick="SaveAddress">เพิ่มที่อยู่</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    private string FullName { get; set; } = string.Empty;
+    private string Phone { get; set; } = string.Empty;
+    private string Address { get; set; } = string.Empty;
+    private string Province { get; set; } = string.Empty;
+    private string District { get; set; } = string.Empty;
+    private string SubDistrict { get; set; } = string.Empty;
+    private string ZipCode { get; set; } = string.Empty;
+
+    private List<string> Districts { get; set; } = new List<string>();
+    private List<string> SubDistricts { get; set; } = new List<string>();
+    private List<string> ZipCodes { get; set; } = new List<string>();
+
+    [Parameter] public EventCallback OnClose { get; set; }
+    [Parameter] public EventCallback<AddressModel> OnSave { get; set; }
+
+    private AddressModel NewAddress = new AddressModel();
+
+    private void SaveAddress()
+    {
+        OnSave.InvokeAsync(NewAddress);
+    }
+
+    private void Cancel()
+    {
+        OnClose.InvokeAsync();
+    }
+
+    private void OnProvinceChanged(ChangeEventArgs e)
+    {
+        Province = e.Value.ToString();
+        // Update districts based on selected province
+        UpdateDistricts();
+    }
+
+    private void UpdateDistricts()
+    {
+        // In a real implementation, you would fetch districts based on the selected province
+        Districts = new List<string>() { "เขต1", "เขต2", "เขต3" };
+    }
+}
+
+<style>
+    /* Popup styles */
+    .popup-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+    }
+
+    .address-popup {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        width: 100%;
+        max-width: 500px;
+        animation: fadeIn 0.3s ease;
+    }
+    /* Header styles */
+    .popup-header {
+        display: flex;
+        align-items: center;
+        padding: 16px 20px;
+        border-bottom: 1px solid #eaeaea;
+    }
+
+    .header-icon {
+        margin-right: 10px;
+        color: #666;
+    }
+
+    .header-title {
+        font-size: 18px;
+        font-weight: 500;
+        margin: 0;
+        color: #333;
+    }
+
+    /* Body styles */
+    .popup-body {
+        padding: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 16px;
+    }
+
+    .form-row {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 16px;
+    }
+
+    .half-width {
+        flex: 1;
+        min-width: 0;
+    }
+
+    label {
+        display: block;
+        font-size: 14px;
+        color: #555;
+        margin-bottom: 6px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px 12px;
+        font-size: 14px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        color: #333;
+        transition: border-color 0.2s;
+    }
+
+        .form-control:focus {
+            border-color: #6366F1;
+            outline: none;
+        }
+
+    .address-textarea {
+        min-height: 80px;
+        resize: vertical;
+    }
+
+    /* Select styles */
+    .select-wrapper {
+        position: relative;
+    }
+
+    .form-select {
+        width: 100%;
+        padding: 10px 12px;
+        font-size: 14px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        color: #333;
+        transition: border-color 0.2s;
+        appearance: none;
+        background-color: white;
+    }
+
+        .form-select:focus {
+            border-color: #6366F1;
+            outline: none;
+        }
+
+    .select-arrow {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #888;
+        font-size: 10px;
+        pointer-events: none;
+    }
+
+    /* Footer styles */
+    .popup-footer {
+        display: flex;
+        justify-content: flex-end;
+        padding: 16px 20px;
+        border-top: 1px solid #eaeaea;
+        gap: 10px;
+    }
+
+    .btn-cancel {
+        padding: 8px 16px;
+        background-color: white;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+        cursor: pointer;
+        color: #666;
+        transition: background-color 0.2s;
+    }
+
+        .btn-cancel:hover {
+            background-color: #f5f5f5;
+        }
+
+    .btn-submit {
+        padding: 8px 16px;
+        background-color: #6366F1;
+        border: none;
+        border-radius: 4px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        color: white;
+        transition: background-color 0.2s;
+    }
+
+        .btn-submit:hover {
+            background-color: #5153cc;
+        }
+
+
+    /* Placeholder styles */
+    ::placeholder {
+        color: #aaa;
+    }
+
+    /* Font for Thai language support */
+    body {
+        font-family: 'Prompt', 'Sarabun', sans-serif;
+    }
+</style>
