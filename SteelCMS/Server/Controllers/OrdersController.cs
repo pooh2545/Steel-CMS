@@ -19,7 +19,7 @@ public class OrdersController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<order>>> GetAllOrders()
     {
-        var orders = await _context.Orders
+        var orders = await _context.orders
             .Include(o => o.Customer)
             .Include(o => o.OrderItems)
                 .ThenInclude(oi => oi.SteelProduct)
@@ -37,7 +37,7 @@ public class OrdersController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<order>> GetOrderById(int id)
     {
-        var order = await _context.Orders
+        var order = await _context.orders
             .Include(o => o.Customer)
             .Include(o => o.OrderItems)
                 .ThenInclude(oi => oi.SteelProduct)
@@ -55,7 +55,7 @@ public class OrdersController : ControllerBase
     [HttpGet("customer/{customerId}")]
     public async Task<ActionResult<IEnumerable<order>>> GetOrdersByCustomerId(int customerId)
     {
-        var orders = await _context.Orders
+        var orders = await _context.orders
             .Where(o => o.customer_id == customerId)
             .Include(o => o.OrderItems)
                 .ThenInclude(oi => oi.SteelProduct)
@@ -78,7 +78,7 @@ public class OrdersController : ControllerBase
             return BadRequest("Invalid order data.");
         }
 
-        _context.Orders.Add(newOrder);
+        _context.orders.Add(newOrder);
         await _context.SaveChangesAsync();
 
         return CreatedAtAction(nameof(GetOrderById), new { id = newOrder.order_id }, newOrder);
@@ -93,7 +93,7 @@ public class OrdersController : ControllerBase
             return BadRequest("Order ID mismatch.");
         }
 
-        var existingOrder = await _context.Orders.FindAsync(id);
+        var existingOrder = await _context.orders.FindAsync(id);
         if (existingOrder == null)
         {
             return NotFound($"Order with ID {id} not found.");
@@ -124,13 +124,13 @@ public class OrdersController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteOrder(int id)
     {
-        var order = await _context.Orders.FindAsync(id);
+        var order = await _context.orders.FindAsync(id);
         if (order == null)
         {
             return NotFound($"Order with ID {id} not found.");
         }
 
-        _context.Orders.Remove(order);
+        _context.orders.Remove(order);
         await _context.SaveChangesAsync();
 
         return NoContent();
