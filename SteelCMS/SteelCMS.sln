@@ -17,17 +17,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SteelCMS.Client", "Client\S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SteelCMS.Shared", "Shared\SteelCMS.Shared.csproj", "{A6AF5136-9842-4AE9-A70C-63B0B5452223}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteelAdmin.Server", "SteelAdmin\Server\SteelAdmin.Server.csproj", "{9FD8F4F2-68DC-4F0E-A121-2732DB98473D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SteelAdmin.Server", "SteelAdmin\Server\SteelAdmin.Server.csproj", "{9FD8F4F2-68DC-4F0E-A121-2732DB98473D}"
 	ProjectSection(ProjectDependencies) = postProject
 		{A6AF5136-9842-4AE9-A70C-63B0B5452223} = {A6AF5136-9842-4AE9-A70C-63B0B5452223}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteelAdmin.Client", "SteelAdmin\Client\SteelAdmin.Client.csproj", "{37B94669-2C7E-4A86-9CE9-D9638F9861AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SteelAdmin.Client", "SteelAdmin\Client\SteelAdmin.Client.csproj", "{37B94669-2C7E-4A86-9CE9-D9638F9861AB}"
 	ProjectSection(ProjectDependencies) = postProject
 		{A6AF5136-9842-4AE9-A70C-63B0B5452223} = {A6AF5136-9842-4AE9-A70C-63B0B5452223}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteelAdmin.Shared", "SteelAdmin\Shared\SteelAdmin.Shared.csproj", "{52E94C73-5511-47FF-91B9-CE0571B69CB7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SteelAdmin.Shared", "SteelAdmin\Shared\SteelAdmin.Shared.csproj", "{52E94C73-5511-47FF-91B9-CE0571B69CB7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
