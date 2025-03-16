@@ -1,0 +1,99 @@
+﻿@page "/"
+
+<div class="dashboard">
+    <div class="stats-container">
+        <div class="stat-card">
+            <div class="stat-title">ลูกค้าทั้งหมด</div>
+            <div class="stat-value">1260</div>
+            <div class="stat-icon customer-icon">
+                <i class="fas fa-users"></i>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-title">สินค้า</div>
+            <div class="stat-value">126</div>
+            <div class="stat-icon product-icon">
+                <i class="fas fa-box"></i>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-title">รายได้</div>
+            <div class="stat-value">6012</div>
+            <div class="stat-icon revenue-icon">
+                <i class="fas fa-dollar-sign"></i>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-title">สินค้าส่งมอบ</div>
+            <div class="stat-value">612</div>
+            <div class="stat-icon delivery-icon">
+                <i class="fas fa-truck"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="customer-section">
+        <h2>ลูกค้า</h2>
+
+        <div class="customer-table-container">
+            <table class="customer-table">
+                <thead>
+                    <tr>
+                        <th>หมายเลขสั่งซื้อ</th>
+                        <th>ผู้สั่งซื้อ</th>
+                        <th>Email</th>
+                        <th>วันที่สั่งซื้อ</th>
+                        <th>วันที่จ่าย</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var customer in GetCustomers())
+                    {
+                        <tr>
+                            <td>@customer.OrderNumber</td>
+                            <td>@customer.CustomerName</td>
+                            <td>@customer.Email</td>
+                            <td>@customer.OrderDate</td>
+                            <td>@customer.PaymentDate</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="analytics-section">
+        <h2>สินค้าขายดี</h2>
+        <div class="chart-container">
+            <!-- Chart will be implemented later -->
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<CustomerModel> GetCustomers()
+    {
+        // In a real app, this would come from a service
+        return new List<CustomerModel>
+        {
+            new CustomerModel { OrderNumber = "8615231558", CustomerName = "Ethan Caldwell", Email = "ethan.caldwell92@example.com", OrderDate = "03-03-2025", PaymentDate = "" },
+            new CustomerModel { OrderNumber = "7959564123", CustomerName = "Olivia Hartman", Email = "olivia.hartman23@example.com", OrderDate = "03-03-2025", PaymentDate = "03-03-2025" },
+            new CustomerModel { OrderNumber = "9558420570", CustomerName = "Mason Caldwell", Email = "mason.caldwell89@example.com", OrderDate = "03-03-2025", PaymentDate = "" },
+            new CustomerModel { OrderNumber = "8615231558", CustomerName = "Sophia Jennings", Email = "sophia.jenning76@example.com", OrderDate = "03-03-2025", PaymentDate = "03-03-2025" },
+            new CustomerModel { OrderNumber = "7959564123", CustomerName = "Liam Patterson", Email = "liam.patterson43@example.com", OrderDate = "03-03-2025", PaymentDate = "03-03-2025" },
+            new CustomerModel { OrderNumber = "9558420570", CustomerName = "Ava Montgomery", Email = "ava.montgomery51@example.com", OrderDate = "03-03-2025", PaymentDate = "" }
+        };
+    }
+
+    public class CustomerModel
+    {
+        public string OrderNumber { get; set; }
+        public string CustomerName { get; set; }
+        public string Email { get; set; }
+        public string OrderDate { get; set; }
+        public string PaymentDate { get; set; }
+    }
+}
