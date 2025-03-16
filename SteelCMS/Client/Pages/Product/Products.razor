@@ -1,4 +1,5 @@
 ﻿@page "/products"
+@page "/products/{categoryId}"
 
 <div class="container py-4">
     <h1 class="mb-4">สินค้า</h1>
@@ -75,6 +76,9 @@
     private string minPriceString;
     private string maxPriceString;
 
+    [Parameter]
+    public string CategoryId { get; set; }
+
     
     private List<Category> categories = new()
     {
@@ -85,7 +89,7 @@
         new Category("5", "อื่นๆ")
     };
 
-    private List<Product> products = new()
+    private  List<Product> products = new()
     {
         new Product("1", "เหล็กเส้น", 100.00M, "/images/steel-bars.png", "1"),
         new Product("2", "เหล็กแผ่น", 200.00M, "/images/steel-sheets.png", "2"),
@@ -102,12 +106,35 @@
 
     protected override void OnInitialized()
     {
+        // Initial setup for price range
         if (products.Any())
         {
+            // Default price range is for all products
             minPrice = products.Min(p => p.Price);
             maxPrice = products.Max(p => p.Price);
         }
 
+        // Select the category if specified in the URL
+        if (!string.IsNullOrEmpty(CategoryId))
+        {
+            var category = categories.FirstOrDefault(c => c.Id == CategoryId);
+            if (category != null)
+            {
+                category.Selected = true;
+
+                // Get products for this category only
+                var categoryProducts = products.Where(p => p.CategoryId == CategoryId).ToList();
+
+                // Set min and max price based on products in this category
+                if (categoryProducts.Any())
+                {
+                    minPrice = categoryProducts.Min(p => p.Price);
+                    maxPrice = categoryProducts.Max(p => p.Price);
+                }
+            }
+        }
+
+        // Update the string representations
         minPriceString = minPrice.ToString("F2");
         maxPriceString = maxPrice.ToString("F2");
 
