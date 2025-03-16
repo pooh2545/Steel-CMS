@@ -1,62 +1,66 @@
-.navbar-toggler {
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
-.top-row {
-    height: 3.5rem;
-    background-color: rgba(0,0,0,0.4);
-}
-
-.navbar-brand {
-    font-size: 1.1rem;
-}
-
-.oi {
-    width: 2rem;
-    font-size: 1.1rem;
-    vertical-align: text-top;
-    top: -2px;
+/* Admin_NavMenu */
+.nav-menu {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    width: 100%;
 }
 
 .nav-item {
-    font-size: 0.9rem;
-    padding-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    padding: 0.625rem 1rem; /* Adjusted to match image */
+    margin: 0;
+    color: #6b7280;
+    font-size: 0.8125rem; /* Adjusted to match image */
+    text-decoration: none;
+    transition: all 0.2s;
+    border-left: 3px solid transparent;
 }
 
-    .nav-item:first-of-type {
-        padding-top: 1rem;
+    .nav-item i, .nav-item svg {
+        margin-right: 0.625rem; /* Adjusted to match image */
+        font-size: 1.125rem; /* Adjusted to match image */
+        min-width: 1.25rem;
+        text-align: center;
+        color: #6b7280;
     }
 
-    .nav-item:last-of-type {
-        padding-bottom: 1rem;
+    .nav-item:hover {
+        background-color: #f3f4f6;
+        color: #4f46e5;
     }
 
-    .nav-item ::deep a {
-        color: #d7d7d7;
-        border-radius: 4px;
-        height: 3rem;
-        display: flex;
-        align-items: center;
-        line-height: 3rem;
+    .nav-item.active {
+        color: #4f46e5;
+        border-left: 3px solid #4f46e5;
+        background-color: rgba(79, 70, 229, 0.1);
+        font-weight: 500;
     }
 
-.nav-item ::deep a.active {
-    background-color: rgba(255,255,255,0.25);
-    color: white;
-}
-
-.nav-item ::deep a:hover {
-    background-color: rgba(255,255,255,0.1);
-    color: white;
-}
-
-@media (min-width: 641px) {
-    .navbar-toggler {
-        display: none;
+    .nav-item span {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
-    .collapse {
-        /* Never collapse the sidebar for wide screens */
-        display: block;
+    /* Add spacing between menu items as in the image */
+    .nav-item + .nav-item {
+        margin-top: 0.25rem; /* Added to match image */
     }
+
+/* For collapsed sidebar */
+@media (max-width: 768px) {
+    .nav-item {
+        justify-content: center;
+        padding: 0.625rem 0;
+    }
+
+        .nav-item i, .nav-item svg {
+            margin-right: 0;
+        }
+
+        .nav-item span {
+            display: none;
+        }
 }

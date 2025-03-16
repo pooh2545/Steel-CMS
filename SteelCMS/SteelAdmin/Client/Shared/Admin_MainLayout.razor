@@ -2,21 +2,27 @@
 
 <div class="page">
     <div class="sidebar">
-        <NavMenu />
+        <div class="logo-container">
+            <img src="/images/logo.png" alt="Logo" class="logo" />
+        </div>
+        <Admin_NavMenu />
     </div>
 
     <main>
-        <div class="top-row px-4">
-            <div class="user-info">
-                <span>Admin User</span>
-                <a href="/profile">
-                    <i class="fas fa-user-circle"></i>
-                </a>
+        <div class="top-row">
+            <div class="search-container">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="ค้นหาที่นี่..." />
             </div>
-            <a href="/logout">Logout</a>
+            <div class="user-info">
+                <i class="fas fa-bell notification-icon"></i>
+                <img src="/images/noprofilepic.jpg" alt="User" class="avatar" />
+                <span class="user-name">Amanda Smith</span>
+                <i class="fas fa-chevron-down dropdown-icon"></i>
+            </div>
         </div>
 
-        <article class="content px-4">
+        <article class="content">
             @Body
         </article>
     </main>
