@@ -1,6 +1,5 @@
 ﻿@page "/"
 @using Microsoft.AspNetCore.Components.Web
-@using System.Timers
 @inject HttpClient Http
 
 <PageTitle>หน้าแรก</PageTitle>
@@ -9,7 +8,7 @@
     <!-- Hero Carousel -->
     <div class="slideshow-container">
         <div class="side-preview left-preview">
-            @if (Slides.Count > 0)
+            @if (Slides.Any())
             {
                 <img src="@Slides[CurrentSlideIndex].ImageUrl" alt="Preview" />
             }
@@ -24,7 +23,7 @@
             <div class="slide-dots">
                 @for (int i = 0; i < Slides.Count; i++)
                 {
-                    <button class="dot @(i == CurrentSlideIndex ? "active" : "")" @onclick="() => GoToSlide(i)"></button>
+                    <button class="dot @(i == CurrentSlideIndex ? "active" : "")" @onclick="() => SetSlide(i)"></button>
                 }
             </div>
         </div>
@@ -58,88 +57,80 @@
         <div class="slideshow-images-container">
             <button class="slideshow-button" @onclick="PrevProductSlide">&#10094;</button>
             <div class="slideshow-images">
-                @for (int i = 0; i < 3; i++) // Show 3 images
+                @for (int i = 0; i < Math.Min(3, Images.Length); i++)
                 {
-                    <img src="@Images[(CurrentIndex + i) % Images.Length]" class="slideshow-image" />
+                    <img src="@Images[(CurrentProductIndex + i) % Images.Length]" class="slideshow-image" />
                 }
             </div>
             <button class="slideshow-button" @onclick="NextProductSlide">&#10095;</button>
         </div>
     </section>
-
 </div>
 
 @code {
-
-    <!-- Hero Carousel -->
-    private Timer? autoPlayTimer;
+    private CancellationTokenSource? _timerToken;
     private int CurrentSlideIndex { get; set; }
-    private List<SlideItem> Slides { get; } = new()
+    private int CurrentProductIndex { get; set; }
+
+    private readonly List<SlideItem> Slides = new()
     {
-        new SlideItem("/images/construction-workers.jpeg", "Construction workers"),
-        new SlideItem("/images/welding.jpeg", "Welding"),
-        new SlideItem("/images/steel-pipes.jpeg", "Steel pipes"),
-        new SlideItem("/images/steel-show.png", "Construction site")
+        new ("/images/construction-workers.jpeg", "Construction workers"),
+        new ("/images/welding.jpeg", "Welding"),
+        new ("/images/steel-pipes.jpeg", "Steel pipes"),
+        new ("/images/steel-show.png", "Construction site")
     };
-    
+
+    private readonly List<ProductItem> Products = new()
+    {
+        new ("เหล็กเส้น", "/images/steel-bars.png", "/products/steel-bars"),
+        new ("เหล็กแผ่น", "/images/steel-sheets.png", "/products/steel-sheets"),
+        new ("เหล็กรูปพรรณ", "/images/steel-profiles.png", "/products/steel-profiles"),
+        new ("เหล็กตะแกรง/ตาข่าย", "/images/steel-mesh.png", "/products/steel-mesh"),
+        new ("อื่นๆ", "/images/other-steel.png", "/products/other")
+    };
+
+    private readonly string[] Images =
+    {
+        "/images/steel-show.png",
+        "/images/steel-mesh.png",
+        "/images/steel-profiles.png",
+        "/images/steel-bars.png"
+    };
+
+    private string VideoUrl => "https://www.youtube.com/embed/6cJ5QB0a4EA";
+
     protected override void OnInitialized()
     {
-        if (Slides.Count > 0)
-        {
-            autoPlayTimer = new System.Timers.Timer(5000);
-            autoPlayTimer.AutoReset = true;
-            autoPlayTimer.Elapsed += OnTimerElapsed;
-            autoPlayTimer.Start();
-        }
+        _timerToken = new CancellationTokenSource();
+        StartSlideShow(_timerToken.Token);
     }
 
-    private void OnTimerElapsed(object? sender, ElapsedEventArgs e)
+    private async void StartSlideShow(CancellationToken token)
     {
-        InvokeAsync(() =>
+        while (!token.IsCancellationRequested)
         {
+            await Task.Delay(5000, token);
             NextHeroSlide();
             StateHasChanged();
-        });
-    }
-
-    public void Dispose()
-    {
-        if (autoPlayTimer != null)
-        {
-            autoPlayTimer.Elapsed -= OnTimerElapsed;
-            autoPlayTimer.Stop();
-            autoPlayTimer.Dispose();
-            autoPlayTimer = null;
         }
     }
 
     private void NextHeroSlide() => CurrentSlideIndex = (CurrentSlideIndex + 1) % Slides.Count;
-    private void GoToSlide(int index) => CurrentSlideIndex = index;
+    private void SetSlide(int index) => CurrentSlideIndex = index;
+    private void NextProductSlide() => CurrentProductIndex = (CurrentProductIndex + 3) % Images.Length;
+    private void PrevProductSlide() => CurrentProductIndex = (CurrentProductIndex - 3 + Images.Length) % Images.Length;
 
-    <!-- How to Order Section -->
-    private string VideoUrl = "https://www.youtube.com/embed/6cJ5QB0a4EA?si=dxJq1Nemn2SuMRKS";
-    
-    
-    <!-- Products Section -->
-    private List<ProductItem> Products { get; } = new()
+    public void Dispose()
     {
-        new("เหล็กเส้น", "/images/steel-bars.png", "/products/steel-bars", false, true),
-        new("เหล็กแผ่น", "/images/steel-sheets.png", "/products/steel-sheets"),
-        new("เหล็กรูปพรรณ", "/images/steel-profiles.png", "/products/steel-profiles"),
-        new("เหล็กตะแกรง/ตาข่าย", "/images/steel-mesh.png", "/products/steel-mesh", true),
-        new("อื่นๆ", "/images/other-steel.png", "/products/other")
-    };
+        _timerToken?.Cancel();
+        _timerToken?.Dispose();
+    }
 
-
-    <!-- Product Examples -->
-    private string[] Images = { "/images/steel-show.png", "/images/steel-mesh.png", "/images/steel-profiles.png", "/images/steel-bars.png" };
-    private int CurrentIndex;
-    private void NextProductSlide() => CurrentIndex = (CurrentIndex + 3) % Images.Length;
-    private void PrevProductSlide() => CurrentIndex = (CurrentIndex - 3 + Images.Length) % Images.Length;
-    
-    record SlideItem(string ImageUrl, string AltText);
-    record ProductItem(string Name, string ImageUrl, string Url, bool IsWide = false, bool IsTall = false);
+    private record SlideItem(string ImageUrl, string AltText);
+    private record ProductItem(string Name, string ImageUrl, string Url);
 }
+
+
 
 <style>
 
@@ -229,8 +220,7 @@
             background-color: #6366F1;
         }
 
-
-    <!-- Products Section -->
+    /* Products Section */
     .products-section {
         background-color: var(--light-bg);
         padding: 40px 0;
@@ -287,7 +277,7 @@
         text-align: center;
     }
 
-    <!-- Product Examples -->
+    /* Product Examples */
     .slideshow-images-container {
         position: relative;
         display: flex;

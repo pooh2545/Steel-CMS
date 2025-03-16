@@ -1,7 +1,5 @@
 ﻿@page "/products"
 
-
-
 <div class="container py-4">
     <h1 class="mb-4">สินค้า</h1>
 
@@ -10,17 +8,17 @@
         <div class="col-md-3">
             <div class="filter-section">
                 <div class="mb-3">
-                    <button class="btn btn-link text-primary p-0 mb-2">ล้างทั้งหมด</button>
+                    <button class="btn btn-link text-primary p-0 mb-2" @onclick="ClearFilters">ล้างทั้งหมด</button>
                 </div>
 
                 <div class="mb-4">
                     <h5 class="mb-3">ราคา</h5>
                     <div class="d-flex gap-2 mb-2">
-                        <input type="number" class="form-control" placeholder="200.00" @bind="@minPrice" />
-                        <span class="align-self-center">ถึง</span>
-                        <input type="number" class="form-control" placeholder="2000.00" @bind="@maxPrice" />
+                        <input type="number" id="minPrice" class="form-control" placeholder="0.00" min="0"
+                               value="@minPriceString" @oninput="OnMinPriceChange" />
+                        <input type="number" id="maxPrice" class="form-control" placeholder="0.00" min="0"
+                               value="@maxPriceString" @oninput="OnMaxPriceChange" />
                     </div>
-                    <button class="btn btn-primary w-100" @onclick="ApplyPriceFilter">ค้นหา</button>
                 </div>
 
                 <div class="mb-4">
@@ -28,31 +26,23 @@
                     @foreach (var category in categories)
                     {
                         <div class="form-check mb-2">
-                            <input class="form-check-input" type="checkbox"
-                                   @bind="@category.IsSelected"
-                                   id="@category.Id" />
-                            <label class="form-check-label" for="@category.Id">
-                                @category.Name
-                            </label>
+                            <input class="form-check-input" type="checkbox" id="@category.Id" checked="@category.Selected" @onchange="(e) => OnCategoryChange(category.Id, e.Value)" />
+                            <label class="form-check-label" for="@category.Id">@category.Name</label>
                         </div>
                     }
                 </div>
             </div>
         </div>
-        
+
         <!-- Products Grid -->
         <div class="col-md-9">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <div class="search-box">
-                    <input type="text" class="form-control" placeholder="ค้นหาสินค้า..."
-                           @bind="@searchQuery" @bind:event="oninput" />
-                    <button class="search-button">
-                        <i class="bi bi-search"></i>
-                    </button>
+                    <input type="text" class="form-control" placeholder="ค้นหาสินค้า..." value="@searchQuery" @oninput="OnSearchChange" />
                 </div>
                 <div class="d-flex align-items-center gap-2">
                     <span>จัดเรียงโดย</span>
-                    <select class="form-select" @bind="@sortOrder">
+                    <select class="form-select" value="@sortOrder" @onchange="OnSortChange">
                         <option value="latest">ล่าสุด</option>
                         <option value="price-asc">ราคา ต่ำ-สูง</option>
                         <option value="price-desc">ราคา สูง-ต่ำ</option>
@@ -70,9 +60,7 @@
                                 <h3 class="product-title">@product.Name</h3>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <span class="product-price">฿@product.Price.ToString("F2")</span>
-                                    <button class="btn btn-primary" @onclick="() => AddToCart(product)">
-                                        เพิ่มลงตะกร้าสินค้า
-                                    </button>
+                                    <button class="btn btn-primary">เพิ่มลงตะกร้าสินค้า</button>
                                 </div>
                             </div>
                         </div>
@@ -84,83 +72,141 @@
 </div>
 
 @code {
-    private string searchQuery = "";
-    private decimal minPrice = 200.00M;
-    private decimal maxPrice = 2000.00M;
-    private string sortOrder = "latest";
+    private string minPriceString;
+    private string maxPriceString;
 
+    
     private List<Category> categories = new()
     {
-        new Category { Id = "1", Name = "เหล็กเส้น", IsSelected = true },
-        new Category { Id = "2", Name = "เหล็กแผ่น", IsSelected = false },
-        new Category { Id = "3", Name = "เหล็กรูปพรรณ", IsSelected = false },
-        new Category { Id = "4", Name = "เหล็กตะแกรง/ตาข่าย", IsSelected = false },
-        new Category { Id = "5", Name = "อื่นๆ", IsSelected = false }
+        new Category("1", "เหล็กเส้น"),
+        new Category("2", "เหล็กแผ่น"),
+        new Category("3", "เหล็กรูปพรรณ"),
+        new Category("4", "เหล็กตะแกรง/ตาข่าย"),
+        new Category("5", "อื่นๆ")
     };
 
     private List<Product> products = new()
     {
-        new Product
-        {
-            Id = "1",
-            Name = "เหล็กเส้นกลม SR24 12 มม.",
-            Price = 450.00M,
-            ImageUrl = "images/steel-rod-12mm.jpg"
-        },
-        new Product
-        {
-            Id = "2",
-            Name = "เหล็กเส้นกลม SR24 9 มม.",
-            Price = 300.00M,
-            ImageUrl = "images/steel-rod-9mm.jpg"
-        },
-        new Product
-        {
-            Id = "3",
-            Name = "เหล็กเส้นกลม SR24 6 มม.",
-            Price = 230.00M,
-            ImageUrl = "images/steel-rod-6mm.jpg"
-        }
+        new Product("1", "เหล็กเส้น", 100.00M, "/images/steel-bars.png", "1"),
+        new Product("2", "เหล็กแผ่น", 200.00M, "/images/steel-sheets.png", "2"),
+        new Product("3", "เหล็กรูปพรรณ", 150.00M, "/images/steel-profiles.png", "3"),
+        new Product("4", "เหล็กตะแกรง", 120.00M, "/images/steel-mesh.png", "4"),
+        new Product("5", "อื่นๆ", 180.00M, "/images/other-steel.png", "5")
     };
 
-    private List<Product> filteredProducts => products
-        .Where(p => string.IsNullOrEmpty(searchQuery) ||
-                   p.Name.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
-        .Where(p => p.Price >= minPrice && p.Price <= maxPrice)
-        .OrderBy(p => sortOrder switch
+    private List<Product> filteredProducts;
+    private string searchQuery = string.Empty;
+    private decimal minPrice = 0;
+    private decimal maxPrice = decimal.MaxValue;
+    private string sortOrder = "latest";
+
+    protected override void OnInitialized()
+    {
+        if (products.Any())
         {
-            "price-asc" => p.Price,
-            "price-desc" => -p.Price,
-            _ => 0
-        })
-        .ToList();
+            minPrice = products.Min(p => p.Price);
+            maxPrice = products.Max(p => p.Price);
+        }
 
-    private void ApplyPriceFilter()
-    {
-        // Trigger re-render
-        StateHasChanged();
+        minPriceString = minPrice.ToString("F2");
+        maxPriceString = maxPrice.ToString("F2");
+
+        FilterProducts();
     }
 
-    private void AddToCart(Product product)
+    private void FilterProducts()
     {
-        // Implement add to cart logic
+        filteredProducts = products
+            .Where(p =>
+                (string.IsNullOrEmpty(searchQuery) || p.Name.Contains(searchQuery, StringComparison.OrdinalIgnoreCase)) &&
+                p.Price >= minPrice && p.Price <= maxPrice &&
+                (categories.Any(c => c.Selected && c.Id == p.CategoryId) || !categories.Any(c => c.Selected)))
+            .ToList();
+
+        switch (sortOrder)
+        {
+            case "price-asc":
+                filteredProducts = filteredProducts.OrderBy(p => p.Price).ToList();
+                break;
+            case "price-desc":
+                filteredProducts = filteredProducts.OrderByDescending(p => p.Price).ToList();
+                break;
+            case "latest":
+                filteredProducts = filteredProducts.OrderByDescending(p => p.Name).ToList();
+                break;
+        }
     }
 
-    public class Category
+    private void ClearFilters()
     {
-        public string Id { get; set; }
-        public string Name { get; set; }
-        public bool IsSelected { get; set; }
+        if (products.Any())
+        {
+            minPrice = products.Min(p => p.Price);
+            maxPrice = products.Max(p => p.Price);
+        }
+
+        minPriceString = minPrice.ToString("F2");
+        maxPriceString = maxPrice.ToString("F2");
+
+        searchQuery = string.Empty;
+
+        foreach (var category in categories)
+        {
+            category.Selected = false;
+        }
+
+        FilterProducts();
     }
 
-    public class Product
+
+
+    private void OnSearchChange(ChangeEventArgs e)
     {
-        public string Id { get; set; }
-        public string Name { get; set; }
-        public decimal Price { get; set; }
-        public string ImageUrl { get; set; }
+        searchQuery = e.Value.ToString();
+        FilterProducts();
     }
+
+    private void OnSortChange(ChangeEventArgs e)
+    {
+        sortOrder = e.Value.ToString();
+        FilterProducts();
+    }
+
+    private void OnCategoryChange(string categoryId, object selected)
+    {
+        var selectedCategory = categories.FirstOrDefault(c => c.Id == categoryId);
+        if (selectedCategory != null)
+        {
+            selectedCategory.Selected = (bool)selected;
+            FilterProducts();
+        }
+    }
+
+    private void OnMinPriceChange(ChangeEventArgs e)
+    {
+        minPriceString = e.Value?.ToString() ?? "0";
+        if (decimal.TryParse(minPriceString, out var value))
+        {
+            minPrice = value;
+            FilterProducts();
+        }
+    }
+
+    private void OnMaxPriceChange(ChangeEventArgs e)
+    {
+        maxPriceString = e.Value?.ToString() ?? "0";
+        if (decimal.TryParse(maxPriceString, out var value))
+        {
+            maxPrice = value;
+            FilterProducts();
+        }
+    }
+
+
+    public record Category(string Id, string Name) { public bool Selected { get; set; } }
+    public record Product(string Id, string Name, decimal Price, string ImageUrl, string CategoryId);
 }
+
 
 <style>
     .filter-section {
@@ -168,26 +214,6 @@
         padding: 1.5rem;
         border-radius: 0.5rem;
         box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
-
-    .search-box {
-        position: relative;
-        width: 300px;
-    }
-
-        .search-box input {
-            padding-right: 40px;
-        }
-
-    .search-button {
-        position: absolute;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        width: 40px;
-        background: none;
-        border: none;
-        color: #6366F1;
     }
 
     .product-card {
