@@ -1,0 +1,177 @@
+﻿@page "/orders"
+
+<div class="orders-page">
+    <div class="page-header">
+        <h1>Orders Management</h1>
+        <div class="actions">
+            <button class="btn btn-primary" @onclick="CreateNewOrder">Create New Order</button>
+            <button class="btn btn-secondary" @onclick="ExportOrders">Export</button>
+        </div>
+    </div>
+
+    <div class="filters">
+        <div class="filter-group">
+            <label for="statusFilter">Status:</label>
+            <select id="statusFilter" @bind="StatusFilter">
+                <option value="">All Statuses</option>
+                <option value="Pending">Pending</option>
+                <option value="Processing">Processing</option>
+                <option value="Delivered">Delivered</option>
+                <option value="Cancelled">Cancelled</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label for="dateRange">Date Range:</label>
+            <input type="date" @bind="StartDate" />
+            <span>to</span>
+            <input type="date" @bind="EndDate" />
+        </div>
+        <div class="filter-group">
+            <label for="searchOrder">Search:</label>
+            <input type="text" id="searchOrder" @bind="OrderSearchQuery" placeholder="Order ID or customer..." />
+        </div>
+        <button class="btn btn-primary" @onclick="ApplyOrderFilters">Apply Filters</button>
+        <button class="btn btn-outline-secondary" @onclick="ResetOrderFilters">Reset</button>
+    </div>
+
+    <table class="orders-table">
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Order Date</th>
+                <th>Customer</th>
+                <th>Total Items</th>
+                <th>Total Weight</th>
+                <th>Total Amount</th>
+                <th>Status</th>
+                <th>Payment Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in Order)
+            {
+                <tr>
+                    <td>@order.OrderId</td>
+                    <td>@order.OrderDate.ToShortDateString()</td>
+                    <td>@order.CustomerName</td>
+                    <td>@order.TotalItems</td>
+                    <td>@order.TotalWeight tons</td>
+                    <td>$@order.TotalAmount.ToString("N2")</td>
+                    <td><span class="status @order.Status.ToLower()">@order.Status</span></td>
+                    <td><span class="payment-status @order.PaymentStatus.ToLower().Replace(" ", "-")">@order.PaymentStatus</span></td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn btn-sm btn-primary" @onclick="() => ViewOrderDetails(order.OrderId)">View</button>
+                            <button class="btn btn-sm btn-warning" @onclick="() => UpdateOrderStatus(order.OrderId)">Update</button>
+                            <button class="btn btn-sm btn-danger" @onclick="() => CancelOrder(order.OrderId)">Cancel</button>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="pagination">
+        <button class="btn btn-sm btn-outline-primary" @onclick="PreviousOrderPage" disabled="@(CurrentOrderPage == 1)">Previous</button>
+        <span>Page @CurrentOrderPage of @TotalOrderPages</span>
+        <button class="btn btn-sm btn-outline-primary" @onclick="NextOrderPage" disabled="@(CurrentOrderPage == TotalOrderPages)">Next</button>
+    </div>
+</div>
+
+@code {
+    private List<OrderDetailViewModel> Order { get; set; } = new List<OrderDetailViewModel>();
+    private string StatusFilter { get; set; } = "";
+    private DateTime StartDate { get; set; } = DateTime.Now.AddMonths(-1);
+    private DateTime EndDate { get; set; } = DateTime.Now;
+    private string OrderSearchQuery { get; set; } = "";
+    private int CurrentOrderPage { get; set; } = 1;
+    private int TotalOrderPages { get; set; } = 3;
+
+    protected override void OnInitialized()
+    {
+        LoadOrders();
+    }
+
+    private void LoadOrders()
+    {
+        // In a real application, this would come from a service or API
+        Order = new List<OrderDetailViewModel>
+        {
+            new OrderDetailViewModel { OrderId = "ORD-2025-1432", OrderDate = new DateTime(2025, 3, 15), CustomerName = "Steel Industries Ltd", TotalItems = 3, TotalWeight = 25.5m, TotalAmount = 34250.00m, Status = "Pending", PaymentStatus = "Awaiting Payment" },
+            new OrderDetailViewModel { OrderId = "ORD-2025-1431", OrderDate = new DateTime(2025, 3, 14), CustomerName = "MetalCraft Co", TotalItems = 2, TotalWeight = 18.2m, TotalAmount = 21780.50m, Status = "Delivered", PaymentStatus = "Paid" },
+            new OrderDetailViewModel { OrderId = "ORD-2025-1430", OrderDate = new DateTime(2025, 3, 12), CustomerName = "Construction Alliance", TotalItems = 5, TotalWeight = 42.8m, TotalAmount = 65320.75m, Status = "Processing", PaymentStatus = "Partially Paid" },
+            new OrderDetailViewModel { OrderId = "ORD-2025-1429", OrderDate = new DateTime(2025, 3, 10), CustomerName = "Bridge Builders Inc", TotalItems = 1, TotalWeight = 10.5m, TotalAmount = 12540.25m, Status = "Delivered", PaymentStatus = "Paid" },
+            new OrderDetailViewModel { OrderId = "ORD-2025-1428", OrderDate = new DateTime(2025, 3, 8), CustomerName = "Welding Pros", TotalItems = 2, TotalWeight = 8.2m, TotalAmount = 8750.00m, Status = "Pending", PaymentStatus = "Awaiting Payment" },
+            new OrderDetailViewModel { OrderId = "ORD-2025-1427", OrderDate = new DateTime(2025, 3, 5), CustomerName = "MetalWorks Ltd", TotalItems = 3, TotalWeight = 15.7m, TotalAmount = 18650.00m, Status = "Processing", PaymentStatus = "Partially Paid" },
+            new OrderDetailViewModel { OrderId = "ORD-2025-1426", OrderDate = new DateTime(2025, 3, 2), CustomerName = "City Construction Dept", TotalItems = 4, TotalWeight = 32.4m, TotalAmount = 38750.50m, Status = "Delivered", PaymentStatus = "Paid" },
+            new OrderDetailViewModel { OrderId = "ORD-2025-1425", OrderDate = new DateTime(2025, 2, 28), CustomerName = "Industrial Supplies Co", TotalItems = 2, TotalWeight = 12.5m, TotalAmount = 14280.75m, Status = "Cancelled", PaymentStatus = "Refunded" }
+        };
+    }
+
+    private void ApplyOrderFilters()
+    {
+        // Filter implementation would go here
+        // Reset to first page when applying filters
+        CurrentOrderPage = 1;
+    }
+
+    private void ResetOrderFilters()
+    {
+        StatusFilter = "";
+        StartDate = DateTime.Now.AddMonths(-1);
+        EndDate = DateTime.Now;
+        OrderSearchQuery = "";
+        CurrentOrderPage = 1;
+        LoadOrders();
+    }
+
+    private void CreateNewOrder()
+    {
+        // Navigate to create order page
+    }
+
+    private void ExportOrders()
+    {
+        // Export orders to Excel or PDF
+    }
+
+    private void ViewOrderDetails(string orderId)
+    {
+        // Navigate to order details page
+    }
+
+    private void UpdateOrderStatus(string orderId)
+    {
+        // Show status update modal
+    }
+
+    private void CancelOrder(string orderId)
+    {
+        // Confirm and cancel order
+    }
+
+    private void PreviousOrderPage()
+    {
+        if (CurrentOrderPage > 1)
+            CurrentOrderPage--;
+    }
+
+    private void NextOrderPage()
+    {
+        if (CurrentOrderPage < TotalOrderPages)
+            CurrentOrderPage++;
+    }
+
+    public class OrderDetailViewModel
+    {
+        public string OrderId { get; set; }
+        public DateTime OrderDate { get; set; }
+        public string CustomerName { get; set; }
+        public int TotalItems { get; set; }
+        public decimal TotalWeight { get; set; }
+        public decimal TotalAmount { get; set; }
+        public string Status { get; set; }
+        public string PaymentStatus { get; set; }
+    }
+}
