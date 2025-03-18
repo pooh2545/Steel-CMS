@@ -8,25 +8,25 @@
     <div class="tracking-steps">
         <div class="step completed">
             <div class="step-icon">
-                <i class="far fa-file-alt"></i>
+                <i class="fas fa-file-alt"></i>
             </div>
             <div class="step-line completed"></div>
         </div>
         <div class="step completed">
             <div class="step-icon">
-                <i class="far fa-clipboard"></i>
+                <i class="fas fa-clipboard-check"></i>
             </div>
             <div class="step-line completed"></div>
         </div>
         <div class="step completed">
             <div class="step-icon">
-                <i class="far fa-check-circle"></i>
+                <i class="fas fa-check-circle"></i>
             </div>
             <div class="step-line completed"></div>
         </div>
         <div class="step completed">
             <div class="step-icon">
-                <i class="far fa-file-invoice"></i>
+                <i class="fas fa-box"></i>
             </div>
             <div class="step-line completed"></div>
         </div>
@@ -34,7 +34,7 @@
             <div class="step-icon">
                 <i class="fas fa-truck"></i>
             </div>
-            <div class="step-line"></div>
+            <div class="step-line completed"></div>
         </div>
         <div class="step">
             <div class="step-icon">
@@ -43,38 +43,44 @@
         </div>
     </div>
 
-    <div class="payment-info">
-        <div class="payment-details">
-            <span class="payment-label">ชำระด้วย Flash</span>
-            <p>บัญชีธนาคารชื่อ TH12345678</p>
-            <p>หมายเลขบัญชีธนาคารชื่อ</p>
-            <p>หมายเลขมือถือ 081xxxxxxx</p>
+    <div class="info-section">
+        <div class="payment-info">
+            <div class="left-section">
+                <span class="payment-label">ชำระด้วย Flash</span>
+            </div>
+            <div class="middle-section">
+                <p>บัญชีธนาคารชื่อ TH12345678</p>
+                <p>หมายเลขบัญชีธนาคารชื่อ</p>
+                <p>หมายเลขมือถือ 081xxxxxxx</p>
+            </div>
+            <div class="right-section">
+                <button class="confirm-button">ยืนยันว่าได้รับแล้ว</button>
+            </div>
         </div>
-        <button class="confirm-button">ยืนยันว่าได้รับแล้ว</button>
     </div>
 
-    <div class="shipping-details-card">
+    <div class="card shipping-details-card">
         <div class="card-header">
             <i class="fas fa-map-marker-alt"></i>
             <span>ข้อมูลการจัดส่ง</span>
         </div>
-        <div class="shipping-content">
-            <div class="shipping-row">
-                <span class="recipient">จิราวัฒน์ สรรพวิทยา</span>
-                <span class="phone">095xxxxxxx</span>
+        <div class="card-content">
+            <div class="recipient-info">
+                <div class="recipient-name">จิราวัฒน์ สรรพวิทยา</div>
+                <div class="recipient-phone">095xxxxxxx</div>
             </div>
-            <div class="address">
+            <div class="recipient-address">
                 มหาวิทยาลัยเทคโนโลยีมหานคร 140 ถนนเชื่อมสัมพันธ์ แขวงกระทุ่มราย เขตหนองจอก กรุงเทพฯ 10530
             </div>
         </div>
     </div>
 
-    <div class="order-summary-card">
+    <div class="card order-summary-card">
         <div class="card-header">
             <i class="fas fa-shopping-cart"></i>
             <span>สรุปคำสั่งซื้อ</span>
         </div>
-        <div class="order-items">
+        <div class="card-content">
             <table class="order-table">
                 <thead>
                     <tr>
@@ -85,21 +91,21 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
+                    <tr class="product-row">
                         <td class="product-cell">
                             <img src="images/steel-bar.png" alt="เหล็กเส้นกลม" class="product-image" />
                             <span>เหล็กเส้นกลม SD40 12mm.</span>
                         </td>
-                        <td>฿450.00</td>
-                        <td>1</td>
-                        <td>฿450.00</td>
+                        <td class="price-cell">฿450.00</td>
+                        <td class="quantity-cell">1</td>
+                        <td class="subtotal-cell">฿450.00</td>
                     </tr>
                     <tr class="shipping-row">
-                        <td colspan="3">ค่าจัดส่ง</td>
-                        <td>฿50.00</td>
+                        <td colspan="3" class="shipping-label">ค่าจัดส่ง</td>
+                        <td class="shipping-cost">฿50.00</td>
                     </tr>
                     <tr class="total-row">
-                        <td colspan="3">รวม</td>
+                        <td colspan="3" class="total-label">รวม</td>
                         <td class="total-amount">฿500.00</td>
                     </tr>
                 </tbody>
@@ -109,13 +115,13 @@
 </div>
 
 @code {
-    // Component logic would go here
+    // Component logic if needed
 }
 
 <style>
-    /* Order Tracking Styles */
+    /* Order Tracking Styles - Revised to match first design */
     .order-tracking-container {
-        max-width: 1000px;
+        max-width: 1200px;
         margin: 0 auto;
         padding: 20px;
         font-family: 'Prompt', sans-serif;
@@ -127,6 +133,7 @@
         font-size: 24px;
         font-weight: 600;
         margin-bottom: 10px;
+        color: #000;
     }
 
     .order-number, .order-date {
@@ -149,11 +156,9 @@
     .tracking-steps {
         display: flex;
         justify-content: space-between;
-        margin: 30px 0;
+        margin: 30px auto;
         position: relative;
         max-width: 800px;
-        margin-left: auto;
-        margin-right: auto;
     }
 
     .step {
@@ -169,13 +174,12 @@
         width: 40px;
         height: 40px;
         border-radius: 50%;
-        background-color: #E1E1FF;
+        background-color: #E8E9FD;
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: 16px;
-        color: #A0A0A0;
-        transition: all 0.3s ease;
+        color: #6C6C6C;
     }
 
     .step.completed .step-icon {
@@ -186,7 +190,7 @@
     .step-line {
         position: absolute;
         height: 2px;
-        background-color: #E1E1FF;
+        background-color: #E8E9FD;
         width: 100%;
         top: 20px;
         left: 50%;
@@ -197,89 +201,107 @@
             background-color: #5352ED;
         }
 
-    /* Payment Info */
-    .payment-info {
-        background-color: #F8F9FA;
-        border-radius: 8px;
-        padding: 15px;
+    /* Payment Info Section */
+    .info-section {
         margin: 20px 0;
+    }
+
+    .payment-info {
+        background-color: #F5F6FA;
+        border-radius: 6px;
+        padding: 15px;
         display: flex;
         justify-content: space-between;
         align-items: center;
     }
 
-    .payment-label {
-        font-weight: 500;
-        color: #666;
+    .left-section {
+        width: 20%;
     }
 
-    .payment-details {
+    .middle-section {
+        width: 60%;
         text-align: left;
     }
 
-        .payment-details p {
-            margin: 3px 0;
-            font-size: 14px;
-            color: #777;
+    .right-section {
+        width: 20%;
+        text-align: right;
+    }
+
+    .payment-label {
+        font-weight: 500;
+        color: #444;
+    }
+
+    .middle-section p {
+        margin: 5px 0;
+        font-size: 14px;
+        color: #666;
+    }
+
+        .middle-section p:first-child {
+            color: #5352ED;
         }
 
     .confirm-button {
         background-color: #5352ED;
         color: white;
         border: none;
-        padding: 10px 20px;
-        border-radius: 4px;
+        padding: 10px 16px;
+        border-radius: 6px;
         cursor: pointer;
         font-family: 'Prompt', sans-serif;
         font-size: 14px;
+        font-weight: 500;
     }
 
     /* Cards */
-    .shipping-details-card, .order-summary-card {
-        border: 1px solid #EAEAEA;
+    .card {
+        border: 1px solid #E0E0E0;
         border-radius: 8px;
         margin-bottom: 20px;
-        overflow: hidden;
+        background-color: #fff;
         box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     }
 
     .card-header {
-        background-color: #FFFFFF;
         padding: 15px;
-        border-bottom: 1px solid #EAEAEA;
+        border-bottom: 1px solid #E0E0E0;
         font-weight: 500;
-        display: flex;
-        align-items: center;
     }
 
         .card-header i {
             margin-right: 10px;
-            color: #666;
+            color: #5352ED;
         }
 
-    .shipping-content, .order-items {
+    .card-content {
         padding: 15px;
-        background-color: #FFFFFF;
     }
 
-    .shipping-row {
+    /* Shipping Details */
+    .shipping-details-card .card-content {
+        padding: 15px;
+    }
+
+    .recipient-info {
         display: flex;
-        margin-bottom: 5px;
+        margin-bottom: 10px;
     }
 
-    .recipient {
+    .recipient-name {
         font-weight: 500;
-        margin-right: 15px;
+        margin-right: 20px;
     }
 
-    .phone {
+    .recipient-phone {
         color: #666;
     }
 
-    .address {
+    .recipient-address {
         color: #666;
-        margin-top: 5px;
-        line-height: 1.4;
+        line-height: 1.5;
     }
 
     /* Order Table */
@@ -290,15 +312,15 @@
 
         .order-table th {
             text-align: left;
-            padding: 12px 15px;
-            border-bottom: 1px solid #EAEAEA;
+            padding: 10px;
             font-weight: 500;
-            color: #555;
+            color: #444;
+            border-bottom: 1px solid #E0E0E0;
         }
 
         .order-table td {
-            padding: 15px;
-            border-bottom: 1px solid #EAEAEA;
+            padding: 15px 10px;
+            vertical-align: middle;
         }
 
     .product-cell {
@@ -307,26 +329,49 @@
     }
 
     .product-image {
-        width: 60px;
-        height: 40px;
+        width: 50px;
+        height: 30px;
         object-fit: contain;
         margin-right: 15px;
     }
 
-    .shipping-row td {
-        padding: 12px 15px;
-        color: #666;
-        text-align: left;
+    .price-cell, .quantity-cell {
+        color: #444;
     }
 
-    .total-row td {
-        padding: 12px 15px;
+    .subtotal-cell {
+        font-weight: 500;
+        color: #444;
+    }
+
+    .shipping-row {
+        border-top: 1px solid #E0E0E0;
+    }
+
+    .shipping-label {
+        text-align: left;
+        padding: 10px;
+        color: #444;
+    }
+
+    .shipping-cost {
+        font-weight: 500;
+        color: #444;
+    }
+
+    .total-row {
+        border-top: 1px solid #E0E0E0;
+    }
+
+    .total-label {
+        text-align: left;
+        padding: 10px;
         font-weight: 500;
     }
 
     .total-amount {
-        color: #5352ED;
         font-weight: 600;
+        color: #5352ED;
     }
 
-</style>
+</style>                        

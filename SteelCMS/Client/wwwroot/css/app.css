@@ -1,27 +1,24 @@
 ﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css");
 
-/* For small screens */
+/* Responsive styles */
 @media (max-width: 768px) {
     .payment-info {
         flex-direction: column;
+    }
+
+    .left-section, .middle-section, .right-section {
+        width: 100%;
         text-align: center;
+        margin-bottom: 10px;
     }
 
-    .payment-details {
-        margin-bottom: 15px;
-    }
-
-    .tracking-steps {
-        overflow-x: auto;
-        padding-bottom: 10px;
-    }
-
-    .shipping-row {
+    .recipient-info {
         flex-direction: column;
     }
 
-    .recipient, .phone {
+    .recipient-name {
+        margin-right: 0;
         margin-bottom: 5px;
     }
 }
