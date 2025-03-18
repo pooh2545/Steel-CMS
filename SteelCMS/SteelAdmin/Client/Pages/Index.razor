@@ -1,0 +1,139 @@
+﻿@page "/"
+@attribute [Authorize(Roles = "Admin")]
+@inject IUserService UserService
+@inject NavigationManager NavigationManager
+
+<h3>จัดการผู้ใช้งาน</h3>
+
+<div class="card">
+    <div class="card-header d-flex justify-between align-center">
+        <div>รายการผู้ใช้งานทั้งหมด</div>
+        <button class="btn btn-primary btn-sm" @onclick="@(() => NavigationManager.NavigateTo("/users/create"))">
+            <i class="oi oi-plus"></i> เพิ่มผู้ใช้งานใหม่
+        </button>
+    </div>
+    <div class="card-body">
+        @if (loading)
+        {
+            <div class="text-center">
+                <div class="spinner-border" role="status">
+                    <span class="sr-only">กำลังโหลด...</span>
+                </div>
+            </div>
+        }
+        else if (users == null || !users.Any())
+        {
+            <div class="alert alert-info">
+                ไม่พบข้อมูลผู้ใช้งาน
+            </div>
+        }
+        else
+        {
+            <div class="table-container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ชื่อผู้ใช้</th>
+                            <th>ชื่อ-นามสกุล</th>
+                            <th>อีเมล</th>
+                            <th>ตำแหน่ง</th>
+                            <th>สถานะ</th>
+                            <th>เข้าสู่ระบบล่าสุด</th>
+                            <th>จัดการ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in users)
+                        {
+                            <tr>
+                                <td>@user.Username</td>
+                                <td>@user.FirstName @user.LastName</td>
+                                <td>@user.Email</td>
+                                <td>
+                                    @switch (user.Role)
+                                    {
+                                        case "Admin":
+                                            <span class="badge bg-primary">ผู้ดูแลระบบ</span>
+                                            break;
+                                        case "Employee":
+                                            <span class="badge bg-info">พนักงาน</span>
+                                            break;
+                                    }
+                                </td>
+                                <td>
+                                    @if (user.IsActive)
+                                    {
+                                        <span class="badge bg-success">ใช้งาน</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">ปิดใช้งาน</span>
+                                    }
+                                </td>
+                                <td>
+                                    @(user.LastLogin.HasValue ? user.LastLogin.Value.ToString("dd/MM/yyyy HH:mm") : "-")
+                                </td>
+                                <td>
+                                    <div class="btn-group">
+                                        <button class="btn btn-sm btn-primary" @onclick="@(() => NavigateToEdit(user.Id))">
+                                            <i class="oi oi-pencil"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-danger" @onclick="@(() => DeleteUser(user.Id))">
+                                            <i class="oi oi-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private List<User> users;
+    private bool loading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadUsers();
+    }
+
+    private async Task LoadUsers()
+    {
+        loading = true;
+        try
+        {
+            users = await UserService.GetUsersAsync();
+        }
+        catch (Exception)
+        {
+            // จัดการข้อผิดพลาด
+        }
+        finally
+        {
+            loading = false;
+        }
+    }
+
+    private void NavigateToEdit(int id)
+    {
+        NavigationManager.NavigateTo($"/users/edit/{id}");
+    }
+
+    private async Task DeleteUser(int id)
+    {
+        // ในสถานการณ์จริง ควรแสดงกล่องยืนยันก่อนลบ
+        try
+        {
+            await UserService.DeleteUserAsync(id);
+            await LoadUsers();
+        }
+        catch (Exception)
+        {
+            // จัดการข้อผิดพลาด
+        }
+    }
+}

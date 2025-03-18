@@ -1,29 +1,75 @@
-﻿@inherits LayoutComponentBase
+﻿@using SteelAdmin.Client
+@inherits LayoutComponentBase
+@inject AuthenticationStateProvider AuthStateProvider
+@inject NavigationManager NavigationManager
 
-<div class="page">
-    <div class="sidebar">
-        <div class="logo-container">
-            <img src="/images/logo.png" alt="Logo" class="logo" />
-        </div>
-        <Admin_NavMenu />
-    </div>
-
-    <main>
-        <div class="top-row">
-            <div class="search-container">
-                <i class="fas fa-search"></i>
-                <input type="text" placeholder="ค้นหาที่นี่..." />
+<div class="main-layout">
+    <AuthorizeView>
+        <Authorized>
+            <div class="sidebar @SidebarCssClass">
+                <div class="sidebar-header">
+                    <h3>ระบบจัดการสินค้า</h3>
+                </div>
             </div>
-            <div class="user-info">
-                <i class="fas fa-bell notification-icon"></i>
-                <img src="/images/noprofilepic.jpg" alt="User" class="avatar" />
-                <span class="user-name">Amanda Smith</span>
-                <i class="fas fa-chevron-down dropdown-icon"></i>
-            </div>
-        </div>
+        </Authorized>
+    </AuthorizeView>
 
-        <article class="content">
+    <div class="main-content">
+        <AuthorizeView>
+            <Authorized>
+                <div class="top-bar">
+                    <button class="toggle-sidebar" @onclick="ToggleSidebar">
+                        <i class="oi oi-menu"></i>
+                    </button>
+                    <div class="user-dropdown">
+                        <div class="dropdown">
+                            <button class="btn dropdown-toggle" type="button" @onclick="ToggleUserMenu">
+                                <i class="oi oi-person"></i> @context?.User.Identity?.Name
+                            </button>
+                            <div class="dropdown-menu @UserMenuCssClass">
+                                <a class="dropdown-item" href="/profile">โปรไฟล์</a>
+                                <a class="dropdown-item" href="/change-password">เปลี่ยนรหัสผ่าน</a>
+                                <div class="dropdown-divider"></div>
+                                <button class="dropdown-item" @onclick="Logout">ออกจากระบบ</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </Authorized>
+            <NotAuthorized>
+                <div class="anonymous-top-bar">
+                    <h3>ระบบจัดการสินค้า</h3>
+                </div>
+            </NotAuthorized>
+        </AuthorizeView>
+
+        <div class="content">
             @Body
-        </article>
-    </main>
+        </div>
+    </div>
 </div>
+
+@code {
+    private bool sidebarOpen = true;
+    private bool userMenuOpen = false;
+
+    private string SidebarCssClass => sidebarOpen ? "open" : "";
+    private string UserMenuCssClass => userMenuOpen ? "show" : "";
+
+    private void ToggleSidebar()
+    {
+        sidebarOpen = !sidebarOpen;
+    }
+
+    private void ToggleUserMenu()
+    {
+        userMenuOpen = !userMenuOpen;
+    }
+
+    private async Task Logout()
+    {
+        var authStateProvider = (CustomAuthStateProvider)AuthStateProvider;
+        authStateProvider.MarkUserAsLoggedOut();
+        NavigationManager.NavigateTo("/login");
+    }
+}

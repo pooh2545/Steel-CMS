@@ -1,35 +1,57 @@
-﻿
+﻿@using SteelAdmin.Client
+@inject AuthenticationStateProvider AuthStateProvider
 
-<nav class="nav-menu">
-    <a href="" class="nav-item active">
-        <i class="fas fa-chart-bar"></i>
-        <span>แดชบอร์ด</span>
-    </a>
-    <a href="orders" class="nav-item active">
-        <i class="fas fa-chart-bar"></i>
-        <span>ออเด้อ</span>
-    </a>
-    <a href="inventory" class="nav-item">
-        <i class="fas fa-boxes"></i>
-        <span>สต๊อกสินค้า</span>
-    </a>
-    <a href="sales" class="nav-item">
-        <i class="fas fa-shopping-cart"></i>
-        <span>สินค้า</span>
-    </a>
-    <a href="crm" class="nav-item">
-        <i class="fas fa-users"></i>
-        <span>CRM</span>
-    </a>
-</nav>
+<div class="nav-menu">
+    <AuthorizeView>
+        <Authorized>
+            <div class="nav-item @ActiveCssClass("/")" @onclick="@(() => NavigateToPage("/"))">
+                <i class="oi oi-dashboard"></i> หน้าแรก
+            </div>
+            
+            <div class="nav-item @ActiveCssClass("/products")" @onclick="@(() => NavigateToPage("/products"))">
+                <i class="oi oi-box"></i> จัดการสินค้า
+            </div>
+            
+            <div class="nav-item @ActiveCssClass("/orders")" @onclick="@(() => NavigateToPage("/orders"))">
+                <i class="oi oi-cart"></i> จัดการคำสั่งซื้อ
+            </div>
+            
+            <div class="nav-item @ActiveCssClass("/content")" @onclick="@(() => NavigateToPage("/content"))">
+                <i class="oi oi-document"></i> จัดการคอนเทนต์
+            </div>
+            
+            <AuthorizeView Roles="Admin">
+                <Authorized Context="adminContext">
+                    <div class="nav-item @ActiveCssClass("/users")" @onclick="@(() => NavigateToPage("/users"))">
+                        <i class="oi oi-people"></i> จัดการผู้ใช้
+                    </div>
+                    
+                    <div class="nav-item @ActiveCssClass("/reports")" @onclick="@(() => NavigateToPage("/reports"))">
+                        <i class="oi oi-graph"></i> รายงาน
+                    </div>
+                </Authorized>
+            </AuthorizeView>
+        </Authorized>
+    </AuthorizeView>
+</div>
 
 @code {
-    private bool collapseNavMenu = true;
+    [Inject]
+    private NavigationManager NavigationManager { get; set; }
 
-    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
-    private void ToggleNavMenu()
+    private string GetCurrentUri()
     {
-        collapseNavMenu = !collapseNavMenu;
+        return NavigationManager.Uri.Replace(NavigationManager.BaseUri, "/");
+    }
+
+    private string ActiveCssClass(string href)
+    {
+        var currentUri = GetCurrentUri();
+        return currentUri.StartsWith(href) ? "active" : "";
+    }
+
+    private void NavigateToPage(string href)
+    {
+        NavigationManager.NavigateTo(href);
     }
 }

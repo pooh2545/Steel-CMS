@@ -1,26 +1,27 @@
-<!DOCTYPE html>
-<html lang="en">
-
+<html lang="th">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>SteelAdmin</title>
+    <title>ระบบจัดการสินค้า</title>
     <base href="/" />
     <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
     <link href="css/app.css" rel="stylesheet" />
-    <link href="SteelAdmin.Client.styles.css" rel="stylesheet" />
-    <link href="css/site.css" rel="stylesheet" />
+    <link href="ProductManagement.styles.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
-
 <body>
-    <div id="app">Loading...</div>
+    <div id="app">
+        <div class="loading-container">
+            <div class="loading-spinner"></div>
+            <div>กำลังโหลด...</div>
+        </div>
+    </div>
 
     <div id="blazor-error-ui">
-        An unhandled error has occurred.
-        <a href="" class="reload">Reload</a>
+        เกิดข้อผิดพลาด โปรดรีเฟรชหน้านี้ หรือติดต่อผู้ดูแลระบบ
+        <a href="" class="reload">รีเฟรช</a>
         <a class="dismiss">🗙</a>
     </div>
     <script src="_framework/blazor.webassembly.js"></script>
 </body>
-
 </html>

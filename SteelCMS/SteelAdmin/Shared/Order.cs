@@ -1,14 +1,39 @@
-﻿public class Order
+﻿using System.ComponentModel.DataAnnotations;
+
+public class Order
 {
-    public string OrderId { get; set; }
-    public DateTime OrderDate { get; set; }
+    public int Id { get; set; }
+
+    [Required]
     public string CustomerName { get; set; }
-    public string CustomerContact { get; set; }
-    public string DeliveryAddress { get; set; }
-    public DateTime EstimatedDeliveryDate { get; set; }
-    public string Status { get; set; }
-    public string PaymentStatus { get; set; }
+
+    [Required]
+    [EmailAddress]
+    public string CustomerEmail { get; set; }
+
+    [Required]
+    public string CustomerPhone { get; set; }
+
+    [Required]
+    public string ShippingAddress { get; set; }
+
     public decimal TotalAmount { get; set; }
+
+    public string PaymentStatus { get; set; } // Pending, Completed, Failed
+
+    public string OrderStatus { get; set; } // New, Processing, Shipped, Delivered, Cancelled
+
+    public string PaymentMethod { get; set; }
+
+    public string TransactionId { get; set; }
+
+    public string PaymentEvidence { get; set; } // URL to payment slip image
+
     public List<OrderItem> Items { get; set; } = new List<OrderItem>();
-    public string Notes { get; set; }
+
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
+
+    public DateTime? UpdatedAt { get; set; }
+
+    public string UpdatedBy { get; set; }
 }

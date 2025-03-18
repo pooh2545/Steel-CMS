@@ -1,10 +1,16 @@
 ﻿public class OrderItem
 {
     public int Id { get; set; }
-    public int SteelItemId { get; set; }
-    public string ItemName { get; set; }
-    public decimal Quantity { get; set; }
-    public string Unit { get; set; }
-    public decimal UnitPrice { get; set; }
-    public decimal TotalPrice { get; set; }
+
+    public int OrderId { get; set; }
+
+    public int ProductId { get; set; }
+
+    public string ProductName { get; set; }
+
+    public decimal ProductPrice { get; set; }
+
+    public int Quantity { get; set; }
+
+    public decimal Subtotal { get; set; }
 }
