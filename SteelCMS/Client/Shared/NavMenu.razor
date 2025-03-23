@@ -8,6 +8,7 @@
 @inject IJSRuntime JSRuntime
 @inject NavigationManager Navigation
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject CartService CartService
 
 
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
@@ -114,8 +115,14 @@
                 </div>
 
                 <!-- Cart -->
-                <a class="nav-item me-3" href="cart">
+                <a class="nav-link position-relative" href="cart">
                     <img src="images/shopping-cart.png" alt="Shopping-cart" class="icon-size" />
+                    @if (cartCount > 0)
+                    {
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            @cartCount
+                        </span>
+                    }
                 </a>
 
                 <!-- Notification -->
@@ -171,6 +178,9 @@
     private bool isLoggedIn;
     private string userName = "";
 
+
+    private int cartCount = 0;
+
     // Notifications
     private List<string> notifications = new List<string>
     {
@@ -190,6 +200,9 @@
         // โหลดสถานะล็อกอินเริ่มต้น
         await LoadUserState();
         selectedLanguage = await LocalStorage.GetItemAsync<string>("language") ?? "TH";
+
+        CartService.OnCartChanged += UpdateCartCount;
+        UpdateCartCount();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -237,7 +250,16 @@
     public void Dispose()
     {
         AuthService.OnAuthStateChanged -= AuthStateChanged;
+        CartService.OnCartChanged -= UpdateCartCount;
     }
+
+    private void UpdateCartCount()
+    {
+        cartCount = CartService.GetCartCount();
+        InvokeAsync(StateHasChanged); // Refresh UI
+    }
+
+
 }
 
 <style>
@@ -282,7 +304,6 @@
 
     .nav-actions {
         display: flex;
-        gap: 1rem;
         align-items: center;
     }
 
@@ -295,9 +316,10 @@
         cursor: pointer;
     }
 
-    .icon-size{
+    .icon-size {
         width: 24px;
         height: 24px;
+        margin-right: 10px/* Adds a margin to the right of each icon */
     }
 
     .logo-icon {

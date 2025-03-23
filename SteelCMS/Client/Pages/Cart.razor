@@ -2,6 +2,7 @@
 @using Microsoft.AspNetCore.Components.Web
 @inject HttpClient Http
 @inject NavigationManager Navigation
+@inject CartService CartService
 
 @page "/cart"
 
@@ -74,19 +75,15 @@
                 <div class="card-body">
                     <div class="row mb-3">
                         <div class="col-6">ราคารวมสินค้า</div>
-                        <div class="col-6 text-end">฿450.00</div>
+                        <div class="col-6 text-end">฿@Total.ToString("N2")</div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-6">ค่าจัดส่ง</div>
-                        <div class="col-6 text-end">฿50.00</div>
+                        <div class="col-6 text-end">฿@shippingFee.ToString("N2")</div>
                     </div>
                     <div class="row">
-                        <div class="col-6">
-                            <strong>รวม</strong>
-                        </div>
-                        <div class="col-6 text-end text-primary">
-                            <strong>฿500.00</strong>
-                        </div>
+                        <div class="col-6"><strong>รวม</strong></div>
+                        <div class="col-6 text-end text-primary"><strong>฿@GrandTotal.ToString("N2")</strong></div>
                     </div>
                 </div>
                 <div class="card-footer bg-white">
@@ -100,36 +97,32 @@
 </div>
 
 @code {
-    private List<CartItem> cartItems = new()
+    private IReadOnlyList<CartItem> cartItems => CartService.GetItems();
+
+    protected override void OnInitialized()
     {
-        new CartItem
-        {
-            Id = 1,
-            Name = "เหล็กเส้นกลม SR24 12 มม.",
-            Price = 450.00m,
-            Quantity = 1,
-            ImageUrl = "images/steel-rod-12mm-thumb.jpg"
-        }
-    };
+        CartService.OnChange += StateHasChanged;
+    }
 
     private void RemoveItem(CartItem item)
     {
-        cartItems.Remove(item);
-        StateHasChanged();
+        CartService.RemoveItem(item);
     }
+
+    private decimal shippingFee = 50.00m;
+
+    private decimal Total => CartService.GetTotalPrice();
+    private decimal GrandTotal => Total + shippingFee;
 
     private void PlaceOrder()
     {
+        CartService.ClearCart();
         Navigation.NavigateTo("/checkout");
     }
 
-    private class CartItem
+    public void Dispose()
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public decimal Price { get; set; }
-        public int Quantity { get; set; }
-        public string ImageUrl { get; set; }
+        CartService.OnChange -= StateHasChanged;
     }
 }
 

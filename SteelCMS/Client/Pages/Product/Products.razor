@@ -1,5 +1,8 @@
 ﻿@page "/products"
 @page "/products/{categoryId}"
+@inject CartService CartService
+@using SteelCMS.Shared
+
 
 <div class="container py-4">
     <h1 class="mb-4">สินค้า</h1>
@@ -55,18 +58,18 @@
                 @foreach (var product in filteredProducts)
                 {
                     <div class="col-md-4 mb-4">
-                        <a href="/products/@product.Id" class="text-decoration-none">
-                            <div class="product-card">
+                        <div class="product-card">
+                            <a href="/products/@product.Id" class="text-decoration-none">
                                 <img src="@product.ImageUrl" class="product-image" alt="@product.Name" />
                                 <div class="product-info">
                                     <h3 class="product-title">@product.Name</h3>
                                     <div class="d-flex justify-content-between align-items-center">
                                         <span class="product-price">฿@product.Price.ToString("F2")</span>
-                                        <button class="btn btn-primary">เพิ่มลงตะกร้าสินค้า</button>
                                     </div>
                                 </div>
-                            </div>
-                        </a>
+                            </a>
+                            <button class="btn btn-primary" @onclick="() => AddToCart(product)">เพิ่มลงตะกร้าสินค้า</button>
+                        </div>
                     </div>
                 }
             </div>
@@ -81,7 +84,7 @@
     [Parameter]
     public string CategoryId { get; set; }
 
-    
+
     private List<Category> categories = new()
     {
         new Category("1", "เหล็กเส้น"),
@@ -91,7 +94,7 @@
         new Category("5", "อื่นๆ")
     };
 
-    private  List<Product> products = new()
+    private List<Product> products = new()
     {
         new Product("1", "เหล็กเส้น", 100.00M, "/images/steel-bars.png", "1"),
         new Product("2", "เหล็กแผ่น", 200.00M, "/images/steel-sheets.png", "2"),
@@ -231,10 +234,14 @@
         }
     }
 
+    private void AddToCart(Product product)
+    {
+        CartService.AddToCart(product);
+    }
 
     public record Category(string Id, string Name) { public bool Selected { get; set; } }
-    public record Product(string Id, string Name, decimal Price, string ImageUrl, string CategoryId);
 }
+
 
 
 <style>
@@ -249,8 +256,11 @@
         background: white;
         border-radius: 0.5rem;
         overflow: hidden;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         transition: transform 0.2s ease-in-out;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
     }
 
         .product-card:hover {
@@ -267,11 +277,12 @@
 
     .product-info {
         padding: 1rem;
+        flex-grow: 1;
     }
 
     .product-title {
         font-size: 1rem;
-        margin-bottom: 1rem;
+        margin-bottom: 0.5rem;
         color: #1a1a1a;
     }
 
@@ -284,8 +295,12 @@
     .btn-primary {
         background-color: #6366F1;
         border-color: #6366F1;
-        font-size: 0.875rem;
-        padding: 0.5rem 1rem;
+        font-size: 1rem;
+        padding: 0.75rem 1rem;
+        width: 100%;
+        margin-top: auto; /* Ensures the button stays at the bottom of the card */
+        border-radius: 0 0 0.5rem 0.5rem; /* Rounded corners on the bottom */
+        transition: background-color 0.3s ease;
     }
 
         .btn-primary:hover {
@@ -297,4 +312,5 @@
         background-color: #6366F1;
         border-color: #6366F1;
     }
+
 </style>

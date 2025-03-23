@@ -1,5 +1,6 @@
 ﻿@page "/checkout"
 @using System.Collections.Generic
+@inject CartService CartService
 
 <div class="checkout-container">
     <h1 class="checkout-title">ชำระเงิน</h1>
@@ -34,27 +35,30 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td class="product-details">
-                            <div class="product-image">
-                                <img src="images/steel-bars.png" alt="สกรีมไม้มอบ SD40 12mm" />
-                            </div>
-                            <div class="product-name">สกรีมไม้มอบ SD40 12mm.</div>
-                        </td>
-                        <td class="price">฿450.00</td>
-                        <td class="quantity">1</td>
-                        <td class="total">฿450.00</td>
-                    </tr>
+                    @foreach (var item in cartItems)
+                    {
+                        <tr>
+                            <td class="product-details">
+                                <div class="product-image">
+                                    <img src="@item.ImageUrl" alt="@item.Name" />
+                                </div>
+                                <div class="product-name">@item.Name</div>
+                            </td>
+                            <td class="price">฿@item.Price.ToString("N2")</td>
+                            <td class="quantity">@item.Quantity</td>
+                            <td class="total">฿@(item.Price * item.Quantity).ToString("N2")</td>
+                        </tr>
+                    }
                 </tbody>
             </table>
             <div class="order-summary-footer">
                 <div class="shipping-fee">
                     <div class="shipping-label">ค่าจัดส่ง</div>
-                    <div class="shipping-price">฿50.00</div>
+                    <div class="shipping-price">฿@shippingFee.ToString("N2")</div>
                 </div>
                 <div class="order-total">
                     <div class="total-label">รวม</div>
-                    <div class="total-price">฿500.00</div>
+                    <div class="total-price">฿@GrandTotal.ToString("N2")</div>
                 </div>
             </div>
         </div>
@@ -66,25 +70,24 @@
             <span>ช่องทางการชำระเงิน</span>
         </div>
         <div class="payment-methods">
-            <div class="payment-type">ธนาคาร</div>
-            <div class="payment-options">
-                <label class="payment-option">
-                    <input type="radio" name="paymentMethod" value="credit" />
-                    <span>ธนาคารกรุงเทพ</span>
-                </label>
-                <label class="payment-option">
-                    <input type="radio" name="paymentMethod" value="internet" checked />
-                    <span>ธนาคารกรุงไทย</span>
-                </label>
-                <label class="payment-option">
-                    <input type="radio" name="paymentMethod" value="banking" />
-                    <span>ธนาคารกสิกรไทย</span>
-                </label>
-            </div>
+            <label class="payment-option">
+                <input type="radio" name="paymentMethod" value="banking1" />
+                <span>ธนาคารกรุงเทพ</span>
+            </label>
+            <label class="payment-option">
+                <input type="radio" name="paymentMethod" value="banking2" />
+                <span>ธนาคารกรุงไทย</span>
+            </label>
+            <label class="payment-option">
+                <input type="radio" name="paymentMethod" value="banking3" />
+                <span>ธนาคารกสิกรไทย</span>
+            </label>
+
+
             <div class="payment-details">
                 <div class="bank-info">
                     <div class="bank-logo">
-                        <img src="/images/ krungthai.jpg" alt="ธนาคารกรุงไทย" />
+                        <img src="@GetBankImage()" alt="@GetBankName()" />
                     </div>
                     <div class="bank-account">
                         <div>ชื่อบัญชี สตรีทวิชา</div>
@@ -103,12 +106,12 @@
                     <i class="receipt-icon"></i>
                 </div>
                 <div class="upload-text">อัพโหลดสลิป</div>
-                <button class="upload-button">อัพโหลด</button>
+                <InputFile OnChange="HandleFileSelected" />
             </div>
         </div>
     </div>
 
-    <button class="confirm-payment-btn">ยืนยันการชำระเงิน</button>
+    <button class="confirm-payment-btn" @onclick="ConfirmPayment">ยืนยันการชำระเงิน</button>
 </div>
 
 @if (isAddressPopupVisible)
@@ -118,296 +121,61 @@
 
 @code {
     private bool isAddressPopupVisible = false;
+    private string selectedPaymentMethod = "banking1"; // Set default payment method here
+    private void ShowAddressPopup() => isAddressPopupVisible = true;
 
-    private void ShowAddressPopup()
-    {
-        isAddressPopupVisible = true;
-    }
-
-    private void HideAddressPopup()
-    {
-        isAddressPopupVisible = false;
-    }
+    private void HideAddressPopup() => isAddressPopupVisible = false;
 
     private void SaveNewAddress(AddressModel address)
     {
-        // สามารถเพิ่มที่อยู่ลงในรายการได้ที่นี่
+        // Save logic here
         isAddressPopupVisible = false;
     }
+
+    private IReadOnlyList<CartItem> cartItems => CartService.GetItems();
+    private decimal shippingFee = 50.00m;
+    private decimal Total => CartService.GetTotalPrice();
+    private decimal GrandTotal => Total + shippingFee;
+
+    private IBrowserFile uploadedFile;
+
+    private void HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        uploadedFile = e.File;
+        // Upload logic here
+    }
+
+    private void ConfirmPayment()
+    {
+        if (uploadedFile == null)
+        {
+            Console.WriteLine("Please upload the payment slip.");
+            return;
+        }
+
+        // Proceed with confirmation logic
+        Console.WriteLine($"Confirmed with payment method: {selectedPaymentMethod}");
+    }
+
+    private string GetBankImage() => selectedPaymentMethod switch
+    {
+        "banking1" => "/images/bangkokbank.jpg",
+        "banking2" => "/images/krungthai.jpg",
+        "banking3" => "/images/kbank.jpg",
+        _ => ""
+    };
+
+    private string GetBankName() => selectedPaymentMethod switch
+    {
+        "banking1" => "ธนาคารกรุงเทพ",
+        "banking2" => "ธนาคารกรุงไทย",
+        "banking3" => "ธนาคารกสิกรไทย",
+        _ => ""
+    };
 }
 
 <style>
-    /* Main Styles */
-:root {
-    --primary-color: #6366F1;
-    --secondary-color: #F3F4F6;
-    --border-color: #E5E7EB;
-    --text-color: #374151;
-    --light-text: #6B7280;
-}
-
-body {
-    font-family: 'Prompt', 'Noto Sans Thai', sans-serif;
-    color: var(--text-color);
-    background-color: #F9FAFB;
-    margin: 0;
-    padding: 0;
-}
-
-.checkout-container {
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-.checkout-title {
-    color: var(--primary-color);
-    font-size: 24px;
-    font-weight: 600;
-    margin-bottom: 5px;
-}
-
-.breadcrumb {
-    color: var(--light-text);
-    font-size: 14px;
-    margin-bottom: 20px;
-}
-
-/* Section Styling */
-.checkout-section {
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-    padding: 16px;
-}
-
-.section-header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 16px;
-    font-weight: 500;
-}
-
-.icon {
-    width: 20px;
-    height: 20px;
-    margin-right: 8px;
-    display: inline-block;
-}
-
-/* Add Address Button */
-.add-address-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px;
-    border: 1px dashed var(--border-color);
-    border-radius: 6px;
-    color: var(--primary-color);
-    cursor: pointer;
-    font-size: 14px;
-}
-
-.plus-icon {
-    margin-right: 5px;
-    font-weight: bold;
-}
-
-/* Order Summary */
-.order-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.order-table th, .order-table td {
-    padding: 10px;
-    text-align: left;
-}
-
-.order-table th {
-    color: var(--light-text);
-    font-weight: 500;
-    font-size: 14px;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.product-details {
-    display: flex;
-    align-items: center;
-}
-
-.product-image {
-    width: 60px;
-    height: 60px;
-    margin-right: 15px;
-    background-color: #f3f4f6;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.product-image img {
-    max-width: 100%;
-    max-height: 100%;
-}
-
-.product-name {
-    font-size: 14px;
-}
-
-.price, .quantity, .total {
-    font-size: 14px;
-}
-
-.order-summary-footer {
-    margin-top: 10px;
-    border-top: 1px solid var(--border-color);
-    padding-top: 10px;
-}
-
-.shipping-fee, .order-total {
-    display: flex;
-    justify-content: space-between;
-    padding: 5px 10px;
-}
-
-.order-total {
-    font-weight: 600;
-    color: var(--primary-color);
-}
-
-/* Payment Methods */
-.payment-methods {
-    margin-bottom: 20px;
-}
-
-.payment-type {
-    font-weight: 500;
-    margin-bottom: 10px;
-}
-
-.payment-options {
-    display: flex;
-    margin-bottom: 15px;
-}
-
-.payment-option {
-    margin-right: 20px;
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-}
-
-.payment-option input {
-    margin-right: 5px;
-}
-
-.bank-info {
-    display: flex;
-    align-items: center;
-    background-color: var(--secondary-color);
-    padding: 10px;
-    border-radius: 6px;
-    margin-bottom: 10px;
-}
-
-.bank-logo {
-    max-width: 50px;
-    max-height: 50px;
-    background-color: #E5E7EB;
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 10px;
-}
-
-.bank-account {
-    font-size: 14px;
-}
-
-.payment-verification {
-    font-size: 13px;
-    color: #EF4444;
-}
-
-.verification-link {
-    color: #EF4444;
-    text-decoration: none;
-}
-
-/* Upload Slip */
-.payment-slip-upload {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-}
-
-.upload-area {
-    border: 1px dashed var(--border-color);
-    border-radius: 8px;
-    padding: 20px;
-    width: 50%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.upload-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: #E5E7EB;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 10px;
-}
-
-.upload-text {
-    margin-bottom: 10px;
-    font-weight: 500;
-}
-
-.upload-button {
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 6px 12px;
-    font-size: 14px;
-    cursor: pointer;
-}
-
-/* Confirm Button */
-.confirm-payment-btn {
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    border-radius: 6px;
-    padding: 12px;
-    font-size: 16px;
-    font-weight: 500;
-    width: 100%;
-    cursor: pointer;
-    margin-top: 20px;
-}
-
-/* Address Popup */
-.popup-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-        justify-content: center; /* Main Styles */
-        : root
-
-    {
+    :root {
         --primary-color: #6366F1;
         --secondary-color: #F3F4F6;
         --border-color: #E5E7EB;
@@ -442,7 +210,6 @@ body {
         margin-bottom: 20px;
     }
 
-    /* Section Styling */
     .checkout-section {
         background-color: white;
         border-radius: 8px;
@@ -465,7 +232,6 @@ body {
         display: inline-block;
     }
 
-    /* Add Address Button */
     .add-address-btn {
         display: flex;
         align-items: center;
@@ -483,7 +249,6 @@ body {
         font-weight: bold;
     }
 
-    /* Order Summary */
     .order-table {
         width: 100%;
         border-collapse: collapse;
@@ -522,11 +287,7 @@ body {
             max-height: 100%;
         }
 
-    .product-name {
-        font-size: 14px;
-    }
-
-    .price, .quantity, .total {
+    .product-name, .price, .quantity, .total {
         font-size: 14px;
     }
 
@@ -547,7 +308,6 @@ body {
         color: var(--primary-color);
     }
 
-    /* Payment Methods */
     .payment-methods {
         margin-bottom: 20px;
     }
@@ -560,6 +320,11 @@ body {
     .payment-options {
         display: flex;
         margin-bottom: 15px;
+    }
+
+    .payment-option input:checked + span {
+        font-weight: bold;
+        color: var(--primary-color);
     }
 
     .payment-option {
@@ -602,17 +367,12 @@ body {
         font-size: 14px;
     }
 
-    .payment-verification {
+    .payment-verification, .verification-link {
         font-size: 13px;
-        color: #EF4444;
-    }
-
-    .verification-link {
         color: #EF4444;
         text-decoration: none;
     }
 
-    /* Upload Slip */
     .payment-slip-upload {
         display: flex;
         justify-content: center;
@@ -645,17 +405,6 @@ body {
         font-weight: 500;
     }
 
-    .upload-button {
-        background-color: var(--primary-color);
-        color: white;
-        border: none;
-        border-radius: 4px;
-        padding: 6px 12px;
-        font-size: 14px;
-        cursor: pointer;
-    }
-
-    /* Confirm Button */
     .confirm-payment-btn {
         background-color: var(--primary-color);
         color: white;
@@ -668,15 +417,4 @@ body {
         cursor: pointer;
         margin-top: 20px;
     }
-
-    /* Address Popup */
-    .popup-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: rgba(0, 0, 0, 0.5);
-        display: flex;
-        justify-content: center;
 </style>
