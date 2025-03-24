@@ -1,0 +1,387 @@
+﻿@page "/products/list"
+@using SteelAdmin.Client.Services
+@using SteelAdmin.Shared
+@inject ProductService ProductService
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
+
+<div class="page-header">
+    <div class="page-title">
+        <h1>จัดการสินค้าเหล็ก</h1>
+        <p class="text-muted">รายการสินค้าเหล็กทั้งหมดในระบบ</p>
+    </div>
+    <div class="page-actions">
+        <a href="/products/add" class="btn btn-primary">
+            <i class="icon-plus"></i> เพิ่มสินค้าใหม่
+        </a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <div class="search-box">
+            <div class="input-group">
+                <span class="input-group-text">
+                    <i class="icon-search"></i>
+                </span>
+                <input type="text" class="form-control" placeholder="ค้นหาสินค้า..." @bind="searchTerm" @bind:event="oninput" @onkeyup="HandleSearch" />
+            </div>
+        </div>
+        <div class="filter-box">
+            <select class="form-select" @bind="selectedCategory">
+                <option value="">ทุกหมวดหมู่</option>
+                @foreach (var category in categories)
+                {
+                    <option value="@category.Id">@category.Name</option>
+                }
+            </select>
+            <select class="form-select ml-2" @bind="stockFilter">
+                <option value="">สถานะสินค้า</option>
+                <option value="in-stock">มีสินค้า</option>
+                <option value="low-stock">สินค้าใกล้หมด</option>
+                <option value="out-of-stock">สินค้าหมด</option>
+            </select>
+            <button class="btn btn-outline-primary ml-2" @onclick="ApplyFilters">
+                <i class="icon-filter"></i> กรอง
+            </button>
+        </div>
+    </div>
+
+    <div class="card-body">
+        @if (isLoading)
+        {
+            <div class="text-center p-4">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">กำลังโหลด...</span>
+                </div>
+                <p class="mt-2">กำลังโหลดข้อมูล...</p>
+            </div>
+        }
+        else if (products == null || !products.Any())
+        {
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <i class="icon-box"></i>
+                </div>
+                <h3>ไม่พบสินค้า</h3>
+                <p>ยังไม่มีสินค้าในระบบหรือไม่พบสินค้าที่ตรงกับเงื่อนไขการค้นหา</p>
+                <a href="/products/add" class="btn btn-primary">เพิ่มสินค้าใหม่</a>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th style="width: 70px;">รหัส</th>
+                            <th style="width: 80px;">รูปภาพ</th>
+                            <th>ชื่อสินค้า</th>
+                            <th>หมวดหมู่</th>
+                            <th>ขนาด</th>
+                            <th>ความยาว</th>
+                            <th>น้ำหนัก</th>
+                            <th style="width: 120px;">ราคา (บาท)</th>
+                            <th style="width: 100px;">คงเหลือ</th>
+                            <th style="width: 100px;">สถานะ</th>
+                            <th style="width: 120px;">การจัดการ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var product in displayedProducts)
+                        {
+                            <tr>
+                                <td>@product.Code</td>
+                                <td>
+                                    <div class="product-image">
+                                        @if (!string.IsNullOrEmpty(product.ImageUrl))
+                                        {
+                                            <img src="@product.ImageUrl" alt="@product.Name" />
+                                        }
+                                        else
+                                        {
+                                            <div class="no-image">
+                                                <i class="icon-image"></i>
+                                            </div>
+                                        }
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="product-name">@product.Name</div>
+                                    <div class="product-description">@product.Description</div>
+                                </td>
+                                <td>@product.Category</td>
+                                <td>@product.Dimension</td>
+                                <td>@product.Length เมตร</td>
+                                <td>@product.Weight กก.</td>
+                                <td class="text-right">@product.Price.ToString("N2")</td>
+                                <td class="text-right">@product.StockQuantity</td>
+                                <td>
+                                    @if (product.StockQuantity > product.LowStockThreshold)
+                                    {
+                                        <span class="badge bg-success">มีสินค้า</span>
+                                    }
+                                    else if (product.StockQuantity > 0)
+                                    {
+                                        <span class="badge bg-warning">ใกล้หมด</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">หมด</span>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-sm btn-info" @onclick="() => ViewProduct(product.Id)" title="ดูรายละเอียด">
+                                            <i class="icon-eye"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-primary" @onclick="() => EditProduct(product.Id)" title="แก้ไข">
+                                            <i class="icon-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-danger" @onclick="() => ConfirmDelete(product)" title="ลบ">
+                                            <i class="icon-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pagination-container">
+                <div class="items-per-page">
+                    <span>แสดง</span>
+                    <select @bind="pageSize" class="form-select form-select-sm">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                    <span>รายการต่อหน้า</span>
+                </div>
+
+                <ul class="pagination">
+                    <li class="@(currentPage == 1 ? "disabled" : "") page-item">
+                        <button class="page-link" @onclick="() => ChangePage(1)" disabled="@(currentPage == 1)">
+                            <i class="icon-chevrons-left"></i>
+                        </button>
+                    </li>
+                    <li class="@(currentPage == 1 ? "disabled" : "") page-item">
+                        <button class="page-link" @onclick="() => ChangePage(currentPage - 1)" disabled="@(currentPage == 1)">
+                            <i class="icon-chevron-left"></i>
+                        </button>
+                    </li>
+
+                    @for (int i = startPage; i <= endPage; i++)
+                    {
+                        var pageNumber = i;
+                        <li class="page-item @(currentPage == pageNumber ? "active" : "")">
+                            <button class="page-link" @onclick="() => ChangePage(pageNumber)">@pageNumber</button>
+                        </li>
+                    }
+
+                    <li class="@(currentPage == totalPages ? "disabled" : "") page-item">
+                        <button class="page-link" @onclick="() => ChangePage(currentPage + 1)" disabled="@(currentPage == totalPages)">
+                            <i class="icon-chevron-right"></i>
+                        </button>
+                    </li>
+                    <li class="@(currentPage == totalPages ? "disabled" : "") page-item">
+                        <button class="page-link" @onclick="() => ChangePage(totalPages)" disabled="@(currentPage == totalPages)">
+                            <i class="icon-chevrons-right"></i>
+                        </button>
+                    </li>
+                </ul>
+
+                <div class="pagination-info">
+                    แสดง @((currentPage - 1) * pageSize + 1) ถึง @Math.Min(currentPage * pageSize, filteredProducts.Count) จาก @filteredProducts.Count รายการ
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@if (showDeleteConfirmation)
+{
+    <div class="modal-backdrop show"></div>
+    <div class="modal show d-block" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">ยืนยันการลบสินค้า</h5>
+                    <button type="button" class="btn-close" @onclick="CancelDelete"></button>
+                </div>
+                <div class="modal-body">
+                    <p>คุณต้องการลบสินค้า <strong>@productToDelete?.Name</strong> ใช่หรือไม่?</p>
+                    <p class="text-danger">การดำเนินการนี้ไม่สามารถยกเลิกได้</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="CancelDelete">ยกเลิก</button>
+                    <button type="button" class="btn btn-danger" @onclick="DeleteProduct">ลบสินค้า</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private List<ProductModel> products;
+    private List<ProductModel> filteredProducts;
+    private List<ProductModel> displayedProducts;
+    private List<CategoryModel> categories;
+    private bool isLoading = true;
+    private string searchTerm = "";
+    private string selectedCategory = "";
+    private string stockFilter = "";
+
+    // Pagination
+    private int pageSize = 10;
+    private int currentPage = 1;
+    private int totalPages => (int)Math.Ceiling(filteredProducts?.Count ?? 0 / (double)pageSize);
+    private int startPage => Math.Max(1, currentPage - 2);
+    private int endPage => Math.Min(startPage + 4, totalPages);
+
+    // Delete confirmation
+    private bool showDeleteConfirmation = false;
+    private ProductModel productToDelete;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        try
+        {
+            isLoading = true;
+            products = await ProductService.GetProductsAsync();
+            categories = await ProductService.GetCategoriesAsync();
+
+            ApplyFilters();
+        }
+        catch (Exception ex)
+        {
+            await JSRuntime.InvokeVoidAsync("console.error", "Error loading products: " + ex.Message);
+            // Show error notification
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private void HandleSearch()
+    {
+        ApplyFilters();
+    }
+
+    private void ApplyFilters()
+    {
+        filteredProducts = products;
+
+        // Apply search filter
+        if (!string.IsNullOrWhiteSpace(searchTerm))
+        {
+            var term = searchTerm.ToLower();
+            filteredProducts = filteredProducts.Where(p =>
+                p.Name.ToLower().Contains(term) ||
+                p.Code.ToLower().Contains(term) ||
+                p.Description.ToLower().Contains(term)).ToList();
+        }
+
+        // Apply category filter
+        if (!string.IsNullOrWhiteSpace(selectedCategory))
+        {
+            filteredProducts = filteredProducts.Where(p => p.CategoryId == selectedCategory).ToList();
+        }
+
+        // Apply stock filter
+        if (!string.IsNullOrWhiteSpace(stockFilter))
+        {
+            switch (stockFilter)
+            {
+                case "in-stock":
+                    filteredProducts = filteredProducts.Where(p => p.StockQuantity > p.LowStockThreshold).ToList();
+                    break;
+                case "low-stock":
+                    filteredProducts = filteredProducts.Where(p => p.StockQuantity > 0 && p.StockQuantity <= p.LowStockThreshold).ToList();
+                    break;
+                case "out-of-stock":
+                    filteredProducts = filteredProducts.Where(p => p.StockQuantity <= 0).ToList();
+                    break;
+            }
+        }
+
+        // Reset to first page when filters change
+        currentPage = 1;
+
+        // Apply pagination
+        UpdateDisplayedProducts();
+    }
+
+    private void ChangePage(int page)
+    {
+        currentPage = page;
+        UpdateDisplayedProducts();
+    }
+
+    private void UpdateDisplayedProducts()
+    {
+        displayedProducts = filteredProducts
+            .Skip((currentPage - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+    }
+
+    private void ViewProduct(string id)
+    {
+        NavigationManager.NavigateTo($"/products/details/{id}");
+    }
+
+    private void EditProduct(string id)
+    {
+        NavigationManager.NavigateTo($"/products/edit/{id}");
+    }
+
+    private void ConfirmDelete(ProductModel product)
+    {
+        productToDelete = product;
+        showDeleteConfirmation = true;
+    }
+
+    private void CancelDelete()
+    {
+        showDeleteConfirmation = false;
+        productToDelete = null;
+    }
+
+    private async Task DeleteProduct()
+    {
+        try
+        {
+            if (productToDelete != null)
+            {
+                await ProductService.DeleteProductAsync(productToDelete.Id);
+
+                // Remove from local lists
+                products.Remove(productToDelete);
+                filteredProducts.Remove(productToDelete);
+                displayedProducts.Remove(productToDelete);
+
+                // Show success notification
+                await JSRuntime.InvokeVoidAsync("showToast", "success", "ลบสินค้าสำเร็จ", $"ลบสินค้า {productToDelete.Name} เรียบร้อยแล้ว");
+            }
+        }
+        catch (Exception ex)
+        {
+            await JSRuntime.InvokeVoidAsync("console.error", "Error deleting product: " + ex.Message);
+            await JSRuntime.InvokeVoidAsync("showToast", "error", "เกิดข้อผิดพลาด", "ไม่สามารถลบสินค้าได้ กรุณาลองใหม่อีกครั้ง");
+        }
+        finally
+        {
+            showDeleteConfirmation = false;
+            productToDelete = null;
+        }
+    }
+}

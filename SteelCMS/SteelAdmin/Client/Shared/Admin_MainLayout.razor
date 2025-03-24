@@ -1,75 +1,131 @@
-﻿@using SteelAdmin.Client
-@inherits LayoutComponentBase
-@inject AuthenticationStateProvider AuthStateProvider
+﻿@inherits LayoutComponentBase
+@inject AuthService AuthService
 @inject NavigationManager NavigationManager
 
-<div class="main-layout">
-    <AuthorizeView>
-        <Authorized>
-            <div class="sidebar @SidebarCssClass">
-                <div class="sidebar-header">
-                    <h3>ระบบจัดการสินค้า</h3>
-                </div>
-            </div>
-        </Authorized>
-    </AuthorizeView>
-
-    <div class="main-content">
-        <AuthorizeView>
-            <Authorized>
-                <div class="top-bar">
-                    <button class="toggle-sidebar" @onclick="ToggleSidebar">
-                        <i class="oi oi-menu"></i>
-                    </button>
-                    <div class="user-dropdown">
-                        <div class="dropdown">
-                            <button class="btn dropdown-toggle" type="button" @onclick="ToggleUserMenu">
-                                <i class="oi oi-person"></i> @context?.User.Identity?.Name
-                            </button>
-                            <div class="dropdown-menu @UserMenuCssClass">
-                                <a class="dropdown-item" href="/profile">โปรไฟล์</a>
-                                <a class="dropdown-item" href="/change-password">เปลี่ยนรหัสผ่าน</a>
-                                <div class="dropdown-divider"></div>
-                                <button class="dropdown-item" @onclick="Logout">ออกจากระบบ</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </Authorized>
-            <NotAuthorized>
-                <div class="anonymous-top-bar">
-                    <h3>ระบบจัดการสินค้า</h3>
-                </div>
-            </NotAuthorized>
-        </AuthorizeView>
-
-        <div class="content">
-            @Body
+<div class="app-container @(isMenuCollapsed ? "menu-collapsed" : "")">
+    <header class="app-header">
+        <div class="header-left">
+            <button class="menu-toggle" @onclick="ToggleMenu">
+                <span class="menu-icon"></span>
+            </button>
+            <div class="brand">ระบบจัดการเหล็ก</div>
         </div>
+        <div class="header-right">
+            <div class="user-profile" @onclick="ToggleUserMenu">
+                <img src="/images/user-avatar.png" alt="User Avatar" class="user-avatar" />
+                <span class="user-name">@(currentUser?.DisplayName ?? "ผู้ใช้")</span>
+                <span class="dropdown-arrow"></span>
+                
+                @if (isUserMenuOpen)
+                {
+                    <div class="user-dropdown">
+                        <ul>
+                            <li><a href="/profile"><i class="icon-user"></i> ข้อมูลส่วนตัว</a></li>
+                            <li><a href="/settings"><i class="icon-settings"></i> ตั้งค่า</a></li>
+                            <li><a href="javascript:void(0)" @onclick="Logout"><i class="icon-logout"></i> ออกจากระบบ</a></li>
+                        </ul>
+                    </div>
+                }
+            </div>
+            <button class="notification-btn">
+                <i class="icon-bell"></i>
+                <span class="notification-badge">3</span>
+            </button>
+        </div>
+    </header>
+
+    <div class="app-body">
+        <NavMenu IsCollapsed="@isMenuCollapsed" />
+        
+        <main class="content-container">
+            <div class="content-header">
+                @if (breadcrumbs != null && breadcrumbs.Any())
+                {
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            @foreach (var (text, url, isActive) in breadcrumbs)
+                            {
+                                @if (isActive)
+                                {
+                                    <li class="breadcrumb-item active" aria-current="page">@text</li>
+                                }
+                                else
+                                {
+                                    <li class="breadcrumb-item"><a href="@url">@text</a></li>
+                                }
+                            }
+                        </ol>
+                    </nav>
+                }
+            </div>
+            
+            <div class="content-body">
+                @Body
+            </div>
+        </main>
     </div>
 </div>
 
 @code {
-    private bool sidebarOpen = true;
-    private bool userMenuOpen = false;
+    private bool isMenuCollapsed = false;
+    private bool isUserMenuOpen = false;
+    private UserModel? currentUser;
+    private List<(string text, string url, bool isActive)>? breadcrumbs;
 
-    private string SidebarCssClass => sidebarOpen ? "open" : "";
-    private string UserMenuCssClass => userMenuOpen ? "show" : "";
-
-    private void ToggleSidebar()
+    protected override async Task OnInitializedAsync()
     {
-        sidebarOpen = !sidebarOpen;
+        var authState = await AuthService.GetAuthenticationStateAsync();
+        if (authState.User.Identity?.IsAuthenticated != true)
+        {
+            NavigationManager.NavigateTo("/login");
+        }
+        else
+        {
+            currentUser = await AuthService.GetCurrentUserAsync();
+            SetBreadcrumbsForCurrentRoute();
+        }
+    }
+
+    private void SetBreadcrumbsForCurrentRoute()
+    {
+        var uri = NavigationManager.Uri;
+        var relativePath = NavigationManager.ToBaseRelativePath(uri);
+
+        // This is a simple example that should be replaced with proper breadcrumb generation
+        breadcrumbs = new List<(string, string, bool)>
+        {
+            ("หน้าหลัก", "/", false)
+        };
+
+        if (relativePath.StartsWith("products"))
+        {
+            breadcrumbs.Add(("สินค้า", "/products", relativePath == "products"));
+            
+            if (relativePath.Contains("/edit"))
+            {
+                breadcrumbs.Add(("แก้ไขสินค้า", "#", true));
+            }
+            else if (relativePath.Contains("/add"))
+            {
+                breadcrumbs.Add(("เพิ่มสินค้า", "#", true));
+            }
+        }
+        // Add more conditions for other routes
+    }
+
+    private void ToggleMenu()
+    {
+        isMenuCollapsed = !isMenuCollapsed;
     }
 
     private void ToggleUserMenu()
     {
-        userMenuOpen = !userMenuOpen;
+        isUserMenuOpen = !isUserMenuOpen;
     }
 
     private async Task Logout()
     {
-        var authStateProvider = (CustomAuthStateProvider)AuthStateProvider;
-        authStateProvider.MarkUserAsLoggedOut();
+        await AuthService.Logout();
         NavigationManager.NavigateTo("/login");
     }
 }

@@ -1,27 +1,31 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿// Models/ProductModel.cs
+using System.ComponentModel.DataAnnotations;
 
-public class Product
-{
-    public int Id { get; set; }
+    public class ProductModel
+    {
+        public int Id { get; set; } = 0;
 
-    [Required(ErrorMessage = "กรุณาระบุชื่อสินค้า")]
-    [StringLength(100, ErrorMessage = "ชื่อสินค้าต้องมีความยาวไม่เกิน 100 ตัวอักษร")]
-    public string Name { get; set; }
+        [Required(ErrorMessage = "กรุณาระบุรหัสสินค้า")]
+        public string ProductCode { get; set; } = string.Empty;
 
-    [Required(ErrorMessage = "กรุณาระบุคำอธิบายสินค้า")]
-    public string Description { get; set; }
+        [Required(ErrorMessage = "กรุณาระบุชื่อสินค้า")]
+        public string Name { get; set; } = string.Empty;
 
-    [Required(ErrorMessage = "กรุณาระบุราคาสินค้า")]
-    [Range(0.01, 1000000, ErrorMessage = "ราคาต้องมีค่ามากกว่า 0 และไม่เกิน 1,000,000")]
-    public decimal Price { get; set; }
+        [Required(ErrorMessage = "กรุณาเลือกประเภท")]
+        public string Category { get; set; } = string.Empty;
 
-    public int StockQuantity { get; set; }
+        public string Description { get; set; } = string.Empty;
 
-    public string ImageUrl { get; set; }
+        [Required(ErrorMessage = "กรุณาระบุราคา")]
+        [Range(0.01, 9999999.99, ErrorMessage = "ราคาต้องมากกว่า 0")]
+        public decimal Price { get; set; } = 0;
 
-    public bool IsActive { get; set; } = true;
+        [Required(ErrorMessage = "กรุณาระบุจำนวนคงเหลือ")]
+        [Range(0, 9999999, ErrorMessage = "จำนวนต้องไม่น้อยกว่า 0")]
+        public decimal Stock { get; set; } = 0;
 
-    public DateTime CreatedAt { get; set; } = DateTime.Now;
+        [Required(ErrorMessage = "กรุณาระบุหน่วย")]
+        public string Unit { get; set; } = "ชิ้น";
 
-    public DateTime? UpdatedAt { get; set; }
-}
+        public bool IsActive { get; set; } = true;
+    }

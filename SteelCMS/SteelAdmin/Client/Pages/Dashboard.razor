@@ -1,86 +1,647 @@
-﻿@page "/"
+﻿@page "/dashboard"
+@using SteelAdmin.Client.Services
+@using SteelAdmin.Shared
+@inject ProductService ProductService
+@inject OrderService OrderService
+@inject UserService UserService
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
 
 <div class="dashboard">
+    <div class="dashboard-header">
+        <h1>แผงควบคุม</h1>
+        <div class="dashboard-date">
+            @DateTime.Now.ToString("dddd, dd MMMM yyyy HH:mm")
+        </div>
+    </div>
+
     <div class="stats-container">
-        <div class="stat-card">
-            <div class="stat-title">ลูกค้าทั้งหมด</div>
-            <div class="stat-value">1260</div>
-            <div class="stat-icon customer-icon">
-                <i class="fas fa-users"></i>
+        <div class="row">
+            <div class="col-md-3">
+                <div class="stats-card bg-primary">
+                    <div class="stats-icon">
+                        <i class="icon-shopping-bag"></i>
+                    </div>
+                    <div class="stats-info">
+                        <div class="stats-number">@totalOrders.ToString("N0")</div>
+                        <div class="stats-label">คำสั่งซื้อทั้งหมด</div>
+                    </div>
+                    <div class="stats-progress">
+                        <span class="stats-trend @(orderTrend >= 0 ? "trend-up" : "trend-down")">
+                            <i class="icon-@(orderTrend >= 0 ? "trending-up" : "trending-down")"></i>
+                            @Math.Abs(orderTrend).ToString("N1")%
+                        </span>
+                        <span class="stats-period">เทียบกับเดือนที่แล้ว</span>
+                    </div>
+                </div>
             </div>
-        </div>
-        
-        <div class="stat-card">
-            <div class="stat-title">สินค้า</div>
-            <div class="stat-value">126</div>
-            <div class="stat-icon product-icon">
-                <i class="fas fa-box"></i>
+            <div class="col-md-3">
+                <div class="stats-card bg-success">
+                    <div class="stats-icon">
+                        <i class="icon-dollar-sign"></i>
+                    </div>
+                    <div class="stats-info">
+                        <div class="stats-number">฿@totalRevenue.ToString("N0")</div>
+                        <div class="stats-label">รายได้ทั้งหมด</div>
+                    </div>
+                    <div class="stats-progress">
+                        <span class="stats-trend @(revenueTrend >= 0 ? "trend-up" : "trend-down")">
+                            <i class="icon-@(revenueTrend >= 0 ? "trending-up" : "trending-down")"></i>
+                            @Math.Abs(revenueTrend).ToString("N1")%
+                        </span>
+                        <span class="stats-period">เทียบกับเดือนที่แล้ว</span>
+                    </div>
+                </div>
             </div>
-        </div>
-        
-        <div class="stat-card">
-            <div class="stat-title">รายได้</div>
-            <div class="stat-value">6012</div>
-            <div class="stat-icon revenue-icon">
-                <i class="fas fa-dollar-sign"></i>
+            <div class="col-md-3">
+                <div class="stats-card bg-warning">
+                    <div class="stats-icon">
+                        <i class="icon-package"></i>
+                    </div>
+                    <div class="stats-info">
+                        <div class="stats-number">@totalProducts.ToString("N0")</div>
+                        <div class="stats-label">จำนวนรายการสินค้า</div>
+                    </div>
+                    <div class="stats-progress">
+                        <span class="stats-trend @(productTrend >= 0 ? "trend-up" : "trend-down")">
+                            <i class="icon-@(productTrend >= 0 ? "trending-up" : "trending-down")"></i>
+                            @Math.Abs(productTrend).ToString("N1")%
+                        </span>
+                        <span class="stats-period">เทียบกับเดือนที่แล้ว</span>
+                    </div>
+                </div>
             </div>
-        </div>
-        
-        <div class="stat-card">
-            <div class="stat-title">สินค้าส่งมอบ</div>
-            <div class="stat-value">612</div>
-            <div class="stat-icon delivery-icon">
-                <i class="fas fa-truck"></i>
+            <div class="col-md-3">
+                <div class="stats-card bg-info">
+                    <div class="stats-icon">
+                        <i class="icon-users"></i>
+                    </div>
+                    <div class="stats-info">
+                        <div class="stats-number">@totalCustomers.ToString("N0")</div>
+                        <div class="stats-label">จำนวนลูกค้า</div>
+                    </div>
+                    <div class="stats-progress">
+                        <span class="stats-trend @(customerTrend >= 0 ? "trend-up" : "trend-down")">
+                            <i class="icon-@(customerTrend >= 0 ? "trending-up" : "trending-down")"></i>
+                            @Math.Abs(customerTrend).ToString("N1")%
+                        </span>
+                        <span class="stats-period">เทียบกับเดือนที่แล้ว</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="customer-section">
-        <h2>ลูกค้า</h2>
-        
-        <div class="customer-table-container">
-            <table class="customer-table">
-                <thead>
-                    <tr>
-                        <th>หมายเลขสั่งซื้อ</th>
-                        <th>ผู้สั่งซื้อ</th>
-                        <th>Email</th>
-                        <th>วันที่สั่งซื้อ</th>
-                        <th>วันที่จ่าย</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var customer in GetCustomers())
-                    {
-                        <tr>
-                            <td>@customer.OrderNumber</td>
-                            <td>@customer.CustomerName</td>
-                            <td>@customer.Email</td>
-                            <td>@customer.OrderDate</td>
-                            <td>@customer.PaymentDate</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">ยอดขายตามเดือน</h5>
+                    <div class="card-actions">
+                        <button class="btn btn-sm btn-outline-secondary">
+                            <i class="icon-filter"></i> กรอง
+                        </button>
+                        <button class="btn btn-sm btn-outline-secondary">
+                            <i class="icon-download"></i> ดาวน์โหลด
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="salesChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">ยอดขายตามประเภทสินค้า</h5>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="categoryChart" width="200" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="analytics-section">
-        <h2>สินค้าขายดี</h2>
-        <div class="chart-container">
-            <!-- Chart will be implemented later -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">สินค้าที่ใกล้หมด</h5>
+                    <a href="/products/inventory" class="btn btn-sm btn-link">ดูทั้งหมด</a>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>รหัสสินค้า</th>
+                                <th>ชื่อสินค้า</th>
+                                <th>คงเหลือ</th>
+                                <th>แจ้งเตือนเมื่อ</th>
+                                <th>การจัดการ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (lowStockProducts?.Any() == true)
+                            {
+                                @foreach (var product in lowStockProducts)
+                                {
+                                    <tr>
+                                        <td>@product.Code</td>
+                                        <td>@product.Name</td>
+                                        <td>
+                                            <span class="badge bg-warning">@product.StockQuantity</span>
+                                        </td>
+                                        <td>@product.LowStockThreshold</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary" @onclick="() => NavigateToProductEdit(product.Id)">
+                                                <i class="icon-edit-2"></i> เพิ่มสต็อก
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="5" class="text-center py-3">ไม่มีสินค้าใกล้หมด</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">คำสั่งซื้อล่าสุด</h5>
+                    <a href="/orders/list" class="btn btn-sm btn-link">ดูทั้งหมด</a>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>คำสั่งซื้อ</th>
+                                <th>ลูกค้า</th>
+                                <th>วันที่</th>
+                                <th>ยอดรวม</th>
+                                <th>สถานะ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (recentOrders?.Any() == true)
+                            {
+                                @foreach (var order in recentOrders)
+                                {
+                                    <tr>
+                                        <td>
+                                            <a href="/orders/details/@order.Id">#@order.OrderNumber</a>
+                                        </td>
+                                        <td>@order.CustomerName</td>
+                                        <td>@order.OrderDate.ToString("dd/MM/yyyy")</td>
+                                        <td>฿@order.TotalAmount.ToString("N2")</td>
+                                        <td>
+                                            @switch (order.Status)
+                                            {
+                                                case "pending":
+                                                    <span class="badge bg-warning">รอดำเนินการ</span>
+                                                    break;
+                                                case "processing":
+                                                    <span class="badge bg-primary">กำลังดำเนินการ</span>
+                                                    break;
+                                                case "shipped":
+                                                    <span class="badge bg-info">จัดส่งแล้ว</span>
+                                                    break;
+                                                case "delivered":
+                                                    <span class="badge bg-success">ส่งมอบแล้ว</span>
+                                                    break;
+                                                case "cancelled":
+                                                    <span class="badge bg-danger">ยกเลิก</span>
+                                                    break;
+                                                default:
+                                                    <span class="badge bg-secondary">@order.Status</span>
+                                                    break;
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="5" class="text-center py-3">ไม่มีคำสั่งซื้อล่าสุด</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">กิจกรรมล่าสุด</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="activity-list">
+                        @foreach (var activity in recentActivities)
+                        {
+                            <div class="activity-item">
+                                <div class="activity-icon @activity.IconClass">
+                                    <i class="icon-@activity.Icon"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-title">@activity.Title</div>
+                                    <div class="activity-text">@activity.Description</div>
+                                    <div class="activity-time">@activity.TimeAgo</div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">สินค้าขายดี</h5>
+                </div>
+                <div class="card-body p-0">
+                    <ul class="best-sellers-list">
+                        @foreach (var product in bestSellingProducts)
+                        {
+                            <li class="best-seller-item">
+                                <div class="best-seller-image">
+                                    @if (!string.IsNullOrEmpty(product.ImageUrl))
+                                    {
+                                        <img src="@product.ImageUrl" alt="@product.Name" />
+                                    }
+                                    else
+                                    {
+                                        <div class="no-image">
+                                            <i class="icon-image"></i>
+                                        </div>
+                                    }
+                                </div>
+                                <div class="best-seller-info">
+                                    <div class="best-seller-name">@product.Name</div>
+                                    <div class="best-seller-category">@product.Category</div>
+                                    <div class="best-seller-stats">
+                                        <span class="best-seller-price">฿@product.Price.ToString("N2")</span>
+                                        <span class="best-seller-sales">ขายแล้ว @product.SoldCount ชิ้น</span>
+                                    </div>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">งานที่ต้องทำ</h5>
+                    <button class="btn btn-sm btn-outline-primary" @onclick="AddNewTask">
+                        <i class="icon-plus"></i> เพิ่ม
+                    </button>
+                </div>
+                <div class="card-body p-0">
+                    <ul class="task-list">
+                        @foreach (var task in tasks)
+                        {
+                            <li class="task-item @(task.IsCompleted ? "completed" : "")">
+                                <div class="task-checkbox">
+                                    <input type="checkbox" id="task-@task.Id" checked="@task.IsCompleted" @onchange="() => ToggleTaskStatus(task)" />
+                                    <label for="task-@task.Id"></label>
+                                </div>
+                                <div class="task-content">
+                                    <div class="task-title">@task.Title</div>
+                                    <div class="task-meta">
+                                        @if (task.DueDate.HasValue)
+                                        {
+                                            <span class="task-due-date @(task.DueDate < DateTime.Now ? "overdue" : "")">
+                                                <i class="icon-calendar"></i>
+                                                @task.DueDate.Value.ToString("dd/MM/yyyy")
+                                            </span>
+                                        }
+                                        <span class="task-priority @task.Priority.ToLower()">
+                                            @task.Priority
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="task-actions">
+                                    <button class="btn btn-sm btn-icon" @onclick="() => EditTask(task)">
+                                        <i class="icon-edit"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-icon" @onclick="() => DeleteTask(task)">
+                                        <i class="icon-trash"></i>
+                                    </button>
+                                </div>
+                            </li>
+                        }
+                        @if (!tasks.Any())
+                        {
+                            <li class="task-empty">
+                                <div class="task-empty-message">
+                                    <i class="icon-check-circle"></i>
+                                    <p>ไม่มีงานที่ต้องทำ</p>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
+@if (showTaskModal)
+{
+    <div class="modal-backdrop show"></div>
+    <div class="modal show d-block" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">@(currentTask.Id == 0 ? "เพิ่มงานใหม่" : "แก้ไขงาน")</h5>
+                    <button type="button" class="btn-close" @onclick="CloseTaskModal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="taskTitle" class="form-label required">ชื่องาน</label>
+                        <input type="text" id="taskTitle" class="form-control" @bind="currentTask.Title" />
+                    </div>
+                    <div class="form-group">
+                        <label for="taskDueDate" class="form-label">กำหนดส่ง</label>
+                        <input type="date" id="taskDueDate" class="form-control" @bind="currentTask.DueDate" />
+                    </div>
+                    <div class="form-group">
+                        <label for="taskPriority" class="form-label">ความสำคัญ</label>
+                        <select id="taskPriority" class="form-select" @bind="currentTask.Priority">
+                            <option value="Low">ต่ำ</option>
+                            <option value="Medium">ปานกลาง</option>
+                            <option value="High">สูง</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="CloseTaskModal">ยกเลิก</button>
+                    <button type="button" class="btn btn-primary" @onclick="SaveTask">บันทึก</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
 @code {
-    private List<CustomerModel> GetCustomers()
+    // Dashboard statistics
+    private int totalOrders = 0;
+    private decimal totalRevenue = 0;
+    private int totalProducts = 0;
+    private int totalCustomers = 0;
+
+    // Trends (percentage change from previous month)
+    private decimal orderTrend = 5.2m;
+    private decimal revenueTrend = 7.8m;
+    private decimal productTrend = 2.3m;
+    private decimal customerTrend = 4.5m;
+
+    // Low stock products
+    private List<ProductModel> lowStockProducts = new List<ProductModel>();
+
+    // Recent orders
+    private List<OrderModel> recentOrders = new List<OrderModel>();
+
+    // Recent activities
+    private List<ActivityModel> recentActivities = new List<ActivityModel>();
+
+    // Best selling products
+    private List<ProductModel> bestSellingProducts = new List<ProductModel>();
+
+    // Tasks
+    private List<TaskModel> tasks = new List<TaskModel>();
+    private TaskModel currentTask = new TaskModel();
+    private bool showTaskModal = false;
+
+    protected override async Task OnInitializedAsync()
     {
-        // In a real app, this would come from a service
-        return new List<CustomerModel>
+        await LoadDashboardDataAsync();
+        await InitializeChartsAsync();
+    }
+
+    private async Task LoadDashboardDataAsync()
+    {
+        try
         {
-            new CustomerModel { OrderNumber = "8615231558", CustomerName = "Ethan Caldwell", Email = "ethan.caldwell92@example.com", OrderDate = "03-03-2025", PaymentDate = "" },
-            new CustomerModel { OrderNumber = "7959564123", CustomerName = "Olivia Hartman", Email = "olivia.hartman23@example.com", OrderDate = "03-03-2025", PaymentDate = "03-03-2025" },
+            // In a real application, these would be loaded from services
+            // For this example, we'll use dummy data
+
+            // Load dashboard statistics
+            var dashboard = await GetDashboardStatisticsAsync();
+            totalOrders = dashboard.TotalOrders;
+            totalRevenue = dashboard.TotalRevenue;
+            totalProducts = dashboard.TotalProducts;
+            totalCustomers = dashboard.TotalCustomers;
+
+            // Load low stock products
+            lowStockProducts = await ProductService.GetLowStockProductsAsync();
+
+            // Load recent orders
+            recentOrders = await OrderService.GetRecentOrdersAsync(5);
+
+            // Load recent activities
+            recentActivities = await GetRecentActivitiesAsync();
+
+            // Load best selling products
+            bestSellingProducts = await ProductService.GetBestSellingProductsAsync(5);
+
+            // Load tasks
+            tasks = await GetTasksAsync();
+        }
+        catch (Exception ex)
+        {
+            await JSRuntime.InvokeVoidAsync("console.error", "Error loading dashboard data: " + ex.Message);
+            // Show error notification
+        }
+    }
+
+    private async Task InitializeChartsAsync()
+    {
+        try
+        {
+            await JSRuntime.InvokeVoidAsync("initSalesChart");
+            await JSRuntime.InvokeVoidAsync("initCategoryChart");
+        }
+        catch (Exception ex)
+        {
+            await JSRuntime.InvokeVoidAsync("console.error", "Error initializing charts: " + ex.Message);
+        }
+    }
+
+    private async Task<DashboardStatistics> GetDashboardStatisticsAsync()
+    {
+        // In a real application, this would come from a service
+        // For this example, we'll return dummy data
+        await Task.Delay(100); // Simulate API call
+
+        return new DashboardStatistics
+            {
+                TotalOrders = 1254,
+                TotalRevenue = 2568750.50m,
+                TotalProducts = 387,
+                TotalCustomers = 952
+            };
+    }
+
+    private async Task<List<ActivityModel>> GetRecentActivitiesAsync()
+    {
+        // In a real application, this would come from a service
+        // For this example, we'll return dummy data
+        await Task.Delay(100); // Simulate API call
+
+        return new List<ActivityModel>
+        {
+            new ActivityModel { Id = 1, Title = "คำสั่งซื้อใหม่", Description = "มีคำสั่งซื้อใหม่จากคุณสมชาย จำนวน ฿15,750", TimeAgo = "5 นาทีที่แล้ว", Icon = "shopping-bag", IconClass = "bg-primary" },
+            new ActivityModel { Id = 2, Title = "สต็อกใกล้หมด", Description = "เหล็กเส้นกลม 9 มม. ยาว 12 ม. (DB) เหลือ 5 เส้น", TimeAgo = "30 นาทีที่แล้ว", Icon = "alert-triangle", IconClass = "bg-warning" },
+            new ActivityModel { Id = 3, Title = "การชำระเงิน", Description = "คุณสมศักดิ์ ชำระเงินเรียบร้อยแล้ว ฿8,500", TimeAgo = "1 ชั่วโมงที่แล้ว", Icon = "credit-card", IconClass = "bg-success" },
+            new ActivityModel { Id = 4, Title = "ผู้ใช้ใหม่", Description = "คุณวิชัย รุ่งโรจน์ ลงทะเบียนเป็นสมาชิกใหม่", TimeAgo = "2 ชั่วโมงที่แล้ว", Icon = "user-plus", IconClass = "bg-info" },
+            new ActivityModel { Id = 5, Title = "อัปเดตสินค้า", Description = "อัปเดตราคาเหล็กกลมกลวง 2 นิ้ว หนา 3.2 มม.", TimeAgo = "3 ชั่วโมงที่แล้ว", Icon = "edit", IconClass = "bg-secondary" }
+        };
+    }
+
+    private async Task<List<TaskModel>> GetTasksAsync()
+    {
+        // In a real application, this would come from a service
+        // For this example, we'll return dummy data
+        await Task.Delay(100); // Simulate API call
+
+        return new List<TaskModel>
+        {
+            new TaskModel { Id = 1, Title = "อัปเดตราคาสินค้าเหล็กรูปพรรณ", DueDate = DateTime.Now.AddDays(2), Priority = "High", IsCompleted = false },
+            new TaskModel { Id = 2, Title = "ติดต่อซัพพลายเออร์เรื่องเหล็กเส้น", DueDate = DateTime.Now.AddDays(1), Priority = "Medium", IsCompleted = false },
+            new TaskModel { Id = 3, Title = "สรุปยอดขายประจำเดือน", DueDate = DateTime.Now.AddDays(-1), Priority = "High", IsCompleted = true },
+            new TaskModel { Id = 4, Title = "ตรวจสอบสต็อกสินค้าคงเหลือ", DueDate = null, Priority = "Low", IsCompleted = false }
+        };
+    }
+
+    private void NavigateToProductEdit(string productId)
+    {
+        NavigationManager.NavigateTo($"/products/edit/{productId}");
+    }
+
+    private void ToggleTaskStatus(TaskModel task)
+    {
+        task.IsCompleted = !task.IsCompleted;
+        // In a real application, you would update the task in the database
+    }
+
+    private void AddNewTask()
+    {
+        currentTask = new TaskModel
+            {
+                Id = 0,
+                Priority = "Medium",
+                DueDate = DateTime.Now.AddDays(1)
+            };
+        showTaskModal = true;
+    }
+
+    private void EditTask(TaskModel task)
+    {
+        currentTask = new TaskModel
+            {
+                Id = task.Id,
+                Title = task.Title,
+                DueDate = task.DueDate,
+                Priority = task.Priority,
+                IsCompleted = task.IsCompleted
+            };
+        showTaskModal = true;
+    }
+
+    private void DeleteTask(TaskModel task)
+    {
+        tasks.Remove(task);
+        // In a real application, you would delete the task from the database
+    }
+
+    private void CloseTaskModal()
+    {
+        showTaskModal = false;
+    }
+
+    private void SaveTask()
+    {
+        if (string.IsNullOrWhiteSpace(currentTask.Title))
+        {
+            // Show validation error
+            return;
+        }
+
+        if (currentTask.Id == 0)
+        {
+            // Add new task
+            var newTask = new TaskModel
+                {
+                    Id = tasks.Count > 0 ? tasks.Max(t => t.Id) + 1 : 1,
+                    Title = currentTask.Title,
+                    DueDate = currentTask.DueDate,
+                    Priority = currentTask.Priority,
+                    IsCompleted = false
+                };
+            tasks.Add(newTask);
+        }
+        else
+        {
+            // Update existing task
+            var task = tasks.FirstOrDefault(t => t.Id == currentTask.Id);
+            if (task != null)
+            {
+                task.Title = currentTask.Title;
+                task.DueDate = currentTask.DueDate;
+                task.Priority = currentTask.Priority;
+            }
+        }
+
+        showTaskModal = false;
+        // In a real application, you would save the task to the database
+    }
+
+    // Model classes
+    public class DashboardStatistics
+    {
+        public int TotalOrders { get; set; }
+        public decimal TotalRevenue { get; set; }
+        public int TotalProducts { get; set; }
+        public int TotalCustomers { get; set; }
+    }
+
+    public class ActivityModel
+    {
+        public int Id { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string TimeAgo { get; set; }
+        public string Icon { get; set; }
+        public string IconClass { get; set; }
+    }
+
+    public class TaskModel
+    {
+        public int Id { get; set; }
+        public string Title { get; set; }
+        public DateTime? DueDate { get; set; }
+        public string Priority { get; set; }
+        public bool IsCompleted { get; set; }
+    }
+}livia.hartman23@example.com", OrderDate = "03-03-2025", PaymentDate = "03-03-2025" },
             new CustomerModel { OrderNumber = "9558420570", CustomerName = "Mason Caldwell", Email = "mason.caldwell89@example.com", OrderDate = "03-03-2025", PaymentDate = "" },
             new CustomerModel { OrderNumber = "8615231558", CustomerName = "Sophia Jennings", Email = "sophia.jenning76@example.com", OrderDate = "03-03-2025", PaymentDate = "03-03-2025" },
             new CustomerModel { OrderNumber = "7959564123", CustomerName = "Liam Patterson", Email = "liam.patterson43@example.com", OrderDate = "03-03-2025", PaymentDate = "03-03-2025" },

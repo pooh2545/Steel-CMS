@@ -1,12 +1,30 @@
-﻿<Router AppAssembly="@typeof(App).Assembly">  
-   <Found Context="routeData">  
-       <RouteView RouteData="@routeData" DefaultLayout="@typeof(Admin_MainLayout)" />  
-       <FocusOnNavigate RouteData="@routeData" Selector="h1" />  
-   </Found>  
-   <NotFound>  
-       <PageTitle>Not found</PageTitle>  
-       <LayoutView Layout="@typeof(Admin_MainLayout)">  
-           <p role="alert">Sorry, there's nothing at this address.</p>  
-       </LayoutView>  
-   </NotFound>  
-</Router>
+﻿<!-- App.razor -->
+@using Microsoft.AspNetCore.Components.Authorization
+
+<CascadingAuthenticationState>
+    <Router AppAssembly="@typeof(App).Assembly">
+        <Found Context="routeData">
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(Admin_MainLayout)">
+                <NotAuthorized>
+                    @if (context.User.Identity?.IsAuthenticated != true)
+                    {
+                        <RedirectToLogin />
+                    }
+                    else
+                    {
+                        <p class="not-authorized">คุณไม่มีสิทธิ์เข้าถึงหน้านี้</p>
+                    }
+                </NotAuthorized>
+                <Authorizing>
+                    <div class="loading-indicator">กำลังตรวจสอบสิทธิ์...</div>
+                </Authorizing>
+            </AuthorizeRouteView>
+        </Found>
+        <NotFound>
+            <PageTitle>ไม่พบหน้า</PageTitle>
+            <LayoutView Layout="@typeof(Admin_MainLayout)">
+                <p>ขออภัย ไม่พบหน้าที่คุณต้องการ</p>
+            </LayoutView>
+        </NotFound>
+    </Router>
+</CascadingAuthenticationState>

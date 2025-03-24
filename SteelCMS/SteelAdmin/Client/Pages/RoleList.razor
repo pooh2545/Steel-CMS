@@ -1,0 +1,553 @@
+﻿@page "/access-control/roles"
+@using SteelAdmin.Client.Services
+@using SteelAdmin.Shared
+@inject RoleService RoleService
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
+
+<div class="page-header">
+    <div class="page-title">
+        <h1>จัดการบทบาท</h1>
+        <p class="text-muted">จัดการกลุ่มบทบาทและกำหนดสิทธิ์การใช้งานในระบบ</p>
+    </div>
+    <div class="page-actions">
+        <button class="btn btn-primary" @onclick="ShowCreateRoleModal">
+            <i class="icon-plus"></i> เพิ่มบทบาทใหม่
+        </button>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        @if (isLoading)
+        {
+            <div class="text-center p-4">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">กำลังโหลด...</span>
+                </div>
+                <p class="mt-2">กำลังโหลดข้อมูล...</p>
+            </div>
+        }
+        else if (roles == null || !roles.Any())
+        {
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <i class="icon-shield"></i>
+                </div>
+                <h3>ไม่พบกลุ่มบทบาท</h3>
+                <p>ยังไม่มีกลุ่มบทบาทในระบบ กดปุ่ม "เพิ่มบทบาทใหม่" เพื่อเริ่มสร้างกลุ่มบทบาท</p>
+                <button class="btn btn-primary" @onclick="ShowCreateRoleModal">
+                    <i class="icon-plus"></i> เพิ่มบทบาทใหม่
+                </button>
+            </div>
+        }
+        else
+        {
+            <div class="role-list">
+                <div class="row">
+                    @foreach (var role in roles.Where(r => r.Name != "Administrator"))
+                    {
+                        <div class="col-md-6">
+                            <div class="role-card">
+                                <div class="role-card-header">
+                                    <div class="role-name">@role.Name</div>
+                                    <div class="role-actions">
+                                        <button class="btn btn-sm btn-primary" @onclick="() => EditRole(role)" title="แก้ไข">
+                                            <i class="icon-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-danger" @onclick="() => ConfirmDeleteRole(role)" title="ลบ">
+                                            <i class="icon-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="role-card-body">
+                                    <div class="role-description">@(string.IsNullOrEmpty(role.Description) ? "ไม่มีคำอธิบาย" : role.Description)</div>
+                                    <div class="role-users">
+                                        <span class="role-users-count">@role.UserCount ผู้ใช้งาน</span>
+                                    </div>
+                                </div>
+                                <div class="role-card-footer">
+                                    <button class="btn btn-sm btn-outline-primary" @onclick="() => ManagePermissions(role)">
+                                        <i class="icon-lock"></i> จัดการสิทธิ์การเข้าถึง
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    <!-- Administrator role card (special handling) -->
+                    @if (roles.Any(r => r.Name == "Administrator"))
+                    {
+                        var adminRole = roles.First(r => r.Name == "Administrator");
+                        <div class="col-md-6">
+                            <div class="role-card admin-role">
+                                <div class="role-card-header">
+                                    <div class="role-name">@adminRole.Name</div>
+                                    <div class="role-badge">
+                                        <span class="badge bg-primary">ผู้ดูแลระบบ</span>
+                                    </div>
+                                </div>
+                                <div class="role-card-body">
+                                    <div class="role-description">บทบาทผู้ดูแลระบบที่มีสิทธิ์ในการจัดการระบบทั้งหมด</div>
+                                    <div class="role-users">
+                                        <span class="role-users-count">@adminRole.UserCount ผู้ใช้งาน</span>
+                                    </div>
+                                </div>
+                                <div class="role-card-footer">
+                                    <div class="role-info text-muted">
+                                        <i class="icon-info"></i> บทบาทนี้ไม่สามารถแก้ไขหรือลบได้
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@if (showRoleModal)
+{
+    <div class="modal-backdrop show"></div>
+    <div class="modal show d-block" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">@(currentRole.Id == null ? "เพิ่มบทบาทใหม่" : "แก้ไขบทบาท")</h5>
+                    <button type="button" class="btn-close" @onclick="CloseRoleModal"></button>
+                </div>
+                <div class="modal-body">
+                    <EditForm Model="@currentRole" OnValidSubmit="SaveRole">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
+
+                        <div class="form-group">
+                            <label for="roleName" class="form-label required">ชื่อบทบาท</label>
+                            <InputText id="roleName" @bind-Value="currentRole.Name" class="form-control" placeholder="ชื่อบทบาท" />
+                            <ValidationMessage For="@(() => currentRole.Name)" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="roleDescription" class="form-label">คำอธิบาย</label>
+                            <InputTextArea id="roleDescription" @bind-Value="currentRole.Description" class="form-control" rows="3" placeholder="คำอธิบายบทบาท" />
+                            <ValidationMessage For="@(() => currentRole.Description)" />
+                        </div>
+
+                        <div class="form-group">
+                            <div class="form-check">
+                                <InputCheckbox id="roleIsActive" @bind-Value="currentRole.IsActive" class="form-check-input" />
+                                <label class="form-check-label" for="roleIsActive">เปิดใช้งาน</label>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @onclick="CloseRoleModal">ยกเลิก</button>
+                            <button type="submit" class="btn btn-primary">บันทึก</button>
+                        </div>
+                    </EditForm>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (showDeleteConfirmation)
+{
+    <div class="modal-backdrop show"></div>
+    <div class="modal show d-block" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">ยืนยันการลบบทบาท</h5>
+                    <button type="button" class="btn-close" @onclick="CancelDelete"></button>
+                </div>
+                <div class="modal-body">
+                    <p>คุณต้องการลบบทบาท <strong>@roleToDelete?.Name</strong> ใช่หรือไม่?</p>
+                    @if (roleToDelete?.UserCount > 0)
+                    {
+                        <div class="alert alert-warning">
+                            <i class="icon-alert-triangle"></i> บทบาทนี้มี @roleToDelete.UserCount ผู้ใช้งาน การลบจะทำให้ผู้ใช้เหล่านี้ไม่มีบทบาทในระบบ
+                        </div>
+                    }
+                    <p class="text-danger">การดำเนินการนี้ไม่สามารถยกเลิกได้</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="CancelDelete">ยกเลิก</button>
+                    <button type="button" class="btn btn-danger" @onclick="DeleteRole">ลบบทบาท</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (showPermissionModal)
+{
+    <div class="modal-backdrop show"></div>
+    <div class="modal show d-block modal-lg" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">จัดการสิทธิ์การเข้าถึง - @currentRole.Name</h5>
+                    <button type="button" class="btn-close" @onclick="ClosePermissionModal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="permission-groups">
+                        @foreach (var group in permissionGroups)
+                        {
+                            <div class="permission-group">
+                                <div class="permission-group-header" @onclick="() => TogglePermissionGroup(group.Key)">
+                                    <div class="permission-group-name">@group.Key</div>
+                                    <div class="permission-group-toggle">
+                                        <div class="form-check">
+                                            <input type="checkbox" class="form-check-input" 
+                                                   checked="@AreAllPermissionsInGroupChecked(group.Value)" 
+                                                   @onchange="e => SetAllPermissionsInGroup(group.Value, (bool)e.Value)" />
+                                        </div>
+                                        <i class="icon-chevron-@(expandedGroups.Contains(group.Key) ? "up" : "down")"></i>
+                                    </div>
+                                </div>
+                                @if (expandedGroups.Contains(group.Key))
+                                {
+                                    <div class="permission-group-body">
+                                        @foreach (var permission in group.Value)
+                                        {
+                                            <div class="permission-item">
+                                                <div class="form-check">
+                                                    <input type="checkbox" class="form-check-input" id="perm-@permission.Key" 
+                                                           checked="@selectedPermissions.Contains(permission.Key)" 
+                                                           @onchange="e => TogglePermission(permission.Key, (bool)e.Value)" />
+                                                    <label class="form-check-label" for="perm-@permission.Key">
+                                                        @permission.Value
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="ClosePermissionModal">ยกเลิก</button>
+                    <button type="button" class="btn btn-primary" @onclick="SavePermissions">บันทึกสิทธิ์การเข้าถึง</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private List<RoleModel> roles;
+    private bool isLoading = true;
+    
+    // Role modal
+    private bool showRoleModal = false;
+    private RoleModel currentRole = new RoleModel();
+    
+    // Delete confirmation
+    private bool showDeleteConfirmation = false;
+    private RoleModel roleToDelete;
+    
+    // Permission management
+    private bool showPermissionModal = false;
+    private Dictionary<string, Dictionary<string, string>> permissionGroups = new Dictionary<string, Dictionary<string, string>>();
+    private HashSet<string> selectedPermissions = new HashSet<string>();
+    private HashSet<string> expandedGroups = new HashSet<string>();
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+    
+    private async Task LoadData()
+    {
+        try
+        {
+            isLoading = true;
+            roles = await RoleService.GetRolesAsync();
+            
+            // Initialize permission groups
+            await LoadPermissionGroups();
+        }
+        catch (Exception ex)
+        {
+            await JSRuntime.InvokeVoidAsync("console.error", "Error loading roles: " + ex.Message);
+            // Show error notification
+            await JSRuntime.InvokeVoidAsync("showToast", "error", "เกิดข้อผิดพลาด", "ไม่สามารถโหลดข้อมูลบทบาทได้");
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+    
+    private async Task LoadPermissionGroups()
+    {
+        // In a real application, this would load permission structure from a service
+        // For this example, we'll define a sample permission structure
+        
+        permissionGroups = new Dictionary<string, Dictionary<string, string>>
+        {
+            {
+                "จัดการสินค้า", new Dictionary<string, string>
+                {
+                    { "Products.View", "ดูรายการสินค้า" },
+                    { "Products.Create", "เพิ่มสินค้าใหม่" },
+                    { "Products.Edit", "แก้ไขสินค้า" },
+                    { "Products.Delete", "ลบสินค้า" },
+                    { "Products.Import", "นำเข้าสินค้า" },
+                    { "Products.Export", "ส่งออกข้อมูลสินค้า" }
+                }
+            },
+            {
+                "จัดการคำสั่งซื้อ", new Dictionary<string, string>
+                {
+                    { "Orders.View", "ดูรายการคำสั่งซื้อ" },
+                    { "Orders.Create", "เพิ่มคำสั่งซื้อใหม่" },
+                    { "Orders.Edit", "แก้ไขคำสั่งซื้อ" },
+                    { "Orders.Cancel", "ยกเลิกคำสั่งซื้อ" },
+                    { "Orders.Delete", "ลบคำสั่งซื้อ" },
+                    { "Orders.ProcessPayment", "จัดการการชำระเงิน" },
+                    { "Orders.ManageShipping", "จัดการการจัดส่ง" }
+                }
+            },
+            {
+                "จัดการผู้ใช้", new Dictionary<string, string>
+                {
+                    { "Users.View", "ดูรายการผู้ใช้" },
+                    { "Users.Create", "เพิ่มผู้ใช้ใหม่" },
+                    { "Users.Edit", "แก้ไขผู้ใช้" },
+                    { "Users.Delete", "ลบผู้ใช้" },
+                    { "Users.ResetPassword", "รีเซ็ตรหัสผ่าน" }
+                }
+            },
+            {
+                "จัดการคอนเทนต์", new Dictionary<string, string>
+                {
+                    { "Content.View", "ดูคอนเทนต์" },
+                    { "Content.Create", "เพิ่มคอนเทนต์ใหม่" },
+                    { "Content.Edit", "แก้ไขคอนเทนต์" },
+                    { "Content.Delete", "ลบคอนเทนต์" },
+                    { "Content.Publish", "เผยแพร่คอนเทนต์" }
+                }
+            },
+            {
+                "จัดการสิทธิ์", new Dictionary<string, string>
+                {
+                    { "AccessControl.View", "ดูรายการบทบาทและสิทธิ์" },
+                    { "AccessControl.Edit", "จัดการบทบาทและสิทธิ์" }
+                }
+            },
+            {
+                "รายงาน", new Dictionary<string, string>
+                {
+                    { "Reports.View", "ดูรายงาน" },
+                    { "Reports.Sales", "รายงานยอดขาย" },
+                    { "Reports.Inventory", "รายงานสินค้าคงคลัง" },
+                    { "Reports.UserActivity", "รายงานกิจกรรมผู้ใช้" },
+                    { "Reports.Export", "ส่งออกรายงาน" }
+                }
+            },
+            {
+                "ตั้งค่าระบบ", new Dictionary<string, string>
+                {
+                    { "Settings.View", "ดูการตั้งค่า" },
+                    { "Settings.Edit", "แก้ไขการตั้งค่า" }
+                }
+            }
+        };
+        
+        // By default, expand the first group
+        if (permissionGroups.Keys.Any())
+        {
+            expandedGroups.Add(permissionGroups.Keys.First());
+        }
+    }
+    
+    private void ShowCreateRoleModal()
+    {
+        currentRole = new RoleModel
+        {
+            IsActive = true
+        };
+        showRoleModal = true;
+    }
+    
+    private void EditRole(RoleModel role)
+    {
+        currentRole = new RoleModel
+        {
+            Id = role.Id,
+            Name = role.Name,
+            Description = role.Description,
+            IsActive = role.IsActive,
+            UserCount = role.UserCount,
+            Permissions = role.Permissions?.ToList() ?? new List<string>()
+        };
+        showRoleModal = true;
+    }
+    
+    private void CloseRoleModal()
+    {
+        showRoleModal = false;
+    }
+    
+    private async Task SaveRole()
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(currentRole.Id))
+            {
+                // Create new role
+                var newRoleId = await RoleService.CreateRoleAsync(currentRole);
+                currentRole.Id = newRoleId;
+                
+                // Add to local list
+                if (roles == null)
+                    roles = new List<RoleModel>();
+                
+                currentRole.UserCount = 0;
+                roles.Add(currentRole);
+                
+                await JSRuntime.InvokeVoidAsync("showToast", "success", "เพิ่มบทบาทสำเร็จ", $"เพิ่มบทบาท {currentRole.Name} เรียบร้อยแล้ว");
+            }
+            else
+            {
+                // Update existing role
+                await RoleService.UpdateRoleAsync(currentRole);
+                
+                // Update in local list
+                var existingRole = roles.FirstOrDefault(r => r.Id == currentRole.Id);
+                if (existingRole != null)
+                {
+                    existingRole.Name = currentRole.Name;
+                    existingRole.Description = currentRole.Description;
+                    existingRole.IsActive = currentRole.IsActive;
+                    existingRole.Permissions = currentRole.Permissions;
+                }
+                
+                await JSRuntime.InvokeVoidAsync("showToast", "success", "แก้ไขบทบาทสำเร็จ", $"แก้ไขบทบาท {currentRole.Name} เรียบร้อยแล้ว");
+            }
+            
+            CloseRoleModal();
+        }
+        catch (Exception ex)
+        {
+            await JSRuntime.InvokeVoidAsync("console.error", "Error saving role: " + ex.Message);
+            await JSRuntime.InvokeVoidAsync("showToast", "error", "เกิดข้อผิดพลาด", "ไม่สามารถบันทึกบทบาทได้");
+        }
+    }
+    
+    private void ConfirmDeleteRole(RoleModel role)
+    {
+        roleToDelete = role;
+        showDeleteConfirmation = true;
+    }
+    
+    private void CancelDelete()
+    {
+        showDeleteConfirmation = false;
+        roleToDelete = null;
+    }
+    
+    private async Task DeleteRole()
+    {
+        try
+        {
+            if (roleToDelete != null)
+            {
+                await RoleService.DeleteRoleAsync(roleToDelete.Id);
+                
+                // Remove from local list
+                roles.Remove(roleToDelete);
+                
+                await JSRuntime.InvokeVoidAsync("showToast", "success", "ลบบทบาทสำเร็จ", $"ลบบทบาท {roleToDelete.Name} เรียบร้อยแล้ว");
+                
+                CancelDelete();
+            }
+        }
+        catch (Exception ex)
+        {
+            await JSRuntime.InvokeVoidAsync("console.error", "Error deleting role: " + ex.Message);
+            await JSRuntime.InvokeVoidAsync("showToast", "error", "เกิดข้อผิดพลาด", "ไม่สามารถลบบทบาทได้");
+        }
+    }
+    
+    private async Task ManagePermissions(RoleModel role)
+    {
+        currentRole = role;
+        
+        // Load selected permissions
+        selectedPermissions = new HashSet<string>(role.Permissions ?? new List<string>());
+        
+        // Show permission modal
+        showPermissionModal = true;
+    }
+    
+    private void TogglePermissionGroup(string groupName)
+    {
+        if (expandedGroups.Contains(groupName))
+            expandedGroups.Remove(groupName);
+        else
+            expandedGroups.Add(groupName);
+    }
+    
+    private bool AreAllPermissionsInGroupChecked(Dictionary<string, string> permissions)
+    {
+        return permissions.Keys.All(p => selectedPermissions.Contains(p));
+    }
+    
+    private void SetAllPermissionsInGroup(Dictionary<string, string> permissions, bool isChecked)
+    {
+        foreach (var permission in permissions.Keys)
+        {
+            if (isChecked)
+                selectedPermissions.Add(permission);
+            else
+                selectedPermissions.Remove(permission);
+        }
+    }
+    
+    private void TogglePermission(string permissionKey, bool isChecked)
+    {
+        if (isChecked)
+            selectedPermissions.Add(permissionKey);
+        else
+            selectedPermissions.Remove(permissionKey);
+    }
+    
+    private void ClosePermissionModal()
+    {
+        showPermissionModal = false;
+    }
+    
+    private async Task SavePermissions()
+    {
+        try
+        {
+            // Update permissions in the role
+            currentRole.Permissions = selectedPermissions.ToList();
+            
+            // Save to server
+            await RoleService.UpdateRolePermissionsAsync(currentRole.Id, currentRole.Permissions);
+            
+            // Update local data
+            var role = roles.FirstOrDefault(r => r.Id == currentRole.Id);
+            if (role != null)
+            {
+                role.Permissions = currentRole.Permissions;
+            }
+            
+            await JSRuntime.InvokeVoidAsync("showToast", "success", "บันทึกสิทธิ์การเข้าถึงสำเร็จ", $"อัปเดตสิทธิ์การเข้าถึงสำหรับบทบาท {currentRole.Name} เรียบร้อยแล้ว");
+            
+            ClosePermissionModal();
+        }
+        catch (Exception ex)
+        {
+            await JSRuntime.InvokeVoidAsync("console.error", "Error saving permissions: " + ex.Message);
+            await JSRuntime.InvokeVoidAsync("showToast", "error", "เกิดข้อผิดพลาด", "ไม่สามารถบันทึกสิทธิ์การเข้าถึงได้");
+        }
+    }
+}

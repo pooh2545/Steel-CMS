@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Pages\Dashboard.razor.css" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="6.0.31" />
     <PackageReference Include="Microsoft.AspNetCore.Components" Version="6.0.31" />
@@ -42,6 +46,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Shared\SteelAdmin.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>

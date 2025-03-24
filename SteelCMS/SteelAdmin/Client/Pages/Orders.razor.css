@@ -1,0 +1,183 @@
+﻿/* Order Management Styles */
+
+/* Order Summary Cards */
+.order-summary-cards {
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.summary-card {
+    background-color: #fff;
+    border-radius: 6px;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    height: 100%;
+    border-left: 4px solid #e9ecef;
+}
+
+.summary-title {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.summary-value {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.status-pending {
+    border-left-color: var(--warning-color);
+}
+
+.status-processing {
+    border-left-color: var(--primary-color);
+}
+
+.status-shipped {
+    border-left-color: var(--info-color);
+}
+
+.status-delivered {
+    border-left-color: var(--success-color);
+}
+
+.status-cancelled {
+    border-left-color: var(--danger-color);
+}
+
+/* Order Table */
+.order-number {
+    font-weight: 500;
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+    .order-number:hover {
+        text-decoration: underline;
+    }
+
+.customer-name {
+    font-weight: 500;
+}
+
+.customer-contact {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+/* Filter Inputs */
+.filter-box .form-control,
+.filter-box .form-select {
+    width: auto;
+}
+
+.filter-box input[type="date"] {
+    width: 150px;
+}
+
+/* Badge Styles - extend app.css badge styles */
+.badge.bg-warning {
+    background-color: #fff4db;
+    color: #92650f;
+    border: 1px solid #ffe0a4;
+}
+
+.badge.bg-primary {
+    background-color: #e8f0ff;
+    color: #1e4878;
+    border: 1px solid #c7dbff;
+}
+
+.badge.bg-info {
+    background-color: #e1f5fa;
+    color: #0b7c9e;
+    border: 1px solid #c5ebf4;
+}
+
+.badge.bg-success {
+    background-color: #e3f8ed;
+    color: #0f7344;
+    border: 1px solid #c9f1e1;
+}
+
+.badge.bg-danger {
+    background-color: #faeaea;
+    color: #b71c1c;
+    border: 1px solid #f5cfcf;
+}
+
+/* Order Actions */
+.action-buttons {
+    display: flex;
+    gap: 5px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .summary-card {
+        margin-bottom: 15px;
+    }
+
+    .summary-value {
+        font-size: 20px;
+    }
+
+    .filter-box {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+        .filter-box .form-control,
+        .filter-box .form-select,
+        .filter-box .btn {
+            width: 100%;
+            margin-left: 0 !important;
+            margin-bottom: 10px;
+        }
+}
+
+/* Print styles for orders */
+@media print {
+    .app-header,
+    .side-nav,
+    .page-actions,
+    .card-header,
+    .pagination-container,
+    .action-buttons {
+        display: none !important;
+    }
+
+    .app-container {
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    .content-container {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .card {
+        box-shadow: none !important;
+        border: none !important;
+    }
+
+    .card-body {
+        padding: 0 !important;
+    }
+
+    .table th {
+        background-color: #f8f9fa !important;
+        color: #000 !important;
+    }
+
+    .badge {
+        border: 1px solid #ddd !important;
+        padding: 2px 8px !important;
+    }
+}

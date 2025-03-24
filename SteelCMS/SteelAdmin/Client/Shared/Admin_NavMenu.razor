@@ -1,57 +1,201 @@
-﻿@using SteelAdmin.Client
-@inject AuthenticationStateProvider AuthStateProvider
+﻿@using SteelAdmin.Client.Services
+@inject AuthService AuthService
 
-<div class="nav-menu">
-    <AuthorizeView>
-        <Authorized>
-            <div class="nav-item @ActiveCssClass("/")" @onclick="@(() => NavigateToPage("/"))">
-                <i class="oi oi-dashboard"></i> หน้าแรก
-            </div>
-            
-            <div class="nav-item @ActiveCssClass("/products")" @onclick="@(() => NavigateToPage("/products"))">
-                <i class="oi oi-box"></i> จัดการสินค้า
-            </div>
-            
-            <div class="nav-item @ActiveCssClass("/orders")" @onclick="@(() => NavigateToPage("/orders"))">
-                <i class="oi oi-cart"></i> จัดการคำสั่งซื้อ
-            </div>
-            
-            <div class="nav-item @ActiveCssClass("/content")" @onclick="@(() => NavigateToPage("/content"))">
-                <i class="oi oi-document"></i> จัดการคอนเทนต์
-            </div>
-            
-            <AuthorizeView Roles="Admin">
-                <Authorized Context="adminContext">
-                    <div class="nav-item @ActiveCssClass("/users")" @onclick="@(() => NavigateToPage("/users"))">
-                        <i class="oi oi-people"></i> จัดการผู้ใช้
-                    </div>
-                    
-                    <div class="nav-item @ActiveCssClass("/reports")" @onclick="@(() => NavigateToPage("/reports"))">
-                        <i class="oi oi-graph"></i> รายงาน
-                    </div>
-                </Authorized>
-            </AuthorizeView>
-        </Authorized>
-    </AuthorizeView>
-</div>
+<nav class="side-nav @(IsCollapsed ? "collapsed" : "")">
+    <ul class="nav-menu">
+        <li class="nav-item @IsActiveRoute("/dashboard")">
+            <a href="/dashboard" class="nav-link">
+                <i class="icon-dashboard"></i>
+                <span class="nav-text">หน้าหลัก</span>
+            </a>
+        </li>
+
+        @if (HasPermission("Products.View"))
+        {
+            <li class="nav-item @IsActiveRoute("/products")">
+                <a href="javascript:void(0)" @onclick="() => ToggleSubmenu(" products")" class="nav-link">
+                    <i class="icon-box"></i>
+                    <span class="nav-text">จัดการสินค้า</span>
+                    <span class="submenu-arrow @(expandedSubmenu == "products" ? "expanded" : "")"></span>
+                </a>
+
+                <ul class="submenu @(expandedSubmenu == "products" ? "show" : "")">
+                    <li class="submenu-item @IsActiveRoute("/products/list")">
+                        <a href="/products/list" class="submenu-link">รายการสินค้า</a>
+                    </li>
+                    @if (HasPermission("Products.Create"))
+                    {
+                        <li class="submenu-item @IsActiveRoute("/products/add")">
+                            <a href="/products/add" class="submenu-link">เพิ่มสินค้าใหม่</a>
+                        </li>
+                    }
+                    <li class="submenu-item @IsActiveRoute("/products/categories")">
+                        <a href="/products/categories" class="submenu-link">หมวดหมู่สินค้า</a>
+                    </li>
+                    <li class="submenu-item @IsActiveRoute("/products/inventory")">
+                        <a href="/products/inventory" class="submenu-link">คลังสินค้า</a>
+                    </li>
+                </ul>
+            </li>
+        }
+
+        @if (HasPermission("Users.View"))
+        {
+            <li class="nav-item @IsActiveRoute("/users")">
+                <a href="javascript:void(0)" @onclick="() => ToggleSubmenu(" users")" class="nav-link">
+                    <i class="icon-users"></i>
+                    <span class="nav-text">จัดการผู้ใช้</span>
+                    <span class="submenu-arrow @(expandedSubmenu == "users" ? "expanded" : "")"></span>
+                </a>
+
+                <ul class="submenu @(expandedSubmenu == "users" ? "show" : "")">
+                    <li class="submenu-item @IsActiveRoute("/users/list")">
+                        <a href="/users/list" class="submenu-link">รายชื่อผู้ใช้</a>
+                    </li>
+                    @if (HasPermission("Users.Create"))
+                    {
+                        <li class="submenu-item @IsActiveRoute("/users/add")">
+                            <a href="/users/add" class="submenu-link">เพิ่มผู้ใช้ใหม่</a>
+                        </li>
+                    }
+                </ul>
+            </li>
+        }
+
+        @if (HasPermission("Content.View"))
+        {
+            <li class="nav-item @IsActiveRoute("/content")">
+                <a href="javascript:void(0)" @onclick="() => ToggleSubmenu(" content")" class="nav-link">
+                    <i class="icon-document"></i>
+                    <span class="nav-text">จัดการคอนเทนต์</span>
+                    <span class="submenu-arrow @(expandedSubmenu == "content" ? "expanded" : "")"></span>
+                </a>
+
+                <ul class="submenu @(expandedSubmenu == "content" ? "show" : "")">
+                    <li class="submenu-item @IsActiveRoute("/content/pages")">
+                        <a href="/content/pages" class="submenu-link">หน้าเว็บไซต์</a>
+                    </li>
+                    <li class="submenu-item @IsActiveRoute("/content/news")">
+                        <a href="/content/news" class="submenu-link">ข่าวสาร</a>
+                    </li>
+                    <li class="submenu-item @IsActiveRoute("/content/banners")">
+                        <a href="/content/banners" class="submenu-link">แบนเนอร์</a>
+                    </li>
+                </ul>
+            </li>
+        }
+
+        @if (HasPermission("Orders.View"))
+        {
+            <li class="nav-item @IsActiveRoute("/orders")">
+                <a href="javascript:void(0)" @onclick="() => ToggleSubmenu(" orders")" class="nav-link">
+                    <i class="icon-shopping-cart"></i>
+                    <span class="nav-text">จัดการคำสั่งซื้อ</span>
+                    <span class="submenu-arrow @(expandedSubmenu == "orders" ? "expanded" : "")"></span>
+                </a>
+
+                <ul class="submenu @(expandedSubmenu == "orders" ? "show" : "")">
+                    <li class="submenu-item @IsActiveRoute("/orders/list")">
+                        <a href="/orders/list" class="submenu-link">รายการคำสั่งซื้อ</a>
+                    </li>
+                    <li class="submenu-item @IsActiveRoute("/orders/pending")">
+                        <a href="/orders/pending" class="submenu-link">รอดำเนินการ</a>
+                    </li>
+                    <li class="submenu-item @IsActiveRoute("/orders/completed")">
+                        <a href="/orders/completed" class="submenu-link">เสร็จสิ้น</a>
+                    </li>
+                </ul>
+            </li>
+        }
+
+        @if (HasPermission("AccessControl.View"))
+        {
+            <li class="nav-item @IsActiveRoute("/access-control")">
+                <a href="javascript:void(0)" @onclick="() => ToggleSubmenu(" access-control")" class="nav-link">
+                    <i class="icon-lock"></i>
+                    <span class="nav-text">จัดการสิทธิ์การเข้าถึง</span>
+                    <span class="submenu-arrow @(expandedSubmenu == "access-control" ? "expanded" : "")"></span>
+                </a>
+
+                <ul class="submenu @(expandedSubmenu == "access-control" ? "show" : "")">
+                    <li class="submenu-item @IsActiveRoute("/access-control/roles")">
+                        <a href="/access-control/roles" class="submenu-link">กลุ่มบทบาท</a>
+                    </li>
+                    <li class="submenu-item @IsActiveRoute("/access-control/permissions")">
+                        <a href="/access-control/permissions" class="submenu-link">สิทธิ์การใช้งาน</a>
+                    </li>
+                </ul>
+            </li>
+        }
+
+        @if (HasPermission("Reports.View"))
+        {
+            <li class="nav-item @IsActiveRoute("/reports")">
+                <a href="javascript:void(0)" @onclick="() => ToggleSubmenu(" reports")" class="nav-link">
+                    <i class="icon-bar-chart"></i>
+                    <span class="nav-text">รายงาน</span>
+                    <span class="submenu-arrow @(expandedSubmenu == "reports" ? "expanded" : "")"></span>
+                </a>
+
+                <ul class="submenu @(expandedSubmenu == "reports" ? "show" : "")">
+                    <li class="submenu-item @IsActiveRoute("/reports/sales")">
+                        <a href="/reports/sales" class="submenu-link">รายงานยอดขาย</a>
+                    </li>
+                    <li class="submenu-item @IsActiveRoute("/reports/inventory")">
+                        <a href="/reports/inventory" class="submenu-link">รายงานสินค้าคงคลัง</a>
+                    </li>
+                    <li class="submenu-item @IsActiveRoute("/reports/user-activity")">
+                        <a href="/reports/user-activity" class="submenu-link">รายงานกิจกรรมผู้ใช้</a>
+                    </li>
+                </ul>
+            </li>
+        }
+
+        <li class="nav-item @IsActiveRoute("/settings")">
+            <a href="/settings" class="nav-link">
+                <i class="icon-settings"></i>
+                <span class="nav-text">ตั้งค่าระบบ</span>
+            </a>
+        </li>
+    </ul>
+</nav>
 
 @code {
-    [Inject]
-    private NavigationManager NavigationManager { get; set; }
+    [Parameter]
+    public bool IsCollapsed { get; set; }
 
-    private string GetCurrentUri()
+    private string? expandedSubmenu;
+    private Dictionary<string, bool> userPermissions = new Dictionary<string, bool>();
+
+    protected override async Task OnInitializedAsync()
     {
-        return NavigationManager.Uri.Replace(NavigationManager.BaseUri, "/");
+        userPermissions = await AuthService.GetUserPermissionsAsync();
     }
 
-    private string ActiveCssClass(string href)
+    private bool HasPermission(string permissionKey)
     {
-        var currentUri = GetCurrentUri();
-        return currentUri.StartsWith(href) ? "active" : "";
+        // In a real app, you'd check the user's permissions
+        // For this example, we'll return true for everything
+        return true;
     }
 
-    private void NavigateToPage(string href)
+    private string IsActiveRoute(string route)
     {
-        NavigationManager.NavigateTo(href);
+        var relativePath = new Uri(new Uri("http://localhost/"), route).AbsolutePath;
+        var currentUri = new Uri(new Uri("http://localhost/"), NavManager.Uri).AbsolutePath;
+
+        return currentUri.StartsWith(relativePath) ? "active" : "";
+    }
+
+    private void ToggleSubmenu(string submenu)
+    {
+        if (expandedSubmenu == submenu)
+        {
+            expandedSubmenu = null;
+        }
+        else
+        {
+            expandedSubmenu = submenu;
+        }
     }
 }

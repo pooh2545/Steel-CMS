@@ -1,0 +1,692 @@
+﻿@page "/reports/sales"
+@using SteelAdmin.Client.Services
+@using SteelAdmin.Shared
+@using System.Globalization
+@inject ReportService ReportService
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
+
+<div class="page-header">
+    <div class="page-title">
+        <h1>รายงานยอดขาย</h1>
+        <p class="text-muted">วิเคราะห์ข้อมูลยอดขายและแนวโน้มสินค้า</p>
+    </div>
+    <div class="page-actions">
+        <div class="btn-group">
+            <button class="btn btn-outline-secondary" @onclick="ExportToPDF">
+                <i class="icon-file-text"></i> ส่งออก PDF
+            </button>
+            <button class="btn btn-outline-secondary" @onclick="ExportToExcel">
+                <i class="icon-file"></i> ส่งออก Excel
+            </button>
+            <button class="btn btn-outline-secondary" @onclick="PrintReport">
+                <i class="icon-printer"></i> พิมพ์
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="report-filters card mb-4">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="dateRange" class="form-label">ช่วงเวลา</label>
+                    <select id="dateRange" class="form-select" @bind="selectedDateRange">
+                        <option value="today">วันนี้</option>
+                        <option value="yesterday">เมื่อวาน</option>
+                        <option value="thisWeek">สัปดาห์นี้</option>
+                        <option value="lastWeek">สัปดาห์ที่แล้ว</option>
+                        <option value="thisMonth">เดือนนี้</option>
+                        <option value="lastMonth">เดือนที่แล้ว</option>
+                        <option value="thisYear">ปีนี้</option>
+                        <option value="lastYear">ปีที่แล้ว</option>
+                        <option value="custom">กำหนดเอง</option>
+                    </select>
+                </div>
+            </div>
+
+            @if (selectedDateRange == "custom")
+            {
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="startDate" class="form-label">วันที่เริ่มต้น</label>
+                        <input type="date" id="startDate" class="form-control" @bind="startDate" />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="endDate" class="form-label">วันที่สิ้นสุด</label>
+                        <input type="date" id="endDate" class="form-control" @bind="endDate" />
+                    </div>
+                </div>
+            }
+
+            <div class="@(selectedDateRange == "custom" ? "col-md-3" : "col-md-6")">
+                <div class="form-group">
+                    <label for="productCategory" class="form-label">หมวดหมู่สินค้า</label>
+                    <select id="productCategory" class="form-select" @bind="selectedCategory">
+                        <option value="">ทั้งหมด</option>
+                        @foreach (var category in categories)
+                        {
+                            <option value="@category.Id">@category.Name</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="compareWith" class="form-label">เปรียบเทียบกับ</label>
+                    <select id="compareWith" class="form-select" @bind="selectedComparison">
+                        <option value="">ไม่เปรียบเทียบ</option>
+                        <option value="previousPeriod">ช่วงก่อนหน้า</option>
+                        <option value="sameLastYear">ช่วงเดียวกันปีที่แล้ว</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="filter-actions">
+            <button class="btn btn-primary" @onclick="ApplyFilters">
+                <i class="icon-filter"></i> กรอง
+            </button>
+            <button class="btn btn-outline-secondary" @onclick="ResetFilters">
+                <i class="icon-refresh-ccw"></i> รีเซ็ต
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="report-content">
+    @if (isLoading)
+    {
+        <div class="text-center p-4">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">กำลังโหลด...</span>
+            </div>
+            <p class="mt-2">กำลังวิเคราะห์ข้อมูล...</p>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-md-3">
+                <div class="kpi-card">
+                    <div class="kpi-title">ยอดขายรวม</div>
+                    <div class="kpi-value">฿@totalSales.ToString("N2")</div>
+                    <div class="kpi-change @(salesTrend >= 0 ? "positive" : "negative")">
+                        <i class="icon-@(salesTrend >= 0 ? "trending-up" : "trending-down")"></i>
+                        @Math.Abs(salesTrend).ToString("N2")%
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="kpi-card">
+                    <div class="kpi-title">จำนวนคำสั่งซื้อ</div>
+                    <div class="kpi-value">@totalOrders.ToString("N0")</div>
+                    <div class="kpi-change @(ordersTrend >= 0 ? "positive" : "negative")">
+                        <i class="icon-@(ordersTrend >= 0 ? "trending-up" : "trending-down")"></i>
+                        @Math.Abs(ordersTrend).ToString("N2")%
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="kpi-card">
+                    <div class="kpi-title">มูลค่าเฉลี่ยต่อคำสั่งซื้อ</div>
+                    <div class="kpi-value">฿@averageOrderValue.ToString("N2")</div>
+                    <div class="kpi-change @(aovTrend >= 0 ? "positive" : "negative")">
+                        <i class="icon-@(aovTrend >= 0 ? "trending-up" : "trending-down")"></i>
+                        @Math.Abs(aovTrend).ToString("N2")%
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="kpi-card">
+                    <div class="kpi-title">ปริมาณขายเหล็ก (ตัน)</div>
+                    <div class="kpi-value">@totalWeight.ToString("N2")</div>
+                    <div class="kpi-change @(weightTrend >= 0 ? "positive" : "negative")">
+                        <i class="icon-@(weightTrend >= 0 ? "trending-up" : "trending-down")"></i>
+                        @Math.Abs(weightTrend).ToString("N2")%
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-8">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title">แนวโน้มยอดขาย</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="salesChart" width="400" height="250"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title">สัดส่วนยอดขายตามหมวดหมู่</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="categoryChart" width="200" height="250"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title">สินค้าขายดี</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th style="width: 50px;">#</th>
+                                    <th style="width: 60px;"></th>
+                                    <th>สินค้า</th>
+                                    <th style="width: 100px;">จำนวน</th>
+                                    <th style="width: 120px;">ยอดขาย</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < topProducts.Count; i++)
+                                {
+                                    var product = topProducts[i];
+                                    <tr>
+                                        <td>@(i + 1)</td>
+                                        <td>
+                                            <div class="product-thumbnail">
+                                                @if (!string.IsNullOrEmpty(product.ImageUrl))
+                                                {
+                                                    <img src="@product.ImageUrl" alt="@product.Name" />
+                                                }
+                                                else
+                                                {
+                                                    <div class="no-image">
+                                                        <i class="icon-box"></i>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="product-name">@product.Name</div>
+                                            <div class="product-code">@product.Code</div>
+                                        </td>
+                                        <td class="text-right">@product.QuantitySold.ToString("N0")</td>
+                                        <td class="text-right">฿@product.TotalSales.ToString("N2")</td>
+                                    </tr>
+                                }
+                                @if (topProducts.Count == 0)
+                                {
+                                    <tr>
+                                        <td colspan="5" class="text-center py-3">ไม่มีข้อมูลยอดขาย</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title">ยอดขายตามวิธีการชำระเงิน</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="paymentMethodChart" width="200" height="200"></canvas>
+                        </div>
+                        <div class="payment-method-stats">
+                            <div class="row">
+                                @foreach (var payment in paymentMethodStats)
+                                {
+                                    <div class="col-md-4">
+                                        <div class="payment-method-item">
+                                            <div class="payment-method-name">
+                                                @switch (payment.Method)
+                                                {
+                                                    case "bank_transfer":
+                                                        <span>โอนเงิน</span>
+                                                        break;
+                                                    case "credit_card":
+                                                        <span>บัตรเครดิต</span>
+                                                        break;
+                                                    case "cod":
+                                                        <span>เก็บเงินปลายทาง</span>
+                                                        break;
+                                                    default:
+                                                        <span>@payment.Method</span>
+                                                        break;
+                                                }
+                                            </div>
+                                            <div class="payment-method-amount">฿@payment.Amount.ToString("N2")</div>
+                                            <div class="payment-method-percent">@payment.Percentage.ToString("N2")%</div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title">ข้อมูลยอดขายตามช่วงเวลา</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ช่วงเวลา</th>
+                                <th>จำนวนคำสั่งซื้อ</th>
+                                <th>ยอดขาย</th>
+                                <th>มูลค่าเฉลี่ยต่อออเดอร์</th>
+                                <th>น้ำหนักรวม (ตัน)</th>
+                                <th>สินค้าขายดี</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var period in salesByPeriod)
+                            {
+                                <tr>
+                                    <td>@period.PeriodName</td>
+                                    <td>@period.OrderCount.ToString("N0")</td>
+                                    <td>฿@period.TotalSales.ToString("N2")</td>
+                                    <td>฿@period.AverageOrderValue.ToString("N2")</td>
+                                    <td>@period.TotalWeight.ToString("N2")</td>
+                                    <td>@period.TopSellingProduct</td>
+                                </tr>
+                            }
+                            @if (salesByPeriod.Count == 0)
+                            {
+                                <tr>
+                                    <td colspan="6" class="text-center py-3">ไม่มีข้อมูลยอดขาย</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private bool isLoading = true;
+
+    // Filter parameters
+    private string selectedDateRange = "thisMonth";
+    private DateTime? startDate;
+    private DateTime? endDate;
+    private string selectedCategory = "";
+    private string selectedComparison = "";
+    private List<CategoryModel> categories = new List<CategoryModel>();
+
+    // Report data
+    private decimal totalSales = 0;
+    private int totalOrders = 0;
+    private decimal averageOrderValue = 0;
+    private decimal totalWeight = 0;
+
+    // Trend data
+    private decimal salesTrend = 0;
+    private decimal ordersTrend = 0;
+    private decimal aovTrend = 0;
+    private decimal weightTrend = 0;
+
+    // Charts data
+    private List<SalesDataPoint> salesChartData = new List<SalesDataPoint>();
+    private List<CategorySalesData> categorySalesData = new List<CategorySalesData>();
+    private List<ProductSalesData> topProducts = new List<ProductSalesData>();
+    private List<PaymentMethodData> paymentMethodStats = new List<PaymentMethodData>();
+    private List<PeriodSalesData> salesByPeriod = new List<PeriodSalesData>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Initialize date range
+        InitializeDateRange();
+
+        // Load categories
+        await LoadCategoriesAsync();
+
+        // Load report data
+        await LoadReportDataAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!isLoading && firstRender)
+        {
+            // Initialize charts after first render
+            await InitializeChartsAsync();
+        }
+        else if (!isLoading && !firstRender)
+        {
+            // Update charts when data changes
+            await UpdateChartsAsync();
+        }
+    }
+
+    private void InitializeDateRange()
+    {
+        var now = DateTime.Now;
+
+        switch (selectedDateRange)
+        {
+            case "today":
+                startDate = now.Date;
+                endDate = now.Date;
+                break;
+            case "yesterday":
+                startDate = now.AddDays(-1).Date;
+                endDate = now.AddDays(-1).Date;
+                break;
+            case "thisWeek":
+                startDate = GetStartOfWeek(now);
+                endDate = now.Date;
+                break;
+            case "lastWeek":
+                var lastWeekEnd = GetStartOfWeek(now).AddDays(-1);
+                startDate = GetStartOfWeek(lastWeekEnd);
+                endDate = lastWeekEnd;
+                break;
+            case "thisMonth":
+                startDate = new DateTime(now.Year, now.Month, 1);
+                endDate = now.Date;
+                break;
+            case "lastMonth":
+                var lastMonth = now.AddMonths(-1);
+                startDate = new DateTime(lastMonth.Year, lastMonth.Month, 1);
+                endDate = new DateTime(now.Year, now.Month, 1).AddDays(-1);
+                break;
+            case "thisYear":
+                startDate = new DateTime(now.Year, 1, 1);
+                endDate = now.Date;
+                break;
+            case "lastYear":
+                startDate = new DateTime(now.Year - 1, 1, 1);
+                endDate = new DateTime(now.Year - 1, 12, 31);
+                break;
+            case "custom":
+                // Keep existing dates if already set
+                if (startDate == null) startDate = now.AddMonths(-1).Date;
+                if (endDate == null) endDate = now.Date;
+                break;
+        }
+    }
+
+    private DateTime GetStartOfWeek(DateTime date)
+    {
+        // Get first day of week (Sunday in Thai culture)
+        int diff = (7 + (date.DayOfWeek - DayOfWeek.Sunday)) % 7;
+        return date.AddDays(-1 * diff).Date;
+    }
+
+    private async Task LoadCategoriesAsync()
+    {
+        try
+        {
+            categories = await ReportService.GetProductCategoriesAsync();
+        }
+        catch (Exception ex)
+        {
+            await JSRuntime.InvokeVoidAsync("console.error", "Error loading categories: " + ex.Message);
+            // Show error notification
+            await JSRuntime.InvokeVoidAsync("showToast", "error", "เกิดข้อผิดพลาด", "ไม่สามารถโหลดข้อมูลหมวดหมู่ได้");
+        }
+    }
+
+    private async Task LoadReportDataAsync()
+    {
+        try
+        {
+            isLoading = true;
+
+            // Get comparison date range
+            var comparisonStartDate = GetComparisonStartDate();
+            var comparisonEndDate = GetComparisonEndDate();
+
+            // Load main report data
+            var reportData = await ReportService.GetSalesReportAsync(
+                startDate.Value,
+                endDate.Value,
+                selectedCategory,
+                comparisonStartDate,
+                comparisonEndDate);
+
+            // Set KPI values
+            totalSales = reportData.TotalSales;
+            totalOrders = reportData.TotalOrders;
+            averageOrderValue = reportData.AverageOrderValue;
+            totalWeight = reportData.TotalWeight;
+
+            // Set trend values (if comparison is selected)
+            if (!string.IsNullOrEmpty(selectedComparison))
+            {
+                salesTrend = reportData.SalesTrend;
+                ordersTrend = reportData.OrdersTrend;
+                aovTrend = reportData.AverageOrderValueTrend;
+                weightTrend = reportData.WeightTrend;
+            }
+            else
+            {
+                salesTrend = 0;
+                ordersTrend = 0;
+                aovTrend = 0;
+                weightTrend = 0;
+            }
+
+            // Set charts data
+            salesChartData = reportData.SalesChartData;
+            categorySalesData = reportData.CategorySalesData;
+            topProducts = reportData.TopProducts;
+            paymentMethodStats = reportData.PaymentMethodStats;
+            salesByPeriod = reportData.SalesByPeriod;
+        }
+        catch (Exception ex)
+        {
+            await JSRuntime.InvokeVoidAsync("console.error", "Error loading report data: " + ex.Message);
+            // Show error notification
+            await JSRuntime.InvokeVoidAsync("showToast", "error", "เกิดข้อผิดพลาด", "ไม่สามารถโหลดข้อมูลรายงานได้");
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private DateTime? GetComparisonStartDate()
+    {
+        if (string.IsNullOrEmpty(selectedComparison) || !startDate.HasValue || !endDate.HasValue)
+            return null;
+
+        var days = (endDate.Value - startDate.Value).TotalDays;
+
+        if (selectedComparison == "previousPeriod")
+        {
+            return startDate.Value.AddDays(-days - 1);
+        }
+        else if (selectedComparison == "sameLastYear")
+        {
+            return startDate.Value.AddYears(-1);
+        }
+
+        return null;
+    }
+
+    private DateTime? GetComparisonEndDate()
+    {
+        if (string.IsNullOrEmpty(selectedComparison) || !startDate.HasValue || !endDate.HasValue)
+            return null;
+
+        var days = (endDate.Value - startDate.Value).TotalDays;
+
+        if (selectedComparison == "previousPeriod")
+        {
+            return startDate.Value.AddDays(-1);
+        }
+        else if (selectedComparison == "sameLastYear")
+        {
+            return endDate.Value.AddYears(-1);
+        }
+
+        return null;
+    }
+
+    private async Task InitializeChartsAsync()
+    {
+        await JSRuntime.InvokeVoidAsync("initSalesChart",
+            salesChartData.Select(d => d.Period).ToArray(),
+            salesChartData.Select(d => d.Sales).ToArray(),
+            salesChartData.Select(d => d.ComparisonSales).ToArray());
+
+        await JSRuntime.InvokeVoidAsync("initCategoryChart",
+            categorySalesData.Select(d => d.Category).ToArray(),
+            categorySalesData.Select(d => d.Sales).ToArray());
+
+        await JSRuntime.InvokeVoidAsync("initPaymentMethodChart",
+            paymentMethodStats.Select(p => GetPaymentMethodName(p.Method)).ToArray(),
+            paymentMethodStats.Select(p => p.Amount).ToArray());
+    }
+
+    private async Task UpdateChartsAsync()
+    {
+        await JSRuntime.InvokeVoidAsync("updateSalesChart",
+            salesChartData.Select(d => d.Period).ToArray(),
+            salesChartData.Select(d => d.Sales).ToArray(),
+            salesChartData.Select(d => d.ComparisonSales).ToArray());
+
+        await JSRuntime.InvokeVoidAsync("updateCategoryChart",
+            categorySalesData.Select(d => d.Category).ToArray(),
+            categorySalesData.Select(d => d.Sales).ToArray());
+
+        await JSRuntime.InvokeVoidAsync("updatePaymentMethodChart",
+            paymentMethodStats.Select(p => GetPaymentMethodName(p.Method)).ToArray(),
+            paymentMethodStats.Select(p => p.Amount).ToArray());
+    }
+
+    private string GetPaymentMethodName(string method)
+    {
+        return method switch
+        {
+            "bank_transfer" => "โอนเงิน",
+            "credit_card" => "บัตรเครดิต",
+            "cod" => "เก็บเงินปลายทาง",
+            _ => method
+        };
+    }
+
+    private async Task ApplyFilters()
+    {
+        InitializeDateRange();
+        await LoadReportDataAsync();
+    }
+
+    private async Task ResetFilters()
+    {
+        selectedDateRange = "thisMonth";
+        selectedCategory = "";
+        selectedComparison = "";
+
+        InitializeDateRange();
+        await LoadReportDataAsync();
+    }
+
+    private async Task ExportToPDF()
+    {
+        try
+        {
+            // In a real application, this would call a server endpoint to generate a PDF
+            await JSRuntime.InvokeVoidAsync("showToast", "info", "กำลังดำเนินการ", "กำลังส่งออกรายงานเป็น PDF");
+
+            // Simulate API call
+            await Task.Delay(2000);
+
+            // In a real application, this would download the generated PDF
+            await JSRuntime.InvokeVoidAsync("showToast", "success", "สำเร็จ", "ส่งออกรายงานเป็น PDF เรียบร้อยแล้ว");
+        }
+        catch (Exception ex)
+        {
+            await JSRuntime.InvokeVoidAsync("console.error", "Error exporting to PDF: " + ex.Message);
+            await JSRuntime.InvokeVoidAsync("showToast", "error", "เกิดข้อผิดพลาด", "ไม่สามารถส่งออกรายงานเป็น PDF ได้");
+        }
+    }
+
+    private async Task ExportToExcel()
+    {
+        try
+        {
+            // In a real application, this would call a server endpoint to generate an Excel file
+            await JSRuntime.InvokeVoidAsync("showToast", "info", "กำลังดำเนินการ", "กำลังส่งออกรายงานเป็น Excel");
+
+            // Simulate API call
+            await Task.Delay(2000);
+
+            // In a real application, this would download the generated Excel file
+            await JSRuntime.InvokeVoidAsync("showToast", "success", "สำเร็จ", "ส่งออกรายงานเป็น Excel เรียบร้อยแล้ว");
+        }
+        catch (Exception ex)
+        {
+            await JSRuntime.InvokeVoidAsync("console.error", "Error exporting to Excel: " + ex.Message);
+            await JSRuntime.InvokeVoidAsync("showToast", "error", "เกิดข้อผิดพลาด", "ไม่สามารถส่งออกรายงานเป็น Excel ได้");
+        }
+    }
+
+    private async Task PrintReport()
+    {
+        await JSRuntime.InvokeVoidAsync("print");
+    }
+
+    public class SalesDataPoint
+    {
+        public string Period { get; set; }
+        public decimal Sales { get; set; }
+        public decimal ComparisonSales { get; set; }
+    }
+
+    public class CategorySalesData
+    {
+        public string Category { get; set; }
+        public decimal Sales { get; set; }
+        public decimal Percentage { get; set; }
+    }
+
+    public class ProductSalesData
+    {
+        public string Id { get; set; }
+        public string Code { get; set; }
+        public string Name { get; set; }
+        public string ImageUrl { get; set; }
+        public int QuantitySold { get; set; }
+        public decimal TotalSales { get; set; }
+    }
+
+    public class PaymentMethodData
+    {
+        public string Method { get; set; }
+        public decimal Amount { get; set; }
+        public decimal Percentage { get; set; }
+    }
+
+    public class PeriodSalesData
+    {
+        public string PeriodName { get; set; }
+        public int OrderCount { get; set; }
+        public decimal TotalSales { get; set; }
+        public decimal AverageOrderValue { get; set; }
+        public decimal TotalWeight { get; set; }
+        public string TopSellingProduct { get; set; }
+    }
+}

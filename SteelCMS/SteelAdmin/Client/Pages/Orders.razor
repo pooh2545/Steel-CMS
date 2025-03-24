@@ -1,171 +1,493 @@
-﻿@page "/orders"
+﻿@page "/orders/list"
+@using SteelAdmin.Client.Services
+@using SteelAdmin.Shared
+@inject OrderService OrderService
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
 
-<div class="orders-page">
-    <div class="page-header">
-        <h1>Orders Management</h1>
-        <div class="actions">
-            <button class="btn btn-primary" @onclick="CreateNewOrder">Create New Order</button>
-            <button class="btn btn-secondary" @onclick="ExportOrders">Export</button>
-        </div>
+<div class="page-header">
+    <div class="page-title">
+        <h1>จัดการคำสั่งซื้อ</h1>
+        <p class="text-muted">จัดการและติดตามคำสั่งซื้อทั้งหมดในระบบ</p>
     </div>
-
-    <div class="filters">
-        <div class="filter-group">
-            <label for="statusFilter">Status:</label>
-            <select id="statusFilter" @bind="StatusFilter">
-                <option value="">All Statuses</option>
-                <option value="Pending">Pending</option>
-                <option value="Processing">Processing</option>
-                <option value="Delivered">Delivered</option>
-                <option value="Cancelled">Cancelled</option>
-            </select>
-        </div>
-        <div class="filter-group">
-            <label for="dateRange">Date Range:</label>
-            <input type="date" @bind="StartDate" />
-            <span>to</span>
-            <input type="date" @bind="EndDate" />
-        </div>
-        <div class="filter-group">
-            <label for="searchOrder">Search:</label>
-            <input type="text" id="searchOrder" @bind="OrderSearchQuery" placeholder="Order ID or customer..." />
-        </div>
-        <button class="btn btn-primary" @onclick="ApplyOrderFilters">Apply Filters</button>
-        <button class="btn btn-outline-secondary" @onclick="ResetOrderFilters">Reset</button>
-    </div>
-
-    <table class="orders-table">
-        <thead>
-            <tr>
-                <th>Order ID</th>
-                <th>Order Date</th>
-                <th>Customer</th>
-                <th>Total Items</th>
-                <th>Total Weight</th>
-                <th>Total Amount</th>
-                <th>Status</th>
-                <th>Payment Status</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var order in Order)
-            {
-                <tr>
-                    <td>@order.OrderId</td>
-                    <td>@order.OrderDate.ToShortDateString()</td>
-                    <td>@order.CustomerName</td>
-                    <td>@order.TotalItems</td>
-                    <td>@order.TotalWeight tons</td>
-                    <td>$@order.TotalAmount.ToString("N2")</td>
-                    <td><span class="status @order.Status.ToLower()">@order.Status</span></td>
-                    <td><span class="payment-status @order.PaymentStatus.ToLower().Replace(" ", "-")">@order.PaymentStatus</span></td>
-                    <td>
-                        <div class="btn-group">
-                            <button class="btn btn-sm btn-primary" @onclick="() => ViewOrderDetails(order.OrderId)">View</button>
-                            <button class="btn btn-sm btn-warning" @onclick="() => UpdateOrderStatus(order.OrderId)">Update</button>
-                            <button class="btn btn-sm btn-danger" @onclick="() => CancelOrder(order.OrderId)">Cancel</button>
-                        </div>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-
-    <div class="pagination">
-        <button class="btn btn-sm btn-outline-primary" @onclick="PreviousOrderPage" disabled="@(CurrentOrderPage == 1)">Previous</button>
-        <span>Page @CurrentOrderPage of @TotalOrderPages</span>
-        <button class="btn btn-sm btn-outline-primary" @onclick="NextOrderPage" disabled="@(CurrentOrderPage == TotalOrderPages)">Next</button>
+    <div class="page-actions">
+        <a href="/orders/add" class="btn btn-primary">
+            <i class="icon-plus"></i> เพิ่มคำสั่งซื้อใหม่
+        </a>
     </div>
 </div>
 
-@code {
-    private List<OrderDetailViewModel> Order { get; set; } = new List<OrderDetailViewModel>();
-    private string StatusFilter { get; set; } = "";
-    private DateTime StartDate { get; set; } = DateTime.Now.AddMonths(-1);
-    private DateTime EndDate { get; set; } = DateTime.Now;
-    private string OrderSearchQuery { get; set; } = "";
-    private int CurrentOrderPage { get; set; } = 1;
-    private int TotalOrderPages { get; set; } = 3;
+<div class="card mb-4">
+    <div class="card-header">
+        <div class="search-box">
+            <div class="input-group">
+                <span class="input-group-text">
+                    <i class="icon-search"></i>
+                </span>
+                <input type="text" class="form-control" placeholder="ค้นหาคำสั่งซื้อ..." @bind="searchTerm" @bind:event="oninput" @onkeyup="HandleSearch" />
+            </div>
+        </div>
+        <div class="filter-box">
+            <select class="form-select" @bind="selectedStatus">
+                <option value="">ทุกสถานะ</option>
+                <option value="pending">รอดำเนินการ</option>
+                <option value="processing">กำลังดำเนินการ</option>
+                <option value="shipped">จัดส่งแล้ว</option>
+                <option value="delivered">ส่งมอบแล้ว</option>
+                <option value="cancelled">ยกเลิก</option>
+            </select>
+            <input type="date" class="form-control ml-2" placeholder="จากวันที่" @bind="dateFrom" />
+            <input type="date" class="form-control ml-2" placeholder="ถึงวันที่" @bind="dateTo" />
+            <button class="btn btn-outline-primary ml-2" @onclick="ApplyFilters">
+                <i class="icon-filter"></i> กรอง
+            </button>
+        </div>
+    </div>
 
-    protected override void OnInitialized()
-    {
-        LoadOrders();
-    }
+    <div class="card-body p-0">
+        <div class="order-summary-cards">
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="summary-card">
+                        <div class="summary-title">ทั้งหมด</div>
+                        <div class="summary-value">@orderSummary.TotalOrders.ToString("N0")</div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="summary-card status-pending">
+                        <div class="summary-title">รอดำเนินการ</div>
+                        <div class="summary-value">@orderSummary.PendingOrders.ToString("N0")</div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="summary-card status-processing">
+                        <div class="summary-title">กำลังดำเนินการ</div>
+                        <div class="summary-value">@orderSummary.ProcessingOrders.ToString("N0")</div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="summary-card status-shipped">
+                        <div class="summary-title">จัดส่งแล้ว</div>
+                        <div class="summary-value">@orderSummary.ShippedOrders.ToString("N0")</div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="summary-card status-delivered">
+                        <div class="summary-title">ส่งมอบแล้ว</div>
+                        <div class="summary-value">@orderSummary.DeliveredOrders.ToString("N0")</div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="summary-card status-cancelled">
+                        <div class="summary-title">ยกเลิก</div>
+                        <div class="summary-value">@orderSummary.CancelledOrders.ToString("N0")</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-    private void LoadOrders()
-    {
-        // In a real application, this would come from a service or API
-        Order = new List<OrderDetailViewModel>
+<div class="card">
+    <div class="card-body">
+        @if (isLoading)
         {
-            new OrderDetailViewModel { OrderId = "ORD-2025-1432", OrderDate = new DateTime(2025, 3, 15), CustomerName = "Steel Industries Ltd", TotalItems = 3, TotalWeight = 25.5m, TotalAmount = 34250.00m, Status = "Pending", PaymentStatus = "Awaiting Payment" },
-            new OrderDetailViewModel { OrderId = "ORD-2025-1431", OrderDate = new DateTime(2025, 3, 14), CustomerName = "MetalCraft Co", TotalItems = 2, TotalWeight = 18.2m, TotalAmount = 21780.50m, Status = "Delivered", PaymentStatus = "Paid" },
-            new OrderDetailViewModel { OrderId = "ORD-2025-1430", OrderDate = new DateTime(2025, 3, 12), CustomerName = "Construction Alliance", TotalItems = 5, TotalWeight = 42.8m, TotalAmount = 65320.75m, Status = "Processing", PaymentStatus = "Partially Paid" },
-            new OrderDetailViewModel { OrderId = "ORD-2025-1429", OrderDate = new DateTime(2025, 3, 10), CustomerName = "Bridge Builders Inc", TotalItems = 1, TotalWeight = 10.5m, TotalAmount = 12540.25m, Status = "Delivered", PaymentStatus = "Paid" },
-            new OrderDetailViewModel { OrderId = "ORD-2025-1428", OrderDate = new DateTime(2025, 3, 8), CustomerName = "Welding Pros", TotalItems = 2, TotalWeight = 8.2m, TotalAmount = 8750.00m, Status = "Pending", PaymentStatus = "Awaiting Payment" },
-            new OrderDetailViewModel { OrderId = "ORD-2025-1427", OrderDate = new DateTime(2025, 3, 5), CustomerName = "MetalWorks Ltd", TotalItems = 3, TotalWeight = 15.7m, TotalAmount = 18650.00m, Status = "Processing", PaymentStatus = "Partially Paid" },
-            new OrderDetailViewModel { OrderId = "ORD-2025-1426", OrderDate = new DateTime(2025, 3, 2), CustomerName = "City Construction Dept", TotalItems = 4, TotalWeight = 32.4m, TotalAmount = 38750.50m, Status = "Delivered", PaymentStatus = "Paid" },
-            new OrderDetailViewModel { OrderId = "ORD-2025-1425", OrderDate = new DateTime(2025, 2, 28), CustomerName = "Industrial Supplies Co", TotalItems = 2, TotalWeight = 12.5m, TotalAmount = 14280.75m, Status = "Cancelled", PaymentStatus = "Refunded" }
-        };
+            <div class="text-center p-4">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">กำลังโหลด...</span>
+                </div>
+                <p class="mt-2">กำลังโหลดข้อมูล...</p>
+            </div>
+        }
+        else if (orders == null || !orders.Any())
+        {
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <i class="icon-shopping-cart"></i>
+                </div>
+                <h3>ไม่พบคำสั่งซื้อ</h3>
+                <p>ยังไม่มีคำสั่งซื้อในระบบหรือไม่พบคำสั่งซื้อที่ตรงกับเงื่อนไขการค้นหา</p>
+                <a href="/orders/add" class="btn btn-primary">เพิ่มคำสั่งซื้อใหม่</a>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>หมายเลขคำสั่งซื้อ</th>
+                            <th>ลูกค้า</th>
+                            <th>วันที่สั่งซื้อ</th>
+                            <th>จำนวนสินค้า</th>
+                            <th>ยอดรวม</th>
+                            <th>วิธีการชำระเงิน</th>
+                            <th>สถานะ</th>
+                            <th style="width: 120px;">การจัดการ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var order in displayedOrders)
+                        {
+                            <tr>
+                                <td>
+                                    <a href="/orders/details/@order.Id" class="order-number">
+                                        #@order.OrderNumber
+                                    </a>
+                                </td>
+                                <td>
+                                    <div class="customer-name">@order.CustomerName</div>
+                                    <div class="customer-contact">@order.CustomerPhone</div>
+                                </td>
+                                <td>@order.OrderDate.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td>@order.ItemCount.ToString("N0") รายการ</td>
+                                <td class="text-right">฿@order.TotalAmount.ToString("N2")</td>
+                                <td>
+                                    @switch (order.PaymentMethod)
+                                    {
+                                        case "bank_transfer":
+                                            <span>โอนเงิน</span>
+                                            break;
+                                        case "credit_card":
+                                            <span>บัตรเครดิต</span>
+                                            break;
+                                        case "cod":
+                                            <span>เก็บเงินปลายทาง</span>
+                                            break;
+                                        default:
+                                            <span>@order.PaymentMethod</span>
+                                            break;
+                                    }
+                                </td>
+                                <td>
+                                    @switch (order.Status)
+                                    {
+                                        case "pending":
+                                            <span class="badge bg-warning">รอดำเนินการ</span>
+                                            break;
+                                        case "processing":
+                                            <span class="badge bg-primary">กำลังดำเนินการ</span>
+                                            break;
+                                        case "shipped":
+                                            <span class="badge bg-info">จัดส่งแล้ว</span>
+                                            break;
+                                        case "delivered":
+                                            <span class="badge bg-success">ส่งมอบแล้ว</span>
+                                            break;
+                                        case "cancelled":
+                                            <span class="badge bg-danger">ยกเลิก</span>
+                                            break;
+                                        default:
+                                            <span class="badge bg-secondary">@order.Status</span>
+                                            break;
+                                    }
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-sm btn-info" title="ดูรายละเอียด" @onclick="() => NavigateToOrderDetails(order.Id)">
+                                            <i class="icon-eye"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-primary" title="แก้ไข" @onclick="() => NavigateToOrderEdit(order.Id)">
+                                            <i class="icon-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-danger" title="ยกเลิก" @onclick="() => ConfirmCancelOrder(order)">
+                                            <i class="icon-x"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pagination-container">
+                <div class="items-per-page">
+                    <span>แสดง</span>
+                    <select @bind="pageSize" class="form-select form-select-sm">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                    <span>รายการต่อหน้า</span>
+                </div>
+
+                <ul class="pagination">
+                    <li class="@(currentPage == 1 ? "disabled" : "") page-item">
+                        <button class="page-link" @onclick="() => ChangePage(1)" disabled="@(currentPage == 1)">
+                            <i class="icon-chevrons-left"></i>
+                        </button>
+                    </li>
+                    <li class="@(currentPage == 1 ? "disabled" : "") page-item">
+                        <button class="page-link" @onclick="() => ChangePage(currentPage - 1)" disabled="@(currentPage == 1)">
+                            <i class="icon-chevron-left"></i>
+                        </button>
+                    </li>
+
+                    @for (int i = startPage; i <= endPage; i++)
+                    {
+                        var pageNumber = i;
+                        <li class="page-item @(currentPage == pageNumber ? "active" : "")">
+                            <button class="page-link" @onclick="() => ChangePage(pageNumber)">@pageNumber</button>
+                        </li>
+                    }
+
+                    <li class="@(currentPage == totalPages ? "disabled" : "") page-item">
+                        <button class="page-link" @onclick="() => ChangePage(currentPage + 1)" disabled="@(currentPage == totalPages)">
+                            <i class="icon-chevron-right"></i>
+                        </button>
+                    </li>
+                    <li class="@(currentPage == totalPages ? "disabled" : "") page-item">
+                        <button class="page-link" @onclick="() => ChangePage(totalPages)" disabled="@(currentPage == totalPages)">
+                            <i class="icon-chevrons-right"></i>
+                        </button>
+                    </li>
+                </ul>
+
+                <div class="pagination-info">
+                    แสดง @((currentPage - 1) * pageSize + 1) ถึง @Math.Min(currentPage * pageSize, filteredOrders.Count) จาก @filteredOrders.Count รายการ
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@if (showCancelConfirmation)
+{
+    <div class="modal-backdrop show"></div>
+    <div class="modal show d-block" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">ยืนยันการยกเลิกคำสั่งซื้อ</h5>
+                    <button type="button" class="btn-close" @onclick="CloseCancelModal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>คุณต้องการยกเลิกคำสั่งซื้อ <strong>#@orderToCancel?.OrderNumber</strong> ของคุณ @orderToCancel?.CustomerName ใช่หรือไม่?</p>
+                    <p class="text-danger">การยกเลิกคำสั่งซื้อไม่สามารถยกเลิกได้ กรุณาระบุเหตุผลในการยกเลิก</p>
+
+                    <div class="form-group mt-3">
+                        <label for="cancelReason" class="form-label">เหตุผลในการยกเลิก</label>
+                        <textarea id="cancelReason" class="form-control" rows="3" @bind="cancelReason"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="CloseCancelModal">ยกเลิก</button>
+                    <button type="button" class="btn btn-danger" @onclick="CancelOrder" disabled="@string.IsNullOrWhiteSpace(cancelReason)">ยืนยันการยกเลิก</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private List<OrderModel> orders;
+    private List<OrderModel> filteredOrders;
+    private List<OrderModel> displayedOrders;
+    private OrderSummaryModel orderSummary = new OrderSummaryModel();
+    private bool isLoading = true;
+
+    // Search and filter
+    private string searchTerm = "";
+    private string selectedStatus = "";
+    private DateTime? dateFrom;
+    private DateTime? dateTo;
+
+    // Pagination
+    private int pageSize = 10;
+    private int currentPage = 1;
+    private int totalPages => (int)Math.Ceiling(filteredOrders?.Count ?? 0 / (double)pageSize);
+    private int startPage => Math.Max(1, currentPage - 2);
+    private int endPage => Math.Min(startPage + 4, totalPages);
+
+    // Cancel order
+    private bool showCancelConfirmation = false;
+    private OrderModel orderToCancel;
+    private string cancelReason = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
     }
 
-    private void ApplyOrderFilters()
+    private async Task LoadData()
     {
-        // Filter implementation would go here
-        // Reset to first page when applying filters
-        CurrentOrderPage = 1;
+        try
+        {
+            isLoading = true;
+            orders = await OrderService.GetOrdersAsync();
+            orderSummary = await OrderService.GetOrderSummaryAsync();
+
+            // Initialize filters with default values
+            dateFrom = DateTime.Now.AddDays(-30);
+            dateTo = DateTime.Now;
+
+            ApplyFilters();
+        }
+        catch (Exception ex)
+        {
+            await JSRuntime.InvokeVoidAsync("console.error", "Error loading orders: " + ex.Message);
+            // Show error notification
+            await JSRuntime.InvokeVoidAsync("showToast", "error", "เกิดข้อผิดพลาด", "ไม่สามารถโหลดข้อมูลคำสั่งซื้อได้");
+        }
+        finally
+        {
+            isLoading = false;
+        }
     }
 
-    private void ResetOrderFilters()
+    private void HandleSearch()
     {
-        StatusFilter = "";
-        StartDate = DateTime.Now.AddMonths(-1);
-        EndDate = DateTime.Now;
-        OrderSearchQuery = "";
-        CurrentOrderPage = 1;
-        LoadOrders();
+        ApplyFilters();
     }
 
-    private void CreateNewOrder()
+    private void ApplyFilters()
     {
-        // Navigate to create order page
+        filteredOrders = orders;
+
+        // Apply search filter
+        if (!string.IsNullOrWhiteSpace(searchTerm))
+        {
+            var term = searchTerm.ToLower();
+            filteredOrders = filteredOrders.Where(o =>
+                o.OrderNumber.ToLower().Contains(term) ||
+                o.CustomerName.ToLower().Contains(term) ||
+                o.CustomerPhone.ToLower().Contains(term) ||
+                o.CustomerEmail.ToLower().Contains(term)).ToList();
+        }
+
+        // Apply status filter
+        if (!string.IsNullOrWhiteSpace(selectedStatus))
+        {
+            filteredOrders = filteredOrders.Where(o => o.Status == selectedStatus).ToList();
+        }
+
+        // Apply date range filter
+        if (dateFrom.HasValue)
+        {
+            filteredOrders = filteredOrders.Where(o => o.OrderDate.Date >= dateFrom.Value.Date).ToList();
+        }
+
+        if (dateTo.HasValue)
+        {
+            filteredOrders = filteredOrders.Where(o => o.OrderDate.Date <= dateTo.Value.Date).ToList();
+        }
+
+        // Reset to first page when filters change
+        currentPage = 1;
+
+        // Apply pagination
+        UpdateDisplayedOrders();
     }
 
-    private void ExportOrders()
+    private void ChangePage(int page)
     {
-        // Export orders to Excel or PDF
+        currentPage = page;
+        UpdateDisplayedOrders();
     }
 
-    private void ViewOrderDetails(string orderId)
+    private void UpdateDisplayedOrders()
     {
-        // Navigate to order details page
+        displayedOrders = filteredOrders
+            .Skip((currentPage - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
     }
 
-    private void UpdateOrderStatus(string orderId)
+    private void NavigateToOrderDetails(string id)
     {
-        // Show status update modal
+        NavigationManager.NavigateTo($"/orders/details/{id}");
     }
 
-    private void CancelOrder(string orderId)
+    private void NavigateToOrderEdit(string id)
     {
-        // Confirm and cancel order
+        NavigationManager.NavigateTo($"/orders/edit/{id}");
     }
 
-    private void PreviousOrderPage()
+    private void ConfirmCancelOrder(OrderModel order)
     {
-        if (CurrentOrderPage > 1)
-            CurrentOrderPage--;
+        // Check if the order can be cancelled
+        if (order.Status == "cancelled" || order.Status == "delivered")
+        {
+            // Show error message - cannot cancel already cancelled or delivered orders
+            JSRuntime.InvokeVoidAsync("showToast", "error", "ไม่สามารถยกเลิกได้",
+                $"ไม่สามารถยกเลิกคำสั่งซื้อที่ {(order.Status == "cancelled" ? "ถูกยกเลิกแล้ว" : "ส่งมอบแล้ว")}");
+            return;
+        }
+
+        orderToCancel = order;
+        cancelReason = "";
+        showCancelConfirmation = true;
     }
 
-    private void NextOrderPage()
+    private void CloseCancelModal()
     {
-        if (CurrentOrderPage < TotalOrderPages)
-            CurrentOrderPage++;
+        showCancelConfirmation = false;
+        orderToCancel = null;
+        cancelReason = "";
     }
 
-    public class OrderDetailViewModel
+    private async Task CancelOrder()
     {
-        public string OrderId { get; set; }
+        try
+        {
+            if (orderToCancel != null && !string.IsNullOrWhiteSpace(cancelReason))
+            {
+                await OrderService.CancelOrderAsync(orderToCancel.Id, cancelReason);
+
+                // Update order status in local list
+                var order = orders.FirstOrDefault(o => o.Id == orderToCancel.Id);
+                if (order != null)
+                {
+                    order.Status = "cancelled";
+                }
+
+                // Update order summary
+                orderSummary.TotalOrders = orderSummary.TotalOrders;
+                orderSummary.CancelledOrders += 1;
+
+                // Update status counts based on previous status
+                switch (orderToCancel.Status)
+                {
+                    case "pending":
+                        orderSummary.PendingOrders -= 1;
+                        break;
+                    case "processing":
+                        orderSummary.ProcessingOrders -= 1;
+                        break;
+                    case "shipped":
+                        orderSummary.ShippedOrders -= 1;
+                        break;
+                }
+
+                // Apply filters again to update the displayed orders
+                ApplyFilters();
+
+                // Show success notification
+                await JSRuntime.InvokeVoidAsync("showToast", "success", "ยกเลิกคำสั่งซื้อสำเร็จ", $"คำสั่งซื้อ #{orderToCancel.OrderNumber} ถูกยกเลิกเรียบร้อยแล้ว");
+
+                // Close modal
+                CloseCancelModal();
+            }
+        }
+        catch (Exception ex)
+        {
+            await JSRuntime.InvokeVoidAsync("console.error", "Error cancelling order: " + ex.Message);
+            await JSRuntime.InvokeVoidAsync("showToast", "error", "เกิดข้อผิดพลาด", "ไม่สามารถยกเลิกคำสั่งซื้อได้");
+        }
+    }
+
+    public class OrderSummaryModel
+    {
+        public int TotalOrders { get; set; }
+        public int PendingOrders { get; set; }
+        public int ProcessingOrders { get; set; }
+        public int ShippedOrders { get; set; }
+        public int DeliveredOrders { get; set; }
+        public int CancelledOrders { get; set; }
+    }
+}
         public DateTime OrderDate { get; set; }
         public string CustomerName { get; set; }
         public int TotalItems { get; set; }

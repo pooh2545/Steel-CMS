@@ -1,0 +1,436 @@
+﻿@page "/products/add"
+@page "/products/edit/{Id}"
+@using SteelAdmin.Client.Services
+@using SteelAdmin.Shared
+@inject ProductService ProductService
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
+
+<div class="page-header">
+    <div class="page-title">
+        <h1>@(IsEditMode ? "แก้ไขสินค้า" : "เพิ่มสินค้าใหม่")</h1>
+        <p class="text-muted">@(IsEditMode ? "แก้ไขข้อมูลสินค้าเหล็ก" : "เพิ่มสินค้าเหล็กรายการใหม่เข้าระบบ")</p>
+    </div>
+    <div class="page-actions">
+        <button class="btn btn-outline-secondary" @onclick="GoBack">
+            <i class="icon-arrow-left"></i> ย้อนกลับ
+        </button>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <EditForm Model="@product" OnValidSubmit="HandleSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label for="productCode" class="form-label required">รหัสสินค้า</label>
+                        <InputText id="productCode" @bind-Value="product.Code" class="form-control" placeholder="รหัสสินค้า" />
+                        <ValidationMessage For="@(() => product.Code)" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="productName" class="form-label required">ชื่อสินค้า</label>
+                        <InputText id="productName" @bind-Value="product.Name" class="form-control" placeholder="ชื่อสินค้า" />
+                        <ValidationMessage For="@(() => product.Name)" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="productDescription" class="form-label">รายละเอียดสินค้า</label>
+                        <InputTextArea id="productDescription" @bind-Value="product.Description" class="form-control" rows="4" placeholder="รายละเอียดสินค้า" />
+                        <ValidationMessage For="@(() => product.Description)" />
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="productCategory" class="form-label required">หมวดหมู่สินค้า</label>
+                                <InputSelect id="productCategory" @bind-Value="product.CategoryId" class="form-select">
+                                    <option value="">-- เลือกหมวดหมู่ --</option>
+                                    @foreach (var category in categories)
+                                    {
+                                        <option value="@category.Id">@category.Name</option>
+                                    }
+                                </InputSelect>
+                                <ValidationMessage For="@(() => product.CategoryId)" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="productMaterial" class="form-label">ชนิดเหล็ก</label>
+                                <InputSelect id="productMaterial" @bind-Value="product.MetalType" class="form-select">
+                                    <option value="">-- เลือกชนิดเหล็ก --</option>
+                                    @foreach (var metalType in metalTypes)
+                                    {
+                                        <option value="@metalType.Value">@metalType.Name</option>
+                                    }
+                                </InputSelect>
+                                <ValidationMessage For="@(() => product.MetalType)" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="productDimension" class="form-label required">ขนาด</label>
+                                <InputText id="productDimension" @bind-Value="product.Dimension" class="form-control" placeholder="ขนาด (เช่น 1.5 นิ้ว)" />
+                                <ValidationMessage For="@(() => product.Dimension)" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="productLength" class="form-label required">ความยาว (เมตร)</label>
+                                <InputNumber id="productLength" @bind-Value="product.Length" class="form-control" placeholder="ความยาว" step="0.01" />
+                                <ValidationMessage For="@(() => product.Length)" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="productWeight" class="form-label required">น้ำหนัก (กก.)</label>
+                                <InputNumber id="productWeight" @bind-Value="product.Weight" class="form-control" placeholder="น้ำหนัก" step="0.01" />
+                                <ValidationMessage For="@(() => product.Weight)" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="productPrice" class="form-label required">ราคา (บาท)</label>
+                                <InputNumber id="productPrice" @bind-Value="product.Price" class="form-control" placeholder="ราคา" step="0.01" />
+                                <ValidationMessage For="@(() => product.Price)" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="productStock" class="form-label required">จำนวนคงเหลือ</label>
+                                <InputNumber id="productStock" @bind-Value="product.StockQuantity" class="form-control" placeholder="จำนวนคงเหลือ" />
+                                <ValidationMessage For="@(() => product.StockQuantity)" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="productLowStock" class="form-label">แจ้งเตือนเมื่อเหลือ</label>
+                                <InputNumber id="productLowStock" @bind-Value="product.LowStockThreshold" class="form-control" placeholder="แจ้งเตือนเมื่อเหลือ" />
+                                <ValidationMessage For="@(() => product.LowStockThreshold)" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-check">
+                            <InputCheckbox id="productActive" @bind-Value="product.IsActive" class="form-check-input" />
+                            <label class="form-check-label" for="productActive">เปิดใช้งาน (แสดงในหน้าร้านค้า)</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-check">
+                            <InputCheckbox id="productFeatured" @bind-Value="product.IsFeatured" class="form-check-input" />
+                            <label class="form-check-label" for="productFeatured">สินค้าแนะนำ</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="product-image-uploader">
+                        <label class="form-label">รูปภาพสินค้า</label>
+                        <div class="image-preview @(imagePreviewUrl == null ? "no-image" : "")">
+                            @if (imagePreviewUrl != null)
+                            {
+                                <img src="@imagePreviewUrl" alt="Product Preview" />
+                                <button type="button" class="remove-image-btn" @onclick="RemoveImage">
+                                    <i class="icon-x"></i>
+                                </button>
+                            }
+                            else
+                            {
+                                <div class="upload-placeholder">
+                                    <i class="icon-image"></i>
+                                    <p>คลิกเพื่ออัปโหลดรูปภาพ</p>
+                                </div>
+                            }
+                        </div>
+                        <InputFile OnChange="HandleFileSelection" accept="image/*" class="file-input" id="productImage" />
+                        <div class="image-upload-controls">
+                            <label for="productImage" class="btn btn-outline-primary btn-sm">
+                                <i class="icon-upload"></i> อัปโหลดรูปภาพ
+                            </label>
+                        </div>
+                        <div class="image-guidelines">
+                            <small class="text-muted">
+                                * ขนาดไฟล์ไม่เกิน 5 MB<br />
+                                * รูปแบบไฟล์ที่รองรับ: JPG, PNG, GIF<br />
+                                * ขนาดที่แนะนำ: 800 x 800 พิกเซล
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="product-specifications mt-4">
+                        <h5>ข้อมูลเพิ่มเติม</h5>
+                        <div class="form-group">
+                            <label for="productSKU" class="form-label">รหัส SKU</label>
+                            <InputText id="productSKU" @bind-Value="product.SKU" class="form-control" placeholder="รหัส SKU" />
+                        </div>
+                        <div class="form-group">
+                            <label for="productBarcode" class="form-label">บาร์โค้ด</label>
+                            <InputText id="productBarcode" @bind-Value="product.Barcode" class="form-control" placeholder="บาร์โค้ด" />
+                        </div>
+                        <div class="form-group">
+                            <label for="productLocation" class="form-label">ตำแหน่งในคลัง</label>
+                            <InputText id="productLocation" @bind-Value="product.WarehouseLocation" class="form-control" placeholder="ตำแหน่งในคลัง" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="productTags" class="form-label">แท็ก</label>
+                <InputText id="productTags" @bind-Value="tagsInput" class="form-control" placeholder="แท็ก (คั่นด้วยเครื่องหมายคอมม่า)" />
+                <small class="text-muted">คั่นแท็กด้วยเครื่องหมายคอมม่า (,)</small>
+            </div>
+
+            <hr />
+
+            <div class="btn-group">
+                <button type="submit" class="btn btn-primary" disabled="@isSaving">
+                    @if (isSaving)
+                    {
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        <span>กำลังบันทึก...</span>
+                    }
+                    else
+                    {
+                        <i class="icon-check"></i>
+                        <span>บันทึก</span>
+                    }
+                </button>
+                <button type="button" class="btn btn-outline-secondary" @onclick="ResetForm" disabled="@isSaving">
+                    <i class="icon-refresh-ccw"></i> รีเซ็ต
+                </button>
+                <button type="button" class="btn btn-outline-secondary" @onclick="GoBack" disabled="@isSaving">
+                    <i class="icon-x"></i> ยกเลิก
+                </button>
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    private bool IsEditMode => !string.IsNullOrEmpty(Id);
+    private ProductModel product = new ProductModel();
+    private List<CategoryModel> categories = new List<CategoryModel>();
+    private List<MetalTypeModel> metalTypes = new List<MetalTypeModel>();
+    private string tagsInput = "";
+    private string imagePreviewUrl;
+    private IBrowserFile selectedFile;
+    private bool isSaving = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Load categories and metal types
+        await LoadMetadataAsync();
+
+        if (IsEditMode)
+        {
+            await LoadProductAsync();
+        }
+        else
+        {
+            // Set defaults for new product
+            product = new ProductModel
+                {
+                    IsActive = true,
+                    LowStockThreshold = 5
+                };
+        }
+    }
+
+    private async Task LoadMetadataAsync()
+    {
+        try
+        {
+            categories = await ProductService.GetCategoriesAsync();
+            metalTypes = await ProductService.GetMetalTypesAsync();
+        }
+        catch (Exception ex)
+        {
+            await JSRuntime.InvokeVoidAsync("console.error", "Error loading metadata: " + ex.Message);
+            await JSRuntime.InvokeVoidAsync("showToast", "error", "เกิดข้อผิดพลาด", "ไม่สามารถโหลดข้อมูลหมวดหมู่และชนิดเหล็กได้");
+        }
+    }
+
+    private async Task LoadProductAsync()
+    {
+        try
+        {
+            product = await ProductService.GetProductByIdAsync(Id);
+
+            if (product == null)
+            {
+                NavigationManager.NavigateTo("/products/list");
+                return;
+            }
+
+            // Set the tags input
+            if (product.Tags != null && product.Tags.Any())
+            {
+                tagsInput = string.Join(", ", product.Tags);
+            }
+
+            // Set image preview
+            if (!string.IsNullOrEmpty(product.ImageUrl))
+            {
+                imagePreviewUrl = product.ImageUrl;
+            }
+        }
+        catch (Exception ex)
+        {
+            await JSRuntime.InvokeVoidAsync("console.error", "Error loading product: " + ex.Message);
+            await JSRuntime.InvokeVoidAsync("showToast", "error", "เกิดข้อผิดพลาด", "ไม่สามารถโหลดข้อมูลสินค้าได้");
+            NavigationManager.NavigateTo("/products/list");
+        }
+    }
+
+    private async Task HandleSubmit()
+    {
+        try
+        {
+            isSaving = true;
+
+            // Process tags
+            if (!string.IsNullOrWhiteSpace(tagsInput))
+            {
+                product.Tags = tagsInput.Split(',')
+                    .Select(t => t.Trim())
+                    .Where(t => !string.IsNullOrWhiteSpace(t))
+                    .ToList();
+            }
+            else
+            {
+                product.Tags = new List<string>();
+            }
+
+            // Handle file upload if a file is selected
+            if (selectedFile != null)
+            {
+                var imageUrl = await UploadImageAsync(selectedFile);
+                product.ImageUrl = imageUrl;
+            }
+
+            if (IsEditMode)
+            {
+                await ProductService.UpdateProductAsync(product);
+                await JSRuntime.InvokeVoidAsync("showToast", "success", "บันทึกสำเร็จ", "อัปเดตข้อมูลสินค้าเรียบร้อยแล้ว");
+            }
+            else
+            {
+                var newProductId = await ProductService.CreateProductAsync(product);
+                product.Id = newProductId;
+                await JSRuntime.InvokeVoidAsync("showToast", "success", "บันทึกสำเร็จ", "เพิ่มสินค้าใหม่เรียบร้อยแล้ว");
+            }
+
+            NavigationManager.NavigateTo("/products/list");
+        }
+        catch (Exception ex)
+        {
+            await JSRuntime.InvokeVoidAsync("console.error", "Error saving product: " + ex.Message);
+            await JSRuntime.InvokeVoidAsync("showToast", "error", "เกิดข้อผิดพลาด", "ไม่สามารถบันทึกข้อมูลสินค้าได้");
+        }
+        finally
+        {
+            isSaving = false;
+        }
+    }
+
+    private async Task<string> UploadImageAsync(IBrowserFile file)
+    {
+        try
+        {
+            // In a real application, this would upload the file to a server or cloud storage
+            // For this example, we're simulating an upload
+
+            // Check file size
+            if (file.Size > 5 * 1024 * 1024) // 5MB limit
+            {
+                throw new Exception("ขนาดไฟล์เกิน 5MB");
+            }
+
+            // Convert file to base64 for preview (in a real app, you would upload to server)
+            using var stream = file.OpenReadStream(maxAllowedSize: 5 * 1024 * 1024);
+            using var ms = new MemoryStream();
+            await stream.CopyToAsync(ms);
+            byte[] fileBytes = ms.ToArray();
+
+            // Simulate API call to upload image
+            await Task.Delay(1000); // Simulate network delay
+
+            // In a real application, return the URL from the server
+            return $"/uploads/products/{Guid.NewGuid()}-{file.Name}";
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Error uploading image: {ex.Message}");
+        }
+    }
+
+    private async Task HandleFileSelection(InputFileChangeEventArgs e)
+    {
+        try
+        {
+            selectedFile = e.File;
+
+            // Preview the image
+            var format = "image/jpeg";
+            var resizedImage = await e.File.RequestImageFileAsync(format, 800, 800);
+            var buffer = new byte[resizedImage.Size];
+            await resizedImage.OpenReadStream().ReadAsync(buffer);
+            imagePreviewUrl = $"data:{format};base64,{Convert.ToBase64String(buffer)}";
+        }
+        catch (Exception ex)
+        {
+            await JSRuntime.InvokeVoidAsync("console.error", "Error selecting file: " + ex.Message);
+            await JSRuntime.InvokeVoidAsync("showToast", "error", "เกิดข้อผิดพลาด", "ไม่สามารถอัปโหลดรูปภาพได้");
+        }
+    }
+
+    private void RemoveImage()
+    {
+        imagePreviewUrl = null;
+        selectedFile = null;
+        product.ImageUrl = null;
+    }
+
+    private void ResetForm()
+    {
+        if (IsEditMode)
+        {
+            // Reload the product
+            LoadProductAsync();
+        }
+        else
+        {
+            // Reset to defaults
+            product = new ProductModel
+                {
+                    IsActive = true,
+                    LowStockThreshold = 5
+                };
+            imagePreviewUrl = null;
+            selectedFile = null;
+            tagsInput = "";
+        }
+    }
+
+    private void GoBack()
+    {
+        NavigationManager.NavigateTo("/products/list");
+    }
+}
