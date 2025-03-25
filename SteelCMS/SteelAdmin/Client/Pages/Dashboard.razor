@@ -88,6 +88,29 @@
                         <span class="stats-period">เทียบกับเดือนที่แล้ว</span>
                     </div>
                 </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-title">สินค้า</div>
+            <div class="stat-value">126</div>
+            <div class="stat-icon product-icon">
+                <i class="fas fa-box"></i>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-title">รายได้</div>
+            <div class="stat-value">6012</div>
+            <div class="stat-icon revenue-icon">
+                <i class="fas fa-dollar-sign"></i>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-title">สินค้าส่งมอบ</div>
+            <div class="stat-value">612</div>
+            <div class="stat-icon delivery-icon">
+                <i class="fas fa-truck"></i>
             </div>
         </div>
     </div>
@@ -124,6 +147,33 @@
                     </div>
                 </div>
             </div>
+    <div class="customer-section">
+        <h2>ลูกค้า</h2>
+
+        <div class="customer-table-container">
+            <table class="customer-table">
+                <thead>
+                    <tr>
+                        <th>หมายเลขสั่งซื้อ</th>
+                        <th>ผู้สั่งซื้อ</th>
+                        <th>Email</th>
+                        <th>วันที่สั่งซื้อ</th>
+                        <th>วันที่จ่าย</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var customer in GetCustomers())
+                    {
+                        <tr>
+                            <td>@customer.OrderNumber</td>
+                            <td>@customer.CustomerName</td>
+                            <td>@customer.Email</td>
+                            <td>@customer.OrderDate</td>
+                            <td>@customer.PaymentDate</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         </div>
     </div>
 

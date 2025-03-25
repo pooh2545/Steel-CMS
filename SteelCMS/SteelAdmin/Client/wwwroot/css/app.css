@@ -16,6 +16,10 @@
     --sidebar-width: 250px;
     --sidebar-collapsed-width: 60px;
     --transition-speed: 0.3s;
+﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
+
+html, body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
 * {
@@ -654,3 +658,7 @@ body {
     background-repeat: no-repeat;
     background-position: center;
 }
+=======
+    .blazor-error-boundary::after {
+        content: "An error has occurred."
+    }
