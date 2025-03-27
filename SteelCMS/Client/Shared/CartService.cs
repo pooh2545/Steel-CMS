@@ -3,6 +3,7 @@
 public class CartService
 {
     public event Action OnChange;
+    public event Action OnCartChanged;
 
     private List<CartItem> cartItems = new();
 
@@ -44,6 +45,26 @@ public class CartService
 
     public decimal GetTotalPrice() => cartItems.Sum(i => i.Price * i.Quantity);
 
+    // Add shipping fee calculation to the service so it's consistent across components
+    public decimal CalculateShippingFee()
+    {
+        int totalQuantity = cartItems.Sum(item => item.Quantity);
+
+        if (totalQuantity >= 100)
+            return 1930m;
+        else if (totalQuantity >= 50)
+            return 1000m;
+        else if (totalQuantity >= 25)
+            return 460m;
+        else if (totalQuantity >= 10)
+            return 200m;
+        else
+            return 50m;
+    }
+
+    // Add grand total calculation method for consistency
+    public decimal GetGrandTotal() => GetTotalPrice() + CalculateShippingFee();
+
     public void UpdateQuantity(string productId, int quantity)
     {
         var item = cartItems.FirstOrDefault(i => i.ProductId == productId);
@@ -66,12 +87,12 @@ public class CartService
         return cartItems.Sum(i => i.Quantity); // Or use cartItems.Count for unique items
     }
 
-    public event Action OnCartChanged;
-
-    private void NotifyStateChanged() => OnCartChanged?.Invoke();
-
+    private void NotifyStateChanged()
+    {
+        OnCartChanged?.Invoke();
+        OnChange?.Invoke(); // Maintain both event handlers for backward compatibility
+    }
 }
-
 
 public class CartItem
 {

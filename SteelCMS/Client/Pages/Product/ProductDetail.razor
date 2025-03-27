@@ -1,6 +1,7 @@
-﻿@using SteelCMS.Client.Shared
+﻿@using SteelCMS.Shared
 @using Microsoft.AspNetCore.Components.Web
 @inject HttpClient Http
+@inject CartService CartService
 @page "/products/{ProductId:int}"
 
 <div class="container py-4">
@@ -96,7 +97,23 @@
 
     private void AddToCart()
     {
-        // Implement add to cart logic
+        if (product != null)
+        {
+            // Convert the local Product to SteelCMS.Shared.Product
+            var cartProduct = new SteelCMS.Shared.Product(
+                product.Id,
+                product.Name,
+                product.Price,
+                product.ImageUrl,
+                product.CategoryId
+            );
+
+            // Add to cart with quantity
+            for (int i = 0; i < quantity; i++)
+            {
+                CartService.AddToCart(cartProduct);
+            }
+        }
     }
 
     private string VideoUrl => "https://www.youtube.com/embed/6cJ5QB0a4EA";

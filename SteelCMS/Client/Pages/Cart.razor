@@ -79,7 +79,7 @@
                     </div>
                     <div class="row mb-3">
                         <div class="col-6">ค่าจัดส่ง</div>
-                        <div class="col-6 text-end">฿@shippingFee.ToString("N2")</div>
+                        <div class="col-6 text-end">฿@ShippingFee.ToString("N2")</div>
                     </div>
                     <div class="row">
                         <div class="col-6"><strong>รวม</strong></div>
@@ -101,7 +101,7 @@
 
     protected override void OnInitialized()
     {
-        CartService.OnChange += StateHasChanged;
+        CartService.OnCartChanged += StateHasChanged;
     }
 
     private void RemoveItem(CartItem item)
@@ -109,20 +109,21 @@
         CartService.RemoveItem(item);
     }
 
-    private decimal shippingFee = 50.00m;
+    // Use the service method for consistent shipping fee calculation
+    private decimal ShippingFee => CartService.CalculateShippingFee();
 
     private decimal Total => CartService.GetTotalPrice();
-    private decimal GrandTotal => Total + shippingFee;
+    private decimal GrandTotal => CartService.GetGrandTotal();
 
     private void PlaceOrder()
     {
-        CartService.ClearCart();
+        // Don't clear the cart here, we need the items in checkout
         Navigation.NavigateTo("/checkout");
     }
 
     public void Dispose()
     {
-        CartService.OnChange -= StateHasChanged;
+        CartService.OnCartChanged -= StateHasChanged;
     }
 }
 

@@ -1,6 +1,7 @@
 ﻿@page "/checkout"
 @using System.Collections.Generic
 @inject CartService CartService
+@inject NavigationManager Navigation
 
 <div class="checkout-container">
     <h1 class="checkout-title">ชำระเงิน</h1>
@@ -46,7 +47,7 @@
                             </td>
                             <td class="price">฿@item.Price.ToString("N2")</td>
                             <td class="quantity">@item.Quantity</td>
-                            <td class="total">฿@(item.Price * item.Quantity).ToString("N2")</td>
+                            <td class="total">฿@(item.Price * item.Quantity)</td>
                         </tr>
                     }
                 </tbody>
@@ -54,7 +55,7 @@
             <div class="order-summary-footer">
                 <div class="shipping-fee">
                     <div class="shipping-label">ค่าจัดส่ง</div>
-                    <div class="shipping-price">฿@shippingFee.ToString("N2")</div>
+                    <div class="shipping-price">฿@ShippingFee.ToString("N2")</div>
                 </div>
                 <div class="order-total">
                     <div class="total-label">รวม</div>
@@ -70,48 +71,48 @@
             <span>ช่องทางการชำระเงิน</span>
         </div>
         <div class="payment-methods">
-            <label class="payment-option">
-                <input type="radio" name="paymentMethod" value="banking1" />
-                <span>ธนาคารกรุงเทพ</span>
-            </label>
-            <label class="payment-option">
-                <input type="radio" name="paymentMethod" value="banking2" />
-                <span>ธนาคารกรุงไทย</span>
-            </label>
-            <label class="payment-option">
-                <input type="radio" name="paymentMethod" value="banking3" />
-                <span>ธนาคารกสิกรไทย</span>
-            </label>
+            <div class="payment-options">
+                <div class="payment-options">
+                    @foreach (var bank in bankOptions)
+                    {
+                        <label class="payment-option">
+                            <input type="radio" name="paymentMethod" value="@bank.Value"
+                                   @onchange="() => SelectPaymentMethod(bank.Value)"
+                                   checked="@((selectedPaymentMethod == bank.Value) ? "checked" : null)" />
+                            <span>@bank.Name</span>
+                        </label>
+                    }
+                </div>
 
-
-            <div class="payment-details">
                 <div class="bank-info">
                     <div class="bank-logo">
                         <img src="@GetBankImage()" alt="@GetBankName()" />
                     </div>
                     <div class="bank-account">
                         <div>ชื่อบัญชี สตรีทวิชา</div>
-                        <div>xxx-x-xx123-4</div>
+                        <div>@GetBankAccountNumber()</div>
                     </div>
                 </div>
+            </div>
+            <div class="payment-details">
                 <div class="payment-verification">
-                    <a href="#" class="verification-link">กรุณาตรวจสอบบัญชีให้ถูกต้องก่อนการโอนเงิน</a>
+                    <a>กรุณาตรวจสอบบัญชีให้ถูกต้องก่อนการโอนเงิน</a>
+                </div>
+            </div>
+
+            <div class="payment-slip-upload">
+                <div class="upload-area">
+                    <div class="upload-icon">
+                        <i class="receipt-icon"></i>
+                    </div>
+                    <div class="upload-text">อัพโหลดสลิป</div>
+                    <InputFile OnChange="HandleFileSelected" />
                 </div>
             </div>
         </div>
 
-        <div class="payment-slip-upload">
-            <div class="upload-area">
-                <div class="upload-icon">
-                    <i class="receipt-icon"></i>
-                </div>
-                <div class="upload-text">อัพโหลดสลิป</div>
-                <InputFile OnChange="HandleFileSelected" />
-            </div>
-        </div>
+        <button class="confirm-payment-btn" @onclick="ConfirmPayment">ยืนยันการชำระเงิน</button>
     </div>
-
-    <button class="confirm-payment-btn" @onclick="ConfirmPayment">ยืนยันการชำระเงิน</button>
 </div>
 
 @if (isAddressPopupVisible)
@@ -122,6 +123,33 @@
 @code {
     private bool isAddressPopupVisible = false;
     private string selectedPaymentMethod = "banking1"; // Set default payment method here
+    private IReadOnlyList<CartItem> cartItems => CartService.GetItems();
+
+    // Use the CartService methods for consistent calculations
+    private decimal ShippingFee => CartService.CalculateShippingFee();
+    private decimal Total => CartService.GetTotalPrice();
+    private decimal GrandTotal => CartService.GetGrandTotal();
+
+    private IBrowserFile uploadedFile;
+    private string uploadedFileName;
+
+    protected override void OnInitialized()
+    {
+        // Redirect to cart if no items
+        if (!cartItems.Any())
+        {
+            Navigation.NavigateTo("/cart");
+        }
+
+        // Subscribe to cart changes
+        CartService.OnCartChanged += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        CartService.OnCartChanged -= StateHasChanged;
+    }
+
     private void ShowAddressPopup() => isAddressPopupVisible = true;
 
     private void HideAddressPopup() => isAddressPopupVisible = false;
@@ -132,36 +160,34 @@
         isAddressPopupVisible = false;
     }
 
-    private IReadOnlyList<CartItem> cartItems => CartService.GetItems();
-    private decimal shippingFee = 50.00m;
-    private decimal Total => CartService.GetTotalPrice();
-    private decimal GrandTotal => Total + shippingFee;
-
-    private IBrowserFile uploadedFile;
-
     private void HandleFileSelected(InputFileChangeEventArgs e)
     {
         uploadedFile = e.File;
-        // Upload logic here
+        uploadedFileName = uploadedFile.Name;
+        // Further upload processing here
     }
 
     private void ConfirmPayment()
     {
         if (uploadedFile == null)
         {
+            // Replace with a user-visible alert if needed
             Console.WriteLine("Please upload the payment slip.");
             return;
         }
 
-        // Proceed with confirmation logic
-        Console.WriteLine($"Confirmed with payment method: {selectedPaymentMethod}");
+        Console.WriteLine($"ยืนยันการชำระเงินด้วยช่องทาง: {GetBankName()}");
+        // Process order
+        CartService.ClearCart(); // Clear cart only after payment is confirmed
+                                 // Navigate to confirmation page
+                                 // Navigation.NavigateTo("/payment-confirmed");
     }
 
     private string GetBankImage() => selectedPaymentMethod switch
     {
-        "banking1" => "/images/bangkokbank.jpg",
-        "banking2" => "/images/krungthai.jpg",
-        "banking3" => "/images/kbank.jpg",
+        "banking1" => "/images/bangkokbank.png",
+        "banking2" => "/images/krungthai.png",
+        "banking3" => "/images/kbank.png",
         _ => ""
     };
 
@@ -172,6 +198,32 @@
         "banking3" => "ธนาคารกสิกรไทย",
         _ => ""
     };
+
+    private string GetBankAccountNumber() => selectedPaymentMethod switch
+    {
+        "banking1" => "123-4-56789-0",
+        "banking2" => "234-5-67890-1",
+        "banking3" => "345-6-78901-2",
+        _ => "xxx-x-xx123-4"
+    };
+
+    private void SelectPaymentMethod(string method)
+    {
+        selectedPaymentMethod = method;
+    }
+
+    private List<BankOption> bankOptions = new()
+    {
+        new BankOption { Name = "ธนาคารกรุงเทพ", Value = "banking1" },
+        new BankOption { Name = "ธนาคารกรุงไทย", Value = "banking2" },
+        new BankOption { Name = "ธนาคารกสิกรไทย", Value = "banking3" },
+    };
+
+    public class BankOption
+    {
+        public string Name { get; set; }
+        public string Value { get; set; }
+    }
 }
 
 <style>
